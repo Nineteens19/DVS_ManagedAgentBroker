@@ -183,3 +183,19 @@
 **Context**: Construction - Unit 2 Functional Design Completion
 
 ---
+
+## Construction Phase — Unit 2: NFR Requirements (Planning)
+**Timestamp**: 2026-08-29T15:31:33Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created NFR requirements plan for Unit 2 at aidlc-docs/construction/plans/unit-2-auth-rbac-nfr-requirements-plan.md with questions on password hashing standard, JWT signing algorithm, and login API rate limiting. Awaiting user input."
+**Context**: Construction - Unit 2 NFR Requirements Planning
+
+---
+
+## Construction Phase — Unit 2: NFR Requirements (Generation)
+**Timestamp**: 2026-08-29T15:32:43Z
+**User Input**: "Continue [Answers: Q1: A (ASP.NET Core Identity PBKDF2 HMAC-SHA512), Q2: A (HMAC-SHA256 HS256), Q3: A (Fixed Window Rate Limiter 10/min per IP)]"
+**AI Response**: "Generated nfr-requirements.md and tech-stack-decisions.md for Unit 2. Configured ASP.NET Core Identity PasswordHasher, JWT Bearer middleware (HS256), and IP-based rate limiting on auth endpoints. Marked NFR Requirements complete in aidlc-state.md. Awaiting user approval to proceed to NFR Design."
+**Context**: Construction - Unit 2 NFR Requirements Completion
+
+---

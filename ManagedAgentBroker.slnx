@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/backend/">
+    <Project Path="src/backend/ManagedAgentBroker.Domain/ManagedAgentBroker.Domain.csproj" />
+    <Project Path="src/backend/ManagedAgentBroker.Infrastructure/ManagedAgentBroker.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/backend/">
+    <Project Path="tests/backend/ManagedAgentBroker.Domain.Tests/ManagedAgentBroker.Domain.Tests.csproj" />
+    <Project Path="tests/backend/ManagedAgentBroker.Infrastructure.Tests/ManagedAgentBroker.Infrastructure.Tests.csproj" />
+  </Folder>
+</Solution>

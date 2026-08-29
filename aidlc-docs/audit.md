@@ -151,3 +151,19 @@
 **Context**: Construction - Unit 1 Infrastructure Design Completion
 
 ---
+
+## Construction Phase — Unit 1: Code Generation (Planning)
+**Timestamp**: 2026-08-29T15:23:36Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created comprehensive code generation plan for Unit 1 at aidlc-docs/construction/plans/unit-1-core-domain-code-generation-plan.md detailing 8 generation steps across domain aggregates, AES-256-GCM value converters, EF Core ApplicationDbContext, ISO 27001 audit interceptors, and xUnit/PBT test suites. Awaiting user approval."
+**Context**: Construction - Unit 1 Code Generation Planning
+
+---
+
+## Construction Phase — Unit 1: Code Generation (Generation) & Unit Complete
+**Timestamp**: 2026-08-29T15:28:44Z
+**User Input**: "Approve & Continue"
+**AI Response**: "Generated all C# production code and tests for Unit 1 (Core Domain, Database Schema & EF Core Infrastructure). Implemented AgentApplication aggregate, AES-256-GCM ValueConverter, ApplicationDbContext, AuditSaveChangesInterceptor, and DatabaseSeeder. Executed dotnet test with 100% pass rate (11/11 tests passed including PBT-01 and PBT-02). Marked Unit 1 100% complete in aidlc-state.md. Awaiting user approval to proceed to Unit 2 (Authentication & RBAC)."
+**Context**: Construction - Unit 1 Code Generation Completion
+
+---

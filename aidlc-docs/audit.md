@@ -87,3 +87,19 @@
 **Context**: Inception - Units Generation Completion
 
 ---
+
+## Construction Phase — Unit 1: Functional Design (Planning)
+**Timestamp**: 2026-08-29T15:08:24Z
+**User Input**: "Approve & Continue"
+**AI Response**: "Entered Construction Phase. Created functional design plan for Unit 1 (Core Domain, Database Schema & EF Core Infrastructure) with checklist and planning questions at aidlc-docs/construction/plans/unit-1-core-domain-functional-design-plan.md. Awaiting user choices for ID strategy, audit tracking, and domain event dispatching."
+**Context**: Construction - Unit 1 Functional Design Planning
+
+---
+
+## Construction Phase — Unit 1: Functional Design (Generation)
+**Timestamp**: 2026-08-29T15:11:32Z
+**User Input**: "Approve & Continue [Answers: Q1: A (Guid/UUID), Q2: A (Standard Audit Fields & Global Filters), Q3: A (MediatR In-Process Events)]"
+**AI Response**: "Generated domain-entities.md, business-logic-model.md, and business-rules.md for Unit 1. Updated plan and aidlc-state.md. Awaiting user approval to proceed to NFR Requirements."
+**Context**: Construction - Unit 1 Functional Design Completion
+
+---

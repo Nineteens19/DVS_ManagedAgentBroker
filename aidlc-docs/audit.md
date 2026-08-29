@@ -327,3 +327,19 @@
 **Context**: Construction - Unit 3 Code Generation Completion
 
 ---
+
+## Construction Phase — Unit 4: Functional Design (Planning)
+**Timestamp**: 2026-08-29T15:59:08Z
+**User Input**: "Approve & Continue"
+**AI Response**: "Entered Unit 4 (Compliance Screening & Native Approval Engine). Created functional design plan at aidlc-docs/construction/plans/unit-4-compliance-approval-functional-design-plan.md with questions on AMLO/OIC sandbox adapter design, SMTP notification delivery pipelines, and MD executive approval delegation. Awaiting user input."
+**Context**: Construction - Unit 4 Functional Design Planning
+
+---
+
+## Construction Phase — Unit 4: Functional Design (Generation)
+**Timestamp**: 2026-08-29T16:00:05Z
+**User Input**: "Continue [Answers: Q1: A (Simulated Sandbox Adapter + Configurable API Client), Q2: A (IEmailNotificationService with SMTP & logging fallback), Q3: A (Single-tier Executive Approval with ROLE_APPROVER_MD)]"
+**AI Response**: "Generated domain-entities.md, business-logic-model.md, and business-rules.md for Unit 4 (Compliance Screening & Native Approval Engine). Defined compliance check results, approval decision payloads, email notification schemas, AMLO/OIC screening gates, and MD executive approval lifecycle. Marked Functional Design complete in aidlc-state.md. Awaiting user approval to proceed to NFR Requirements."
+**Context**: Construction - Unit 4 Functional Design Completion
+
+---

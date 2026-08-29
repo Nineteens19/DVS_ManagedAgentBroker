@@ -5,7 +5,7 @@
 - **Project Type**: Greenfield
 - **Start Date**: 2026-08-29T14:25:05Z
 - **Current Phase**: 🟢 CONSTRUCTION PHASE
-- **Current Stage**: Unit 2 - Functional Design
+- **Current Stage**: Unit 2 - NFR Requirements
 
 ## Workspace State
 - **Existing Code**: Yes (Unit 1 Core Domain & EF Core Infrastructure implemented and verified)
@@ -41,7 +41,7 @@
   - [x] Infrastructure Design
   - [x] Code Generation (Planning + Execution)
 - [ ] **Unit 2: Authentication, RBAC & Organization Directory Service**
-  - [ ] Functional Design (IN PROGRESS)
+  - [x] Functional Design
   - [ ] NFR Requirements
   - [ ] NFR Design
   - [ ] Infrastructure Design

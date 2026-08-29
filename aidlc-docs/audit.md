@@ -167,3 +167,19 @@
 **Context**: Construction - Unit 1 Code Generation Completion
 
 ---
+
+## Construction Phase — Unit 2: Functional Design (Planning)
+**Timestamp**: 2026-08-29T15:29:39Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Entered Unit 2 (Authentication, RBAC & Organization Directory Service). Created functional design plan at aidlc-docs/construction/plans/unit-2-auth-rbac-functional-design-plan.md with questions on AD/SSO mode, branch data isolation scoping, and token lifetime/revocation strategy. Awaiting user input."
+**Context**: Construction - Unit 2 Functional Design Planning
+
+---
+
+## Construction Phase — Unit 2: Functional Design (Generation)
+**Timestamp**: 2026-08-29T15:30:42Z
+**User Input**: "Continue [Answers: Q1: A (Hybrid SSO + Local DB Fallback), Q2: A (Strict Branch Data Scoping), Q3: A (Access 15m + Refresh 7d with Rotation)]"
+**AI Response**: "Generated domain-entities.md, business-logic-model.md, and business-rules.md for Unit 2 (Authentication, RBAC & Organization Directory Service). Configured 6-role permission matrix, account lockout after 5 failed attempts, and branch data isolation. Marked Functional Design complete in aidlc-state.md. Awaiting user approval to proceed to NFR Requirements."
+**Context**: Construction - Unit 2 Functional Design Completion
+
+---

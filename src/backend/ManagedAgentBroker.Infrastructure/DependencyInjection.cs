@@ -34,6 +34,24 @@ namespace ManagedAgentBroker.Infrastructure
             services.AddScoped<IApplicationNumberGenerator, ApplicationNumberGenerator>();
             services.AddScoped<IApplicationIntakeService, ApplicationIntakeService>();
 
+            // Unit 4 Compliance Screening, Approval Workflow & Email Notification Services
+            services.Configure<Configuration.EmailSettings>(options =>
+                configuration.GetSection(Configuration.EmailSettings.SectionName).Bind(options));
+            services.AddSingleton<InMemoryEmailNotificationService>();
+            services.AddScoped<IEmailNotificationService>(sp =>
+            {
+                var settings = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<Configuration.EmailSettings>>().Value;
+                if (settings.UseInMemoryFallback)
+                {
+                    return sp.GetRequiredService<InMemoryEmailNotificationService>();
+                }
+                return new SmtpEmailNotificationService(
+                    sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<Configuration.EmailSettings>>(),
+                    sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<SmtpEmailNotificationService>>());
+            });
+            services.AddScoped<IComplianceScreeningService, ComplianceScreeningService>();
+            services.AddScoped<IApprovalWorkflowService, ApprovalWorkflowService>();
+
             // Persistence
             services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {

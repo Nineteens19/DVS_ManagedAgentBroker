@@ -7,31 +7,31 @@ This plan specifies the implementation steps for Unit 4, covering compliance scr
 
 ## Execution Checklist
 
-- [ ] **Step 1: Compliance Models & Approval DTOs**
-  - [ ] Implement `ComplianceCheckResultDto.cs` & `ApprovalWorkflowDtos.cs` in `ManagedAgentBroker.Domain`
+- [x] **Step 1: Compliance Models & Approval DTOs**
+  - [x] Implement `ComplianceCheckResultDto.cs` & `ApprovalWorkflowDtos.cs` in `ManagedAgentBroker.Domain`
 
-- [ ] **Step 2: Email Notification Engine**
-  - [ ] Implement `EmailSettings.cs` in `ManagedAgentBroker.Infrastructure/Configuration`
-  - [ ] Implement `IEmailNotificationService.cs`
-  - [ ] Implement `InMemoryEmailNotificationService.cs` (captures messages in memory for dev/testing)
-  - [ ] Implement `SmtpEmailNotificationService.cs` (SMTP client with HTML template formatting)
+- [x] **Step 2: Email Notification Engine**
+  - [x] Implement `EmailSettings.cs` in `ManagedAgentBroker.Infrastructure/Configuration`
+  - [x] Implement `IEmailNotificationService.cs`
+  - [x] Implement `InMemoryEmailNotificationService.cs` (captures messages in memory for dev/testing)
+  - [x] Implement `SmtpEmailNotificationService.cs` (SMTP client with HTML template formatting)
 
-- [ ] **Step 3: Compliance Screening Service**
-  - [ ] Implement `IComplianceScreeningService.cs` & `ComplianceScreeningService.cs` (deterministic sandbox heuristics for AMLO/OIC + database record persistence)
+- [x] **Step 3: Compliance Screening Service**
+  - [x] Implement `IComplianceScreeningService.cs` & `ComplianceScreeningService.cs` (deterministic sandbox heuristics for AMLO/OIC + database record persistence)
 
-- [ ] **Step 4: Native Executive Approval Workflow Service**
-  - [ ] Implement `IApprovalWorkflowService.cs` & `ApprovalWorkflowService.cs` (state transitions: `SubmittedBranch` $\rightarrow$ `PendingExecutiveApproval` $\rightarrow$ `ReviewPremium` / `ExecutiveRejected`, `RequiresDirectorApproval` escalation, email notifications)
+- [x] **Step 4: Native Executive Approval Workflow Service**
+  - [x] Implement `IApprovalWorkflowService.cs` & `ApprovalWorkflowService.cs` (state transitions: `SubmittedBranch` $\rightarrow$ `PendingExecutiveApproval` $\rightarrow$ `ReviewPremium` / `ExecutiveRejected`, `RequiresDirectorApproval` escalation, email notifications)
 
-- [ ] **Step 5: Dependency Injection Registration**
-  - [ ] Register Unit 4 services and `EmailSettings` in `DependencyInjection.cs`
+- [x] **Step 5: Dependency Injection Registration**
+  - [x] Register Unit 4 services and `EmailSettings` in `DependencyInjection.cs`
 
-- [ ] **Step 6: Unit & Property-Based Test Suites**
-  - [ ] Create `ComplianceScreeningPbtTests.cs` (`PBT-05` property-based tests for compliance status invariants)
-  - [ ] Create `ApprovalWorkflowServiceTests.cs` (approval/rejection state transitions, role authorization, and email notification verification)
-  - [ ] Create `EmailNotificationServiceTests.cs` (template rendering and delivery isolation)
+- [x] **Step 6: Unit & Property-Based Test Suites**
+  - [x] Create `ComplianceScreeningPbtTests.cs` (`PBT-05` property-based tests for compliance status invariants)
+  - [x] Create `ApprovalWorkflowServiceTests.cs` (approval/rejection state transitions, role authorization, and email notification verification)
+  - [x] Create `EmailNotificationServiceTests.cs` (template rendering and delivery isolation)
 
-- [ ] **Step 7: Test Execution & Verification**
-  - [ ] Execute `dotnet test` to verify all test suites pass (Units 1, 2, 3, and 4).
+- [x] **Step 7: Test Execution & Verification**
+  - [x] Execute `dotnet test` to verify all test suites pass (Units 1, 2, 3, and 4: 52/52 tests passed).
 
 ---
 

@@ -199,3 +199,19 @@
 **Context**: Construction - Unit 2 NFR Requirements Completion
 
 ---
+
+## Construction Phase — Unit 2: NFR Design (Planning)
+**Timestamp**: 2026-08-29T15:33:41Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created NFR design plan for Unit 2 at aidlc-docs/construction/plans/unit-2-auth-rbac-nfr-design-plan.md with questions on branch scope authorization handler pattern and password hash binary payload format. Awaiting user input."
+**Context**: Construction - Unit 2 NFR Design Planning
+
+---
+
+## Construction Phase — Unit 2: NFR Design (Generation)
+**Timestamp**: 2026-08-29T15:34:47Z
+**User Input**: "Continue [Answers: Q1: A (BranchDataScopeRequirement / IBranchScopeEvaluator), Q2: A (RFC 2898 Self-contained Binary Format)]"
+**AI Response**: "Generated nfr-design-patterns.md and logical-components.md for Unit 2. Defined ITokenService, IPasswordHashService, IBranchScopeEvaluator, and IIdentityService contracts. Marked NFR Design complete in aidlc-state.md. Awaiting user approval to proceed to Infrastructure Design."
+**Context**: Construction - Unit 2 NFR Design Completion
+
+---

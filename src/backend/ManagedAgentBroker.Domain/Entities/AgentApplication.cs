@@ -260,11 +260,13 @@ namespace ManagedAgentBroker.Domain.Entities
 
         public void ReturnForCorrection(IEnumerable<RejectChecklistItem> checklist, string reviewerId)
         {
-            RejectChecklistItems.Clear();
-            foreach (var item in checklist)
+            if (checklist != null)
             {
-                item.ApplicationId = Id;
-                RejectChecklistItems.Add(item);
+                foreach (var item in checklist)
+                {
+                    item.ApplicationId = Id;
+                    RejectChecklistItems.Add(item);
+                }
             }
 
             TransitionTo(ApplicationStatus.ReturnedForCorrection, reviewerId);

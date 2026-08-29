@@ -19,6 +19,7 @@ namespace ManagedAgentBroker.Infrastructure
             // Security & Cryptography
             services.AddSingleton<IKeyVaultProvider, ConfigurationKeyVaultProvider>();
             services.AddSingleton<IDataProtectionProvider, Aes256GcmDataProtectionProvider>();
+            // Unit 2 Identity & Directory Services
             services.AddSingleton<IPasswordHashService, PasswordHashService>();
             services.AddSingleton<ITokenService, JwtTokenService>();
             services.AddScoped<IBranchScopeEvaluator, BranchScopeEvaluator>();
@@ -26,6 +27,12 @@ namespace ManagedAgentBroker.Infrastructure
             services.AddSingleton<ICurrentUserService, SystemCurrentUserService>();
             services.AddScoped<AuditSaveChangesInterceptor>();
             services.AddScoped<DatabaseSeeder>();
+
+            // Unit 3 Application Intake & Document Management Services
+            services.AddSingleton<IFileSignatureValidator, FileSignatureValidator>();
+            services.AddScoped<IFileStorageService, LocalDiskFileStorageService>();
+            services.AddScoped<IApplicationNumberGenerator, ApplicationNumberGenerator>();
+            services.AddScoped<IApplicationIntakeService, ApplicationIntakeService>();
 
             // Persistence
             services.AddDbContext<ApplicationDbContext>((sp, options) =>

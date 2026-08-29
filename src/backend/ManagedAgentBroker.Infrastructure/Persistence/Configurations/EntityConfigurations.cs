@@ -13,8 +13,7 @@ namespace ManagedAgentBroker.Infrastructure.Persistence.Configurations
             builder.HasKey(e => e.Id);
 
             builder.Property<byte[]>("RowVersion")
-                .IsRowVersion()
-                .IsRequired();
+                .IsRowVersion();
 
             builder.Property(e => e.ApplicationNumber)
                 .HasMaxLength(30)

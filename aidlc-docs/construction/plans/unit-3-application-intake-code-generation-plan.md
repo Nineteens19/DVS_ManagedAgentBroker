@@ -7,27 +7,27 @@ This plan specifies the implementation steps for Unit 3, covering Thai National 
 
 ## Execution Checklist
 
-- [ ] **Step 1: Domain Validation Utilities & Intake DTOs**
-  - [ ] Implement `ThaiNationalIdValidator.cs` (Modulo 11 Checksum logic)
-  - [ ] Implement Intake Commands & DTOs (`CreateDraftApplicationCommand`, `UpdateDraftApplicationCommand`, `UploadAttachmentCommand`, `AgentApplicationDto`, `AttachmentDto`)
+- [x] **Step 1: Domain Validation Utilities & Intake DTOs**
+  - [x] Implement `ThaiNationalIdValidator.cs` (Modulo 11 Checksum logic)
+  - [x] Implement Intake Commands & DTOs (`CreateDraftApplicationCommand`, `UpdateDraftApplicationCommand`, `UploadAttachmentCommand`, `AgentApplicationDto`, `AttachmentDto`)
 
-- [ ] **Step 2: Core Infrastructure Services**
-  - [ ] Implement `IFileSignatureValidator` & `FileSignatureValidator` (Magic byte inspection for PDF `%PDF-`, JPEG `FF D8 FF`, PNG `89 50 4E 47`)
-  - [ ] Implement `IFileStorageService` & `LocalDiskFileStorageService` (Partitioned storage `{yyyy}/{MM}/{appId}` + SHA-256 stream calculation)
-  - [ ] Implement `IApplicationNumberGenerator` & `ApplicationNumberGenerator` (`APP-YYYYMMDD-XXXX` daily sequence with optimistic collision retry)
+- [x] **Step 2: Core Infrastructure Services**
+  - [x] Implement `IFileSignatureValidator` & `FileSignatureValidator` (Magic byte inspection for PDF `%PDF-`, JPEG `FF D8 FF`, PNG `89 50 4E 47`)
+  - [x] Implement `IFileStorageService` & `LocalDiskFileStorageService` (Partitioned storage `{yyyy}/{MM}/{appId}` + SHA-256 stream calculation)
+  - [x] Implement `IApplicationNumberGenerator` & `ApplicationNumberGenerator` (`APP-YYYYMMDD-XXXX` daily sequence with optimistic collision retry)
 
-- [ ] **Step 3: Application Intake Service**
-  - [ ] Implement `IApplicationIntakeService` & `ApplicationIntakeService` (Draft creation, profile updates, attachment management, branch submission validation, deficiency resubmission)
-  - [ ] Register Unit 3 dependencies in `DependencyInjection.cs`
+- [x] **Step 3: Application Intake Service**
+  - [x] Implement `IApplicationIntakeService` & `ApplicationIntakeService` (Draft creation, profile updates, attachment management, branch submission validation, deficiency resubmission)
+  - [x] Register Unit 3 dependencies in `DependencyInjection.cs`
 
-- [ ] **Step 4: Unit & Property-Based Test Suites**
-  - [ ] Create `ThaiNationalIdValidatorPbtTests.cs` (`PBT-04` Modulo 11 property-based tests)
-  - [ ] Create `FileSignatureValidatorTests.cs` (Magic byte validation & spoofing rejection)
-  - [ ] Create `ApplicationNumberGeneratorTests.cs` (Sequence formatting & daily reset)
-  - [ ] Create `ApplicationIntakeServiceTests.cs` (Full intake lifecycle verification)
+- [x] **Step 4: Unit & Property-Based Test Suites**
+  - [x] Create `ThaiNationalIdValidatorPbtTests.cs` (`PBT-04` Modulo 11 property-based tests)
+  - [x] Create `FileSignatureValidatorTests.cs` (Magic byte validation & spoofing rejection)
+  - [x] Create `ApplicationNumberGeneratorTests.cs` (Sequence formatting & daily reset)
+  - [x] Create `ApplicationIntakeServiceTests.cs` (Full intake lifecycle verification)
 
-- [ ] **Step 5: Test Execution & Verification**
-  - [ ] Execute `dotnet test` to ensure all tests pass (Unit 1, Unit 2, Unit 3).
+- [x] **Step 5: Test Execution & Verification**
+  - [x] Execute `dotnet test` to ensure all tests pass (Unit 1, Unit 2, Unit 3).
 
 ---
 

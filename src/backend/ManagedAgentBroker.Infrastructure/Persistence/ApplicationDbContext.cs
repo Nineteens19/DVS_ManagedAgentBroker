@@ -22,6 +22,11 @@ namespace ManagedAgentBroker.Infrastructure.Persistence
         DbSet<CoreSyncTransaction> CoreSyncTransactions { get; }
         DbSet<ApplicationAttachment> ApplicationAttachments { get; }
         DbSet<RejectChecklistItem> RejectChecklistItems { get; }
+        DbSet<User> Users { get; }
+        DbSet<Role> Roles { get; }
+        DbSet<UserRole> UserRoles { get; }
+        DbSet<Branch> Branches { get; }
+        DbSet<RefreshToken> RefreshTokens { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
@@ -47,6 +52,11 @@ namespace ManagedAgentBroker.Infrastructure.Persistence
         public DbSet<CoreSyncTransaction> CoreSyncTransactions => Set<CoreSyncTransaction>();
         public DbSet<ApplicationAttachment> ApplicationAttachments => Set<ApplicationAttachment>();
         public DbSet<RejectChecklistItem> RejectChecklistItems => Set<RejectChecklistItem>();
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Role> Roles => Set<Role>();
+        public DbSet<UserRole> UserRoles => Set<UserRole>();
+        public DbSet<Branch> Branches => Set<Branch>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -57,6 +67,11 @@ namespace ManagedAgentBroker.Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new AgentApplicationConfiguration());
             modelBuilder.ApplyConfiguration(new AgentProfileConfiguration(encryptionConverter));
             modelBuilder.ApplyConfiguration(new GuarantorConfiguration(encryptionConverter));
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new BranchConfiguration());
+            modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
 
             // Apply Global Query Filter for Soft Delete across all entities inheriting BaseEntity<Guid>
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

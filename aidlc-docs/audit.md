@@ -231,3 +231,19 @@
 **Context**: Construction - Unit 2 Infrastructure Design Completion
 
 ---
+
+## Construction Phase — Unit 2: Code Generation (Planning)
+**Timestamp**: 2026-08-29T15:38:24Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created code generation plan for Unit 2 at aidlc-docs/construction/plans/unit-2-auth-rbac-code-generation-plan.md detailing 8 generation steps across identity entities, PBKDF2 password hashing service, JWT token service, branch data scope evaluator, identity service, EF Core configurations, demo seed accounts, and unit/PBT test suites. Awaiting user approval."
+**Context**: Construction - Unit 2 Code Generation Planning
+
+---
+
+## Construction Phase — Unit 2: Code Generation (Generation) & Unit Complete
+**Timestamp**: 2026-08-29T15:39:44Z
+**User Input**: "Approve & Continue"
+**AI Response**: "Generated all C# identity production code and test suites for Unit 2 (Authentication, RBAC & Organization Directory Service). Implemented User/Role/Branch/RefreshToken domain entities, PasswordHashService (PBKDF2 HMAC-SHA512), JwtTokenService (HS256 with refresh rotation), BranchScopeEvaluator, IdentityService, EF Core identity configurations, and database seeder for 6 personas. Executed dotnet test with 100% pass rate (22/22 tests passed including PBT-01, PBT-02, PBT-03). Marked Unit 2 100% complete in aidlc-state.md. Awaiting user approval to proceed to Unit 3 (Application Intake & Document Management Service)."
+**Context**: Construction - Unit 2 Code Generation Completion
+
+---

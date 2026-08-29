@@ -19,6 +19,10 @@ namespace ManagedAgentBroker.Infrastructure
             // Security & Cryptography
             services.AddSingleton<IKeyVaultProvider, ConfigurationKeyVaultProvider>();
             services.AddSingleton<IDataProtectionProvider, Aes256GcmDataProtectionProvider>();
+            services.AddSingleton<IPasswordHashService, PasswordHashService>();
+            services.AddSingleton<ITokenService, JwtTokenService>();
+            services.AddScoped<IBranchScopeEvaluator, BranchScopeEvaluator>();
+            services.AddScoped<IIdentityService, IdentityService>();
             services.AddSingleton<ICurrentUserService, SystemCurrentUserService>();
             services.AddScoped<AuditSaveChangesInterceptor>();
             services.AddScoped<DatabaseSeeder>();

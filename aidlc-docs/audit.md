@@ -103,3 +103,19 @@
 **Context**: Construction - Unit 1 Functional Design Completion
 
 ---
+
+## Construction Phase — Unit 1: NFR Requirements (Planning)
+**Timestamp**: 2026-08-29T15:13:00Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created NFR requirements plan for Unit 1 at aidlc-docs/construction/plans/unit-1-core-domain-nfr-requirements-plan.md with questions on concurrency conflict handling, PII encryption, and EF Core connection resiliency. Awaiting user input."
+**Context**: Construction - Unit 1 NFR Requirements Planning
+
+---
+
+## Construction Phase — Unit 1: NFR Requirements (Generation)
+**Timestamp**: 2026-08-29T15:17:43Z
+**User Input**: "Continue [Answers: Q1: EAS ไม่ใช้แล้วเราจะวิ่งอนุมัติในระบบนี้เลย แต่ต้องมี noti ในแจ้งเพื่อ approval ทางอีเมลด้วย, Q2: A (AES-256-GCM ValueConverter), Q3: A (EF Core RetryOnFailure)]"
+**AI Response**: "Generated nfr-requirements.md and tech-stack-decisions.md for Unit 1. Updated architecture to integrate native internal executive approval workflow with SMTP email notification engine. Marked NFR Requirements complete in aidlc-state.md. Awaiting user approval to proceed to NFR Design."
+**Context**: Construction - Unit 1 NFR Requirements Completion
+
+---

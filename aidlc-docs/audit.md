@@ -295,3 +295,19 @@
 **Context**: Construction - Unit 3 NFR Design Completion
 
 ---
+
+## Construction Phase — Unit 3: Infrastructure Design (Planning)
+**Timestamp**: 2026-08-29T15:49:35Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created infrastructure design plan for Unit 3 at aidlc-docs/construction/plans/unit-3-application-intake-infrastructure-design-plan.md with questions on relative base storage path configuration and Kestrel multipart body size limits. Awaiting user input."
+**Context**: Construction - Unit 3 Infrastructure Design Planning
+
+---
+
+## Construction Phase — Unit 3: Infrastructure Design (Generation)
+**Timestamp**: 2026-08-29T15:52:05Z
+**User Input**: "Continue [Answers: Q1: A (Configurable Relative Path storage/attachments), Q2: A (15MB Kestrel Limit)]"
+**AI Response**: "Generated infrastructure-design.md and deployment-architecture.md for Unit 3. Defined physical storage layout, appsettings.json schema, database indexes, Docker volume mounts, and Kestrel streaming limits. Marked Infrastructure Design complete in aidlc-state.md. Awaiting user approval to proceed to Code Generation."
+**Context**: Construction - Unit 3 Infrastructure Design Completion
+
+---

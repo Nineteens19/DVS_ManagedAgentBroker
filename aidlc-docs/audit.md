@@ -247,3 +247,19 @@
 **Context**: Construction - Unit 2 Code Generation Completion
 
 ---
+
+## Construction Phase — Unit 3: Functional Design (Planning)
+**Timestamp**: 2026-08-29T15:43:23Z
+**User Input**: "Approve & Continue"
+**AI Response**: "Entered Unit 3 (Application Intake & Document Management Service). Created functional design plan at aidlc-docs/construction/plans/unit-3-application-intake-functional-design-plan.md with questions on application number format, attachment storage provider, and Thai National ID checksum validation rules. Awaiting user input."
+**Context**: Construction - Unit 3 Functional Design Planning
+
+---
+
+## Construction Phase — Unit 3: Functional Design (Generation)
+**Timestamp**: 2026-08-29T15:44:41Z
+**User Input**: "Continue [Answers: Q1: A (Format APP-YYYYMMDD-XXXX), Q2: A (Local Disk Storage partitioned by date/appId with IFileStorageService), Q3: A (Strict Modulo 11 Checksum for Thai National ID)]"
+**AI Response**: "Generated domain-entities.md, business-logic-model.md, and business-rules.md for Unit 3 (Application Intake & Document Management Service). Defined application creation command payloads, Thai ID Modulo 11 checksum algorithm, attachment upload pipeline, and deficiency rejection/resubmission lifecycles. Marked Functional Design complete in aidlc-state.md. Awaiting user approval to proceed to NFR Requirements."
+**Context**: Construction - Unit 3 Functional Design Completion
+
+---

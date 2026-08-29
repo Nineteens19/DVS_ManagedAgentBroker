@@ -135,3 +135,19 @@
 **Context**: Construction - Unit 1 NFR Design Completion
 
 ---
+
+## Construction Phase — Unit 1: Infrastructure Design (Planning)
+**Timestamp**: 2026-08-29T15:21:36Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created infrastructure design plan for Unit 1 at aidlc-docs/construction/plans/unit-1-core-domain-infrastructure-design-plan.md with questions on local Docker Compose setup and production migration strategy. Awaiting user input."
+**Context**: Construction - Unit 1 Infrastructure Design Planning
+
+---
+
+## Construction Phase — Unit 1: Infrastructure Design (Generation)
+**Timestamp**: 2026-08-29T15:22:38Z
+**User Input**: "Continue [Answers: Q1: A (Docker Compose with MSSQL 2022), Q2: A (Idempotent SQL Script for Prod)]"
+**AI Response**: "Generated infrastructure-design.md, deployment-architecture.md, and shared-infrastructure.md for Unit 1. Configured docker-compose.yml with MS SQL Server 2022, Thai collation, and database connection pooling. Marked Infrastructure Design complete in aidlc-state.md. Awaiting user approval to proceed to Code Generation."
+**Context**: Construction - Unit 1 Infrastructure Design Completion
+
+---

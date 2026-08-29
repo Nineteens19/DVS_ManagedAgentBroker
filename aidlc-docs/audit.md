@@ -215,3 +215,19 @@
 **Context**: Construction - Unit 2 NFR Design Completion
 
 ---
+
+## Construction Phase — Unit 2: Infrastructure Design (Planning)
+**Timestamp**: 2026-08-29T15:35:54Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created infrastructure design plan for Unit 2 at aidlc-docs/construction/plans/unit-2-auth-rbac-infrastructure-design-plan.md with questions on 6 persona demo seed accounts and branch directory seed fixtures. Awaiting user input."
+**Context**: Construction - Unit 2 Infrastructure Design Planning
+
+---
+
+## Construction Phase — Unit 2: Infrastructure Design (Generation)
+**Timestamp**: 2026-08-29T15:36:58Z
+**User Input**: "Continue [Answers: Q1: A (Seed 6 Persona Demo Accounts), Q2: A (Seed HQ + Regional Hubs)]"
+**AI Response**: "Generated infrastructure-design.md and deployment-architecture.md for Unit 2. Defined database table schemas for Users, Roles, UserRoles, Branches, and RefreshTokens, seed fixtures for 6 personas, and reverse proxy IP forwarding pipeline. Marked Infrastructure Design complete in aidlc-state.md. Awaiting user approval to proceed to Code Generation."
+**Context**: Construction - Unit 2 Infrastructure Design Completion
+
+---

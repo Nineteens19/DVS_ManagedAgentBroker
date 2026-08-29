@@ -119,3 +119,19 @@
 **Context**: Construction - Unit 1 NFR Requirements Completion
 
 ---
+
+## Construction Phase — Unit 1: NFR Design (Planning)
+**Timestamp**: 2026-08-29T15:18:52Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created NFR design plan for Unit 1 at aidlc-docs/construction/plans/unit-1-core-domain-nfr-design-plan.md with questions on master key management and structured logging with PII masking. Awaiting user input."
+**Context**: Construction - Unit 1 NFR Design Planning
+
+---
+
+## Construction Phase — Unit 1: NFR Design (Generation)
+**Timestamp**: 2026-08-29T15:20:39Z
+**User Input**: "Continue [Answers: Q1: A (IKeyVaultProvider + Config/Env), Q2: A (Serilog PII Masking)]"
+**AI Response**: "Generated nfr-design-patterns.md and logical-components.md for Unit 1. Configured AES-256-GCM ValueConverter, AuditSaveChangesInterceptor, and optimistic concurrency RowVersion. Marked NFR Design complete in aidlc-state.md. Awaiting user approval to proceed to Infrastructure Design."
+**Context**: Construction - Unit 1 NFR Design Completion
+
+---

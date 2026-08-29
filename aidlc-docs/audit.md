@@ -359,3 +359,19 @@
 **Context**: Construction - Unit 4 NFR Requirements Completion
 
 ---
+
+## Construction Phase — Unit 4: NFR Design (Planning)
+**Timestamp**: 2026-08-29T16:03:27Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created NFR design plan for Unit 4 at aidlc-docs/construction/plans/unit-4-compliance-approval-nfr-design-plan.md with questions on unified compliance screening interface and SMTP configuration section schema. Awaiting user input."
+**Context**: Construction - Unit 4 NFR Design Planning
+
+---
+
+## Construction Phase — Unit 4: NFR Design (Generation)
+**Timestamp**: 2026-08-29T16:04:27Z
+**User Input**: "Continue to Next Stage [Answers: Q1: A (Unified IComplianceScreeningService), Q2: A (EmailSettings section in appsettings.json)]"
+**AI Response**: "Generated nfr-design-patterns.md and logical-components.md for Unit 4 (Compliance Screening & Native Approval Engine). Defined deterministic test heuristics for AMLO/OIC, IComplianceScreeningService, IApprovalWorkflowService, IEmailNotificationService (SMTP + InMemory), EmailSettings, and DI registrations. Marked NFR Design complete in aidlc-state.md. Awaiting user approval to proceed to Infrastructure Design."
+**Context**: Construction - Unit 4 NFR Design Completion
+
+---

@@ -279,3 +279,19 @@
 **Context**: Construction - Unit 3 NFR Requirements Completion
 
 ---
+
+## Construction Phase — Unit 3: NFR Design (Planning)
+**Timestamp**: 2026-08-29T15:47:39Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created NFR design plan for Unit 3 at aidlc-docs/construction/plans/unit-3-application-intake-nfr-design-plan.md with questions on concurrent application sequence number allocation and attachment soft-delete retention policies. Awaiting user input."
+**Context**: Construction - Unit 3 NFR Design Planning
+
+---
+
+## Construction Phase — Unit 3: NFR Design (Generation)
+**Timestamp**: 2026-08-29T15:48:43Z
+**User Input**: "Continue [Answers: Q1: A (Unique Index + Optimistic Retry), Q2: A (Soft Delete Metadata Only & Retain Physical File)]"
+**AI Response**: "Generated nfr-design-patterns.md and logical-components.md for Unit 3. Defined IApplicationNumberGenerator, IFileSignatureValidator, IFileStorageService, and IApplicationIntakeService contracts. Marked NFR Design complete in aidlc-state.md. Awaiting user approval to proceed to Infrastructure Design."
+**Context**: Construction - Unit 3 NFR Design Completion
+
+---

@@ -4,11 +4,11 @@
 - **Project Name**: Agent & Broker Management System (ระบบบริหารจัดการตัวแทนนายหน้า)
 - **Project Type**: Greenfield
 - **Start Date**: 2026-08-29T14:25:05Z
-- **Current Phase**: 🔵 INCEPTION PHASE
-- **Current Stage**: Application Design
+- **Current Phase**: 🟢 CONSTRUCTION PHASE
+- **Current Stage**: Unit 1 - Functional Design
 
 ## Workspace State
-- **Existing Code**: No (Requirements, SRS, and Process Flow Specifications detected in `SRS/` and `detail/`)
+- **Existing Code**: No (Greenfield architecture initialized)
 - **Reverse Engineering Needed**: No
 - **Workspace Root**: /Users/nineteen/DVS/managedAgentBroker
 
@@ -22,20 +22,55 @@
 ## Code Location Rules
 - **Application Code**: Workspace root (NEVER in aidlc-docs/)
 - **Documentation**: aidlc-docs/ only
-- **Structure patterns**: See code-generation.md Critical Rules
+- **Structure patterns**: Monorepo (`src/backend/`, `src/frontend/`, `tests/`)
 
 ## Stage Progress
-### 🔵 INCEPTION PHASE
+### 🔵 INCEPTION PHASE (100% Complete)
 - [x] Workspace Detection
 - [x] Requirements Analysis
 - [x] User Stories
 - [x] Workflow Planning
 - [x] Application Design
-- [ ] Units Generation (EXECUTE)
+- [x] Units Generation
 
 ### 🟢 CONSTRUCTION PHASE
-- [ ] Per-Unit Implementation Loop
-- [ ] Build and Test
+- [ ] **Unit 1: Core Domain, Database Schema & EF Core Infrastructure**
+  - [ ] Functional Design
+  - [ ] NFR Requirements
+  - [ ] NFR Design
+  - [ ] Infrastructure Design
+  - [ ] Code Generation (Planning + Execution)
+- [ ] **Unit 2: Authentication, RBAC & Organization Directory Service**
+  - [ ] Functional Design
+  - [ ] NFR Requirements
+  - [ ] NFR Design
+  - [ ] Infrastructure Design
+  - [ ] Code Generation
+- [ ] **Unit 3: Application Intake & Document Management Service (F-CM-035 & F-CM-018)**
+  - [ ] Functional Design
+  - [ ] NFR Requirements
+  - [ ] NFR Design
+  - [ ] Infrastructure Design
+  - [ ] Code Generation
+- [ ] **Unit 4: Compliance Screening & EAS Electronic Signature Engine**
+  - [ ] Functional Design
+  - [ ] NFR Requirements
+  - [ ] NFR Design
+  - [ ] Infrastructure Design
+  - [ ] Code Generation
+- [ ] **Unit 5: Automated Provisioning & Background SLA Suspension Daemon**
+  - [ ] Functional Design
+  - [ ] NFR Requirements
+  - [ ] NFR Design
+  - [ ] Infrastructure Design
+  - [ ] Code Generation
+- [ ] **Unit 6: Next.js Enterprise Web Portal & Operational Dashboards**
+  - [ ] Functional Design
+  - [ ] NFR Requirements
+  - [ ] NFR Design
+  - [ ] Infrastructure Design
+  - [ ] Code Generation
+- [ ] **Build and Test (Final System Integration Verification)**
 
 ### 🟡 OPERATIONS PHASE
 - [ ] Operations (Placeholder)

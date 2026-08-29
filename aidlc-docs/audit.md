@@ -71,3 +71,19 @@
 **Context**: Inception - Application Design Completion
 
 ---
+
+## Units Generation - Planning & Version Control Init
+**Timestamp**: 2026-08-29T15:04:28Z
+**User Input**: "Approve & Continue ทำ version control git ด้วย"
+**AI Response**: "Initialized git repository and committed all inception phase documents and configuration (.gitignore, aidlc-docs, antigravity-aidlc-bundle). Created unit-of-work-plan.md with decomposition checklist and planning questions at aidlc-docs/inception/plans/unit-of-work-plan.md. Awaiting user input."
+**Context**: Inception - Units Generation Planning
+
+---
+
+## Units Generation - Generation & Inception Complete
+**Timestamp**: 2026-08-29T15:06:31Z
+**User Input**: "Continue [Answers: Q1: A (Monorepo structure), Q2: A (Sequential Unit-by-Unit execution)]"
+**AI Response**: "Generated unit-of-work.md, unit-of-work-dependency.md, and unit-of-work-story-map.md decomposing system into 6 discrete units of work. Marked Inception phase 100% complete and transitioned aidlc-state.md to Construction Phase (starting with Unit 1: Core Domain, Database Schema & EF Core Infrastructure). Awaiting user approval to proceed to Construction."
+**Context**: Inception - Units Generation Completion
+
+---

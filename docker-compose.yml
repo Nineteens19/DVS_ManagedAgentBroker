@@ -1,25 +1,54 @@
 version: '3.8'
 
 services:
-  sqlserver:
+  database:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: mab-sqlserver-dev
+    container_name: agentbroker-db
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=DevPassword123!
+      - MSSQL_SA_PASSWORD=Password123!
       - MSSQL_PID=Developer
     ports:
       - "1433:1433"
     volumes:
-      - sqlserver-data:/var/opt/mssql
-    healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P DevPassword123! -C -Q 'SELECT 1' || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
-    restart: unless-stopped
+      - sqlserver-data:/var/opt/mssql/data
+    networks:
+      - agentbroker-net
+
+  backend-api:
+    build:
+      context: .
+      dockerfile: src/backend/Dockerfile
+    container_name: agentbroker-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=database,1433;Database=ManagedAgentBrokerDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
+      - SecuritySettings__MasterEncryptionKey=MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+    ports:
+      - "5000:8080"
+    depends_on:
+      - database
+    networks:
+      - agentbroker-net
+
+  frontend-portal:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+    container_name: agentbroker-portal
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend-api:8080/api
+      - NEXT_PUBLIC_ENABLE_DEMO_MODE=true
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-api
+    networks:
+      - agentbroker-net
 
 volumes:
   sqlserver-data:
-    driver: local
+
+networks:
+  agentbroker-net:
+    driver: bridge

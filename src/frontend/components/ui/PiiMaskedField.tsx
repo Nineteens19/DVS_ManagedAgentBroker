@@ -1,0 +1,41 @@
+'use client';
+
+import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { maskNationalId, maskBankAccount } from '../../services/fileValidation';
+
+interface PiiMaskedFieldProps {
+  value?: string;
+  type?: 'nationalId' | 'bankAccount';
+  className?: string;
+}
+
+export const PiiMaskedField: React.FC<PiiMaskedFieldProps> = ({
+  value,
+  type = 'nationalId',
+  className = '',
+}) => {
+  const [isUnmasked, setIsUnmasked] = useState(false);
+
+  if (!value) return <span className="text-slate-400">-</span>;
+
+  const displayValue = isUnmasked
+    ? value
+    : type === 'nationalId'
+    ? maskNationalId(value)
+    : maskBankAccount(value);
+
+  return (
+    <span className={`inline-flex items-center space-x-1.5 font-mono text-xs ${className}`}>
+      <span>{displayValue}</span>
+      <button
+        type="button"
+        onClick={() => setIsUnmasked(!isUnmasked)}
+        className="text-slate-400 hover:text-sky-400 transition-colors p-0.5 rounded focus:outline-none"
+        title={isUnmasked ? 'ซ่อนข้อมูลส่วนบุคคล' : 'แสดงข้อมูลส่วนบุคคล'}
+      >
+        {isUnmasked ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+      </button>
+    </span>
+  );
+};

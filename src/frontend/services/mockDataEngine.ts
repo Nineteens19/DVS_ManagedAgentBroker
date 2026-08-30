@@ -340,6 +340,26 @@ export const MockDataEngine = {
   },
 
   saveDraft: async (data: Partial<AgentApplicationDetailDto>): Promise<AgentApplicationDetailDto> => {
+    if (data.id) {
+      const existingIdx = MOCK_APPLICATIONS.findIndex((a) => a.id === data.id);
+      if (existingIdx >= 0) {
+        const existing = MOCK_APPLICATIONS[existingIdx];
+        const updated: AgentApplicationDetailDto = {
+          ...existing,
+          agentType: data.agentType || existing.agentType,
+          requestedCreditLimit: data.requestedCreditLimit ?? existing.requestedCreditLimit,
+          paymentTermMotorDays: data.paymentTermMotorDays ?? existing.paymentTermMotorDays,
+          paymentTermNonMotorDays: data.paymentTermNonMotorDays ?? existing.paymentTermNonMotorDays,
+          profile: data.profile ? { ...existing.profile, ...data.profile } : existing.profile,
+          guarantor: data.guarantor !== undefined ? data.guarantor : existing.guarantor,
+          collateral: data.collateral !== undefined ? data.collateral : existing.collateral,
+          attachments: data.attachments || existing.attachments,
+        };
+        MOCK_APPLICATIONS[existingIdx] = updated;
+        return JSON.parse(JSON.stringify(updated));
+      }
+    }
+
     const newId = `app-${Date.now()}`;
     const newAppNumber = `APP-20260830-${String(MOCK_APPLICATIONS.length + 1).padStart(4, '0')}`;
     const newApp: AgentApplicationDetailDto = {
@@ -358,20 +378,20 @@ export const MockDataEngine = {
       guarantor: data.guarantor,
       collateral: data.collateral,
       attachments: data.attachments || [],
-      syncTransactions: []
+      syncTransactions: [],
     };
 
     MOCK_APPLICATIONS.unshift(newApp);
-    return newApp;
+    return JSON.parse(JSON.stringify(newApp));
   },
 
   submitApplication: async (id: string): Promise<AgentApplicationDetailDto> => {
-    const app = MOCK_APPLICATIONS.find(a => a.id === id);
+    const app = MOCK_APPLICATIONS.find((a) => a.id === id);
     if (!app) throw new Error('Application not found');
     app.status = 'Submitted';
     app.statusDisplayNameTh = STATUS_LABELS_TH['Submitted'];
     app.submittedAt = new Date().toISOString();
-    return app;
+    return JSON.parse(JSON.stringify(app));
   },
 
   runComplianceScreen: async (id: string): Promise<AgentApplicationDetailDto> => {

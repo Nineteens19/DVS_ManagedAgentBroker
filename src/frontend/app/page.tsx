@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   AlertTriangle,
   ArrowRight,
+  Edit3,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -252,6 +253,7 @@ export default function DashboardPage() {
                 <th className="py-2.5 px-3">สาขา</th>
                 <th className="py-2.5 px-3">สถานะ</th>
                 <th className="py-2.5 px-3">SLA / รหัสตัวแทน</th>
+                <th className="py-2.5 px-3 text-right">การดำเนินการ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#DEE2E6]/60 text-sm">
@@ -279,6 +281,30 @@ export default function DashboardPage() {
                       </span>
                     ) : (
                       <SlaCountdownBadge status={app.status} daysRemaining={app.slaDaysRemaining} />
+                    )}
+                  </td>
+                  <td className="py-3 px-3 text-right">
+                    {app.status === 'Draft' || app.status === 'DeficiencyPendingBranch' ? (
+                      <Link
+                        href={`/intake/new?id=${app.id}`}
+                        className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-[#012169] text-white hover:bg-[#001a52] text-xs font-semibold shadow-xs transition-colors"
+                        title="เปิดแก้ไขและยื่นต่อ"
+                      >
+                        <Edit3 className="w-3.5 h-3.5 mr-1" />
+                        <span>แก้ไข / ยื่นต่อ</span>
+                      </Link>
+                    ) : (
+                      <span className="text-[11px] text-[#6C757D]">
+                        {app.status === 'Submitted' || app.status === 'PendingHeadOfficeReview'
+                          ? 'รอ สนญ. ตรวจ'
+                          : app.status === 'PendingExecutiveApproval'
+                          ? 'รอ MD อนุมัติ'
+                          : app.status === 'ReviewPremium' || app.status === 'CoreAutoProvisioning'
+                          ? 'รอตั้งวงเงิน'
+                          : app.status === 'ActiveTemporary'
+                          ? 'รอส่งสัญญา'
+                          : 'สมบูรณ์'}
+                      </span>
                     )}
                   </td>
                 </tr>

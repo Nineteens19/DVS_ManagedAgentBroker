@@ -7,20 +7,20 @@ This plan defines the Non-Functional Requirements (NFR) for **Unit 6: Next.js En
 
 ## Execution Checklist (Part 1: Planning)
 
-- [ ] **Step 1: Define Performance & Responsiveness Targets (`nfr-requirements.md`)**
-  - [ ] First Contentful Paint (FCP) $< 1.2$s, Time to Interactive (TTI) $< 2.0$s
-  - [ ] TanStack Query client caching, optimistic UI transitions, and pagination
-  - [ ] Debounced search inputs and lazy-loaded modals
+- [x] **Step 1: Define Performance & Responsiveness Targets (`nfr-requirements.md`)**
+  - [x] First Contentful Paint (FCP) $< 1.2$s, Time to Interactive (TTI) $< 2.0$s
+  - [x] TanStack Query client caching, optimistic UI transitions, and pagination
+  - [x] Debounced search inputs and lazy-loaded modals
 
-- [ ] **Step 2: Define Client Security & PII Protection Baselines (`nfr-requirements.md`)**
-  - [ ] In-browser PII masking (National ID / Bank Account Number masking `1-1004-XXXXX-XX-3` on public views)
-  - [ ] Anti-spoofing client-side Magic Byte binary header inspection
-  - [ ] Secure JWT token lifecycle and automatic token refresh interceptor
+- [x] **Step 2: Define Client Security & PII Protection Baselines (`nfr-requirements.md`)**
+  - [x] In-browser PII masking (National ID / Bank Account Number masking `1-1004-XXXXX-XX-3` on public views)
+  - [x] Anti-spoofing client-side Magic Byte binary header inspection
+  - [x] Secure JWT token lifecycle and automatic token refresh interceptor
 
-- [ ] **Step 3: Define Usability, Theme & Typography Standards (`nfr-requirements.md`)**
-  - [ ] Modern Enterprise Glassmorphic Theme (Dark/Light mode support)
-  - [ ] Thai-English bilingual typography with Sarabun / Prompt / Inter font families
-  - [ ] Toast notification engine with auto-dismiss and accessibility ARIA labels
+- [x] **Step 3: Define Usability, Theme & Typography Standards (`nfr-requirements.md`)**
+  - [x] Modern Enterprise Glassmorphic Theme (Dark/Light mode support)
+  - [x] Thai-English bilingual typography with Sarabun / Prompt / Inter font families
+  - [x] Toast notification engine with auto-dismiss and accessibility ARIA labels
 
 ---
 
@@ -39,7 +39,7 @@ B) Standard Flat Corporate: ใช้ดีไซน์แบบธรรมด�
 
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A
 
 ---
 
@@ -54,6 +54,6 @@ B) แสดงผลแบบเต็ม 13 หลักตลอดเวล�
 
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A
 
 ---

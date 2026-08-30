@@ -8,6 +8,7 @@ import { DataTable, Column } from '../../components/ui/DataTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { SlaCountdownBadge } from '../../components/ui/SlaCountdownBadge';
 import { Modal } from '../../components/ui/Modal';
+import { ApplicationDetailModal } from '../../components/ui/ApplicationDetailModal';
 import { useToast } from '../../context/ToastContext';
 import {
   Archive,
@@ -15,6 +16,7 @@ import {
   CheckCircle2,
   ShieldCheck,
   Check,
+  Eye,
 } from 'lucide-react';
 
 export default function ArchivePage() {
@@ -25,6 +27,9 @@ export default function ArchivePage() {
   const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
   const [boxNumber, setBoxNumber] = useState('');
   const [auditorNotes, setAuditorNotes] = useState('');
+
+  const [detailApp, setDetailApp] = useState<AgentApplicationDetailDto | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const { data: applications = [] } = useQuery({
     queryKey: ['applications'],
@@ -57,6 +62,14 @@ export default function ArchivePage() {
       });
     },
   });
+
+  const handleRowClick = async (appId: string) => {
+    const detail = await apiClient.getApplicationById(appId);
+    if (detail) {
+      setDetailApp(detail);
+      setIsDetailModalOpen(true);
+    }
+  };
 
   const handleOpenArchive = (app: ApplicationListItemDto) => {
     setSelectedAppId(app.id);
@@ -97,27 +110,39 @@ export default function ArchivePage() {
     {
       header: 'การจัดเก็บสัญญา',
       cell: (row) => (
-        <button
-          onClick={() => handleOpenArchive(row)}
-          disabled={row.status === 'ActivePermanent'}
-          className={`inline-flex items-center space-x-1 !h-7 !px-2.5 !py-0 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all ${
-            row.status === 'ActivePermanent'
-              ? 'bg-green-50 text-green-700 border border-green-200 cursor-default'
-              : 'btn-primary shadow-xs'
-          }`}
-        >
-          <Box className="w-3 h-3" />
-          <span>
-            {row.status === 'ActivePermanent' ? (
-              <>
-                <Check className="w-3 h-3 mr-0.5 inline" />
-                <span>จัดเก็บแล้ว</span>
-              </>
-            ) : (
-              <span>ลงทะเบียนจัดเก็บกล่อง</span>
-            )}
-          </span>
-        </button>
+        <div className="inline-flex items-center space-x-1.5 justify-end" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={() => handleRowClick(row.id)}
+            className="btn-outline !h-7 !px-2.5 !py-0 text-[11px] whitespace-nowrap inline-flex items-center space-x-1"
+            title="ดูรายละเอียดฉบับเต็ม"
+          >
+            <Eye className="w-3 h-3" />
+            <span>ดูข้อมูล</span>
+          </button>
+
+          <button
+            onClick={() => handleOpenArchive(row)}
+            disabled={row.status === 'ActivePermanent'}
+            className={`inline-flex items-center space-x-1 !h-7 !px-2.5 !py-0 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all ${
+              row.status === 'ActivePermanent'
+                ? 'bg-green-50 text-green-700 border border-green-200 cursor-default'
+                : 'btn-primary shadow-xs'
+            }`}
+          >
+            <Box className="w-3 h-3" />
+            <span>
+              {row.status === 'ActivePermanent' ? (
+                <>
+                  <Check className="w-3 h-3 mr-0.5 inline" />
+                  <span>จัดเก็บแล้ว</span>
+                </>
+              ) : (
+                <span>ลงทะเบียนจัดเก็บกล่อง</span>
+              )}
+            </span>
+          </button>
+        </div>
       ),
     },
   ];
@@ -135,7 +160,7 @@ export default function ArchivePage() {
               ฝ่ายกฎหมาย: ตรวจรับและจัดเก็บเอกสารสัญญาตัวจริง (Physical Contract Archiving)
             </h2>
             <p className="text-xs text-[#6C757D] mt-0.5">
-              ลงทะเบียนกล่องจัดเก็บเอกสาร (Archive Box) เพื่ออัปเกรดสถานะเป็น Active Permanent และปลดล็อก SLA 30 วัน
+              คลิกแถวเพื่อดูเอกสารสัญญา หรือลงทะเบียนกล่องจัดเก็บเอกสาร (Archive Box) เพื่อเปิดสิทธิ์ถาวร
             </p>
           </div>
         </div>
@@ -144,10 +169,11 @@ export default function ArchivePage() {
         </div>
       </div>
 
-      {/* Archive Queue Table */}
+      {/* Archive Queue Table (Click Row to View Full Details) */}
       <DataTable
         data={archiveList}
         columns={columns}
+        onRowClick={(row) => handleRowClick(row.id)}
         searchPlaceholder="ค้นหาตามเลขที่ใบสมัคร, รหัสตัวแทน, สาขา..."
       />
 
@@ -250,6 +276,13 @@ export default function ArchivePage() {
           <div className="py-8 text-center text-xs text-gray-500">กำลังโหลดข้อมูล...</div>
         )}
       </Modal>
+
+      {/* Full Detail Modal */}
+      <ApplicationDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        application={detailApp}
+      />
     </div>
   );
 }

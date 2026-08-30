@@ -1,21 +1,26 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../../services/apiClient';
-import { ApplicationListItemDto } from '../../types/domain';
+import { ApplicationListItemDto, AgentApplicationDetailDto } from '../../types/domain';
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { SlaCountdownBadge } from '../../components/ui/SlaCountdownBadge';
+import { ApplicationDetailModal } from '../../components/ui/ApplicationDetailModal';
 import {
   Clock,
   AlertTriangle,
   AlertOctagon,
   ShieldCheck,
   Activity,
+  Eye,
 } from 'lucide-react';
 
 export default function SlaDashboardPage() {
+  const [detailApp, setDetailApp] = useState<AgentApplicationDetailDto | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
   const { data: metrics } = useQuery({
     queryKey: ['slaMetrics'],
     queryFn: () => apiClient.getSlaMetrics(),
@@ -33,6 +38,14 @@ export default function SlaDashboardPage() {
       app.status === 'Terminated90D' ||
       app.status === 'ActivePermanent'
   );
+
+  const handleRowClick = async (appId: string) => {
+    const detail = await apiClient.getApplicationById(appId);
+    if (detail) {
+      setDetailApp(detail);
+      setIsDetailModalOpen(true);
+    }
+  };
 
   const columns: Column<ApplicationListItemDto>[] = [
     {
@@ -69,6 +82,22 @@ export default function SlaDashboardPage() {
         />
       ),
     },
+    {
+      header: 'การดำเนินการ',
+      cell: (row) => (
+        <div className="text-right" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={() => handleRowClick(row.id)}
+            className="btn-outline !h-7 !px-2.5 !py-0 text-[11px] whitespace-nowrap inline-flex items-center space-x-1"
+            title="ดูรายละเอียดฉบับเต็ม"
+          >
+            <Eye className="w-3 h-3" />
+            <span>ดูข้อมูล</span>
+          </button>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -84,7 +113,7 @@ export default function SlaDashboardPage() {
               SLA Dashboard & Background Suspension Monitor
             </h2>
             <p className="text-xs text-[#6C757D] mt-0.5">
-              ระบบตรวจสอบ SLA ผ่อนผันส่งสัญญาฉบับจริง 30 วัน และกลไก Daemon ระงับสิทธิ์ชั่วคราวอัตโนมัติ
+              คลิกแถวเพื่อดูรายละเอียดสัญญา ระบบตรวจสอบ SLA ผ่อนผันส่งสัญญาฉบับจริง 30 วัน และกลไก Daemon ระงับสิทธิ์ชั่วคราวอัตโนมัติ
             </p>
           </div>
         </div>
@@ -141,11 +170,19 @@ export default function SlaDashboardPage() {
         </div>
       </div>
 
-      {/* SLA Monitored Table */}
+      {/* SLA Monitored Table (Click Row to View Full Details) */}
       <DataTable
         data={slaTrackedList}
         columns={columns}
+        onRowClick={(row) => handleRowClick(row.id)}
         searchPlaceholder="ค้นหาตามเลขที่ใบสมัคร, รหัสตัวแทน, สาขา..."
+      />
+
+      {/* Full Detail Modal */}
+      <ApplicationDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        application={detailApp}
       />
     </div>
   );

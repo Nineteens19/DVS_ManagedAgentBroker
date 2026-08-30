@@ -3,16 +3,11 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../../services/apiClient';
-import { ApplicationListItemDto } from '../../types/domain';
+import { ApplicationListItemDto, AgentApplicationDetailDto } from '../../types/domain';
 import { DataTable, Column } from '../../components/ui/DataTable';
-
-interface ProvisionResultDto {
-  agentCode: string;
-  sourceCode: string;
-  syncResults: { system: string; status: string; systemRecordId: string }[];
-}
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { Modal } from '../../components/ui/Modal';
+import { ApplicationDetailModal } from '../../components/ui/ApplicationDetailModal';
 import { useToast } from '../../context/ToastContext';
 import {
   Server,
@@ -23,7 +18,14 @@ import {
   ArrowRight,
   ShieldCheck,
   Check,
+  Eye,
 } from 'lucide-react';
+
+interface ProvisionResultDto {
+  agentCode: string;
+  sourceCode: string;
+  syncResults: { system: string; status: string; systemRecordId: string }[];
+}
 
 export default function ProvisioningPage() {
   const queryClient = useQueryClient();
@@ -33,6 +35,9 @@ export default function ProvisioningPage() {
   const [isProvisionModalOpen, setIsProvisionModalOpen] = useState(false);
   const [approvedCreditLimit, setApprovedCreditLimit] = useState<number>(500000);
   const [commissionPercentage, setCommissionPercentage] = useState<number>(12.0);
+
+  const [detailApp, setDetailApp] = useState<AgentApplicationDetailDto | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const [provisionResult, setProvisionResult] = useState<ProvisionResultDto | null>(null);
 
@@ -78,6 +83,14 @@ export default function ProvisioningPage() {
       });
     },
   });
+
+  const handleRowClick = async (appId: string) => {
+    const detail = await apiClient.getApplicationById(appId);
+    if (detail) {
+      setDetailApp(detail);
+      setIsDetailModalOpen(true);
+    }
+  };
 
   const handleOpenProvision = (app: ApplicationListItemDto) => {
     setSelectedApp(app);
@@ -145,27 +158,39 @@ export default function ProvisioningPage() {
     {
       header: 'การทำงาน',
       cell: (row) => (
-        <button
-          onClick={() => handleOpenProvision(row)}
-          disabled={row.status === 'ActiveTemporary'}
-          className={`inline-flex items-center space-x-1 !h-7 !px-2.5 !py-0 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all ${
-            row.status === 'ActiveTemporary'
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
-              : 'btn-primary shadow-xs'
-          }`}
-        >
-          <Zap className="w-3 h-3" />
-          <span>
-            {row.status === 'ActiveTemporary' ? (
-              <>
-                <Check className="w-3 h-3 mr-0.5 inline" />
-                <span>Provisioned</span>
-              </>
-            ) : (
-              <span>ตั้งวงเงิน & ยิง Core</span>
-            )}
-          </span>
-        </button>
+        <div className="inline-flex items-center space-x-1.5 justify-end" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={() => handleRowClick(row.id)}
+            className="btn-outline !h-7 !px-2.5 !py-0 text-[11px] whitespace-nowrap inline-flex items-center space-x-1"
+            title="ดูรายละเอียดฉบับเต็ม"
+          >
+            <Eye className="w-3 h-3" />
+            <span>ดูข้อมูล</span>
+          </button>
+
+          <button
+            onClick={() => handleOpenProvision(row)}
+            disabled={row.status === 'ActiveTemporary'}
+            className={`inline-flex items-center space-x-1 !h-7 !px-2.5 !py-0 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all ${
+              row.status === 'ActiveTemporary'
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+                : 'btn-primary shadow-xs'
+            }`}
+          >
+            <Zap className="w-3 h-3" />
+            <span>
+              {row.status === 'ActiveTemporary' ? (
+                <>
+                  <Check className="w-3 h-3 mr-0.5 inline" />
+                  <span>Provisioned</span>
+                </>
+              ) : (
+                <span>ตั้งวงเงิน & ยิง Core</span>
+              )}
+            </span>
+          </button>
+        </div>
       ),
     },
   ];
@@ -183,7 +208,7 @@ export default function ProvisioningPage() {
               ฝ่ายสินเชื่อ: กำหนดวงเงิน & 100% Core Auto-Provisioning
             </h2>
             <p className="text-xs text-[#6C757D] mt-0.5">
-              สร้าง Agent Code / Source Code ผ่าน Deves Master และ Sync ข้อมูลไปยัง AS400, APAR, SAP, PCSDIS อัตโนมัติ
+              คลิกแถวเพื่อดูเอกสาร หรือตั้งค่าวงเงินและ Sync ข้อมูลไปยัง AS400, APAR, SAP, PCSDIS อัตโนมัติ
             </p>
           </div>
         </div>
@@ -192,10 +217,11 @@ export default function ProvisioningPage() {
         </div>
       </div>
 
-      {/* Queue Table */}
+      {/* Queue Table (Click Row to View Full Details) */}
       <DataTable
         data={provisioningQueue}
         columns={columns}
+        onRowClick={(row) => handleRowClick(row.id)}
         searchPlaceholder="ค้นหาตามเลขที่ใบสมัคร หรือ รหัสตัวแทน..."
       />
 
@@ -328,6 +354,13 @@ export default function ProvisioningPage() {
           <div className="py-8 text-center text-xs text-gray-500">กำลังโหลดข้อมูล...</div>
         )}
       </Modal>
+
+      {/* Full Detail Modal */}
+      <ApplicationDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        application={detailApp}
+      />
     </div>
   );
 }

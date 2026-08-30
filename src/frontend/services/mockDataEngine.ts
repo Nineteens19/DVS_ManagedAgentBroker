@@ -1,18 +1,18 @@
 import { AgentApplicationDetailDto, ApplicationListItemDto, SlaDashboardMetricsDto, ApplicationStatus } from '../types/domain';
 
 export const STATUS_LABELS_TH: Record<ApplicationStatus, string> = {
-  Draft: 'แบบร่าง (Draft)',
-  Submitted: 'ยื่นใบสมัครแล้ว (Submitted)',
-  PendingHeadOfficeReview: 'สนญ. กำลังตรวจสอบ (Under Review)',
-  DeficiencyPendingBranch: 'ส่งกลับแก้ไขเอกสาร (Deficiency)',
-  PendingExecutiveApproval: 'รอผู้บริหารอนุมัติ (Pending MD)',
-  ExecutiveRejected: 'ไม่อนุมัติ (Rejected)',
-  ReviewPremium: 'อนุมัติแล้ว/รอตั้งวงเงิน (Review Premium)',
-  CoreAutoProvisioning: 'กำลังสร้างรหัสใน Core System',
-  ActiveTemporary: 'เปิดสิทธิ์ชั่วคราว (30D SLA Active)',
-  Suspended30D: 'ระงับสิทธิ์ชั่วคราว (Auto-Suspended 30D)',
-  Terminated90D: 'เพิกถอนสิทธิ์ถาวร (Terminated 90D)',
-  ActivePermanent: 'เปิดสิทธิ์สมบูรณ์ถาวร (Active Permanent)',
+  Draft: 'แบบร่าง',
+  Submitted: 'ยื่นแล้ว',
+  PendingHeadOfficeReview: 'รอ สนญ. ตรวจ',
+  DeficiencyPendingBranch: 'ส่งกลับแก้ไข',
+  PendingExecutiveApproval: 'รอ MD อนุมัติ',
+  ExecutiveRejected: 'ไม่อนุมัติ',
+  ReviewPremium: 'รอตั้งวงเงิน',
+  CoreAutoProvisioning: 'กำลัง Sync Core',
+  ActiveTemporary: 'Active ชั่วคราว (30D)',
+  Suspended30D: 'ระงับสิทธิ์ (SLA)',
+  Terminated90D: 'เพิกถอนสิทธิ์',
+  ActivePermanent: 'Active ถาวร',
 };
 
 let MOCK_APPLICATIONS: AgentApplicationDetailDto[] = [

@@ -7,7 +7,6 @@ import { apiClient } from '../services/apiClient';
 import { useAuth } from '../context/AuthContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { SlaCountdownBadge } from '../components/ui/SlaCountdownBadge';
-import { PiiMaskedField } from '../components/ui/PiiMaskedField';
 import { ApplicationDetailModal } from '../components/ui/ApplicationDetailModal';
 import { AgentApplicationDetailDto } from '../types/domain';
 import {
@@ -250,98 +249,105 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 4. Recent Applications Table */}
-      <div className="deves-card p-6 space-y-4">
+      {/* 4. Streamlined 5-Column Recent Applications Table (100% Fit Single Screen - Zero Scrollbar) */}
+      <div className="deves-card p-5 space-y-3">
         <div className="flex items-center justify-between pb-2 border-b border-[#DEE2E6]">
           <div>
-            <h3 className="text-sm font-bold text-[#012169]">รายการใบสมัครล่าสุดในระบบ (Recent Applications)</h3>
-            <p className="text-[11px] text-[#6C757D]">คลิกที่แถวของรายการเพื่อเปิดดูรายละเอียดฉบับเต็มได้ทันที</p>
+            <h3 className="text-sm font-bold text-[#012169]">รายการใบสมัครล่าสุด (Recent Applications)</h3>
+            <p className="text-[11px] text-[#6C757D]">คลิกที่แถวเพื่อดูรายละเอียดฉบับเต็ม</p>
           </div>
           <span className="text-xs text-[#6C757D] font-mono">{applications.length} รายการ</span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="border-b border-[#DEE2E6] bg-[#F8F9FA] text-[11px] text-[#6C757D] font-semibold uppercase whitespace-nowrap">
-                <th className="py-3 px-3">เลขที่ใบสมัคร</th>
-                <th className="py-3 px-3">ชื่อผู้สมัคร</th>
-                <th className="py-3 px-3">เลขประจำตัว 13 หลัก</th>
-                <th className="py-3 px-3">สาขา</th>
-                <th className="py-3 px-3">สถานะ</th>
-                <th className="py-3 px-3">รหัส Agent / Source</th>
-                <th className="py-3 px-3 text-right">การดำเนินการ</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#DEE2E6]/60 text-sm">
-              {recentApplications.map((app) => (
-                <tr
-                  key={app.id}
-                  onClick={() => handleRowClick(app.id)}
-                  className="hover:bg-blue-50/40 transition-colors whitespace-nowrap cursor-pointer group"
-                >
-                  <td className="py-3 px-3 font-mono font-bold text-[#012169] group-hover:underline">
+        <table className="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr className="border-b border-[#DEE2E6] bg-[#F8F9FA] text-[11px] text-[#6C757D] font-semibold uppercase">
+              <th className="py-2.5 px-3 w-[22%]">เลขที่ใบสมัคร</th>
+              <th className="py-2.5 px-3 w-[30%]">ชื่อผู้สมัคร / สาขา</th>
+              <th className="py-2.5 px-3 w-[20%]">รหัส Agent / Source</th>
+              <th className="py-2.5 px-3 w-[15%]">สถานะ</th>
+              <th className="py-2.5 px-3 w-[13%] text-right">การดำเนินการ</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#DEE2E6]/60 text-xs">
+            {recentApplications.map((app) => (
+              <tr
+                key={app.id}
+                onClick={() => handleRowClick(app.id)}
+                className="hover:bg-blue-50/40 transition-colors cursor-pointer group"
+              >
+                {/* 1. Application Number */}
+                <td className="py-3 px-3">
+                  <span className="font-mono font-bold text-[#012169] group-hover:underline block">
                     {app.applicationNumber}
-                  </td>
-                  <td className="py-3 px-3 font-semibold text-[#212529]">
+                  </span>
+                  <span className="text-[10px] text-[#6C757D]">
+                    {new Date(app.createdAt).toLocaleDateString('th-TH')}
+                  </span>
+                </td>
+
+                {/* 2. Applicant Name & Branch Subtitle */}
+                <td className="py-3 px-3">
+                  <span className="font-semibold text-[#212529] block">
                     {app.applicantName}
-                  </td>
-                  <td className="py-3 px-3" onClick={(e) => e.stopPropagation()}>
-                    <PiiMaskedField value={app.nationalIdOrTaxId} />
-                  </td>
-                  <td className="py-3 px-3 text-[#6C757D]">
+                  </span>
+                  <span className="text-[11px] text-[#6C757D]">
                     {app.branchName}
-                  </td>
-                  <td className="py-3 px-3">
-                    <StatusBadge status={app.status} />
-                  </td>
-                  <td className="py-3 px-3">
-                    {app.agentCode ? (
-                      <div className="flex flex-col space-y-0.5">
-                        <span className="font-mono text-xs font-bold text-[#012169] bg-[#012169]/5 px-2 py-0.5 rounded border border-[#012169]/15 inline-block">
-                          Agent: {app.agentCode}
+                  </span>
+                </td>
+
+                {/* 3. Agent / Source Code or SLA */}
+                <td className="py-3 px-3">
+                  {app.agentCode ? (
+                    <div>
+                      <span className="font-mono text-xs font-bold text-[#012169] bg-[#012169]/5 px-1.5 py-0.5 rounded border border-[#012169]/15 inline-block">
+                        {app.agentCode}
+                      </span>
+                      {app.sourceCode && (
+                        <span className="font-mono text-[10px] text-[#6C757D] block mt-0.5">
+                          {app.sourceCode}
                         </span>
-                        {app.sourceCode && (
-                          <span className="font-mono text-[11px] text-[#6C757D]">
-                            Src: {app.sourceCode}
-                          </span>
-                        )}
-                      </div>
+                      )}
+                    </div>
+                  ) : (
+                    <SlaCountdownBadge status={app.status} daysRemaining={app.slaDaysRemaining} />
+                  )}
+                </td>
+
+                {/* 4. Concise Status Badge */}
+                <td className="py-3 px-3">
+                  <StatusBadge status={app.status} />
+                </td>
+
+                {/* 5. Compact Action */}
+                <td className="py-3 px-3 text-right" onClick={(e) => e.stopPropagation()}>
+                  <div className="inline-flex items-center space-x-1.5 justify-end">
+                    {app.status === 'Draft' || app.status === 'DeficiencyPendingBranch' ? (
+                      <Link
+                        href={`/intake/new?id=${app.id}`}
+                        className="btn-primary !h-7 !px-2.5 !py-0 text-[11px] whitespace-nowrap inline-flex items-center space-x-1 shadow-xs"
+                        title="เปิดแก้ไขและยื่นต่อ"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                        <span>แก้ไข / ยื่นต่อ</span>
+                      </Link>
                     ) : (
-                      <SlaCountdownBadge status={app.status} daysRemaining={app.slaDaysRemaining} />
-                    )}
-                  </td>
-                  <td className="py-3 px-3 text-right" onClick={(e) => e.stopPropagation()}>
-                    <div className="inline-flex items-center space-x-1.5 justify-end">
-                      {/* View Details Button */}
                       <button
                         type="button"
                         onClick={() => handleRowClick(app.id)}
-                        className="btn-outline !h-8 !px-2.5 !py-0 text-xs whitespace-nowrap inline-flex items-center space-x-1"
+                        className="btn-outline !h-7 !px-2.5 !py-0 text-[11px] whitespace-nowrap inline-flex items-center space-x-1"
                         title="ดูรายละเอียดฉบับเต็ม"
                       >
-                        <Eye className="w-3.5 h-3.5" />
+                        <Eye className="w-3 h-3" />
                         <span>ดูข้อมูล</span>
                       </button>
-
-                      {/* Edit / Continue button for Draft / Deficiency */}
-                      {(app.status === 'Draft' || app.status === 'DeficiencyPendingBranch') && (
-                        <Link
-                          href={`/intake/new?id=${app.id}`}
-                          className="btn-primary !h-8 !px-3 !py-0 text-xs whitespace-nowrap inline-flex items-center space-x-1 shadow-xs"
-                          title="เปิดแก้ไขและยื่นต่อ"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                          <span>แก้ไข / ยื่นต่อ</span>
-                        </Link>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* 5. Comprehensive Application Detail Modal */}

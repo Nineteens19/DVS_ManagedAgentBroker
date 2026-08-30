@@ -3,15 +3,21 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../../services/apiClient';
-import { useToast } from '../../context/ToastContext';
-import { ApplicationListItemDto } from '../../types/domain';
+import { ApplicationListItemDto, AgentApplicationDetailDto } from '../../types/domain';
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { SlaCountdownBadge } from '../../components/ui/SlaCountdownBadge';
 import { Modal } from '../../components/ui/Modal';
-import { Archive, Box, FileCheck, ShieldCheck, Check } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import {
+  Archive,
+  Box,
+  CheckCircle2,
+  ShieldCheck,
+  Check,
+} from 'lucide-react';
 
-export default function LegalArchivePage() {
+export default function ArchivePage() {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
 
@@ -25,61 +31,59 @@ export default function LegalArchivePage() {
     queryFn: () => apiClient.getApplications(),
   });
 
-  const { data: selectedApp } = useQuery({
-    queryKey: ['application', selectedAppId],
+  const archiveList = applications.filter(
+    (app) =>
+      app.status === 'ActiveTemporary' ||
+      app.status === 'Suspended30D' ||
+      app.status === 'ActivePermanent'
+  );
+
+  const { data: selectedApp } = useQuery<AgentApplicationDetailDto | null>({
+    queryKey: ['applicationDetail', selectedAppId],
     queryFn: () => (selectedAppId ? apiClient.getApplicationById(selectedAppId) : null),
     enabled: Boolean(selectedAppId),
   });
 
-  // Filter applications that need Hard-Copy Contract Archival (ActiveTemporary, Suspended30D, or ActivePermanent)
-  const archiveList = applications.filter(
-    (a) => a.status === 'ActiveTemporary' || a.status === 'Suspended30D' || a.status === 'ActivePermanent'
-  );
-
-  // Mutation: Archive Physical Hard-Copy Contract
   const archiveMutation = useMutation({
-    mutationFn: () => apiClient.archivePhysicalContract(selectedAppId!, boxNumber, auditorNotes),
-    onSuccess: (updated) => {
+    mutationFn: (data: { applicationId: string; boxNumber: string; notes?: string }) =>
+      apiClient.archivePhysicalContract(data.applicationId, data.boxNumber, data.notes),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['applications'] });
       setIsArchiveModalOpen(false);
-      setBoxNumber('');
-      setAuditorNotes('');
       showToast({
         type: 'success',
-        title: 'จัดเก็บสัญญาฉบับจริงสำเร็จ (Active Permanent)',
-        message: `ลงทะเบียนกล่อง ${updated.physicalContractRecord?.archiveBoxNumber} และปลดล็อกสิทธิ์เป็นตัวแทนถาวรเรียบร้อยแล้ว`,
+        title: 'จัดเก็บสัญญาตัวจริงสำเร็จ (Active Permanent)',
+        message: 'ปลดล็อกสถานะถาวรและยกเลิกการนับถอยหลัง 30 วัน SLA อัตโนมัติเรียบร้อยแล้ว',
       });
     },
   });
 
   const handleOpenArchive = (app: ApplicationListItemDto) => {
     setSelectedAppId(app.id);
-    const suggestedBox = `BOX-${new Date().getFullYear()}-${app.branchCode}-${String(Math.floor(Math.random() * 900) + 100)}`;
-    setBoxNumber(suggestedBox);
-    setAuditorNotes('ตรวจรับเอกสารสัญญาต้นฉบับ ลายมือชื่อ และเอกสารค้ำประกันครบถ้วน');
+    setBoxNumber(`BOX-2026-HQ-${String(Math.floor(Math.random() * 900) + 100)}`);
+    setAuditorNotes('ตรวจรับสัญญาฉบับจริงพร้อมสำเนาบัตรประชาชนและหนังสือค้ำประกันครบถ้วน');
     setIsArchiveModalOpen(true);
   };
 
   const columns: Column<ApplicationListItemDto>[] = [
     {
-      header: 'เลขที่ใบสมัคร / รหัสตัวแทน',
+      header: 'เลขที่ใบสมัคร / รหัส Agent',
       cell: (row) => (
-        <div className="font-mono text-xs">
-          <span className="font-bold text-primary block">{row.applicationNumber}</span>
-          <span className="text-green-700 font-semibold">{row.agentCode || '-'}</span>
+        <div>
+          <span className="font-mono font-bold text-[#012169] block">{row.applicationNumber}</span>
+          <span className="font-mono text-xs text-green-700 font-semibold">{row.agentCode || '-'}</span>
         </div>
       ),
     },
     {
-      header: 'ชื่อตัวแทน / นายหน้า',
-      accessorKey: 'applicantName',
+      header: 'ชื่อตัวแทน / สาขา',
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-900">{row.applicantName}</span>,
-    },
-    {
-      header: 'สาขา',
-      accessorKey: 'branchName',
-      sortable: true,
+      cell: (row) => (
+        <div>
+          <span className="font-semibold text-[#212529] block">{row.applicantName}</span>
+          <span className="text-[11px] text-[#6C757D]">{row.branchName}</span>
+        </div>
+      ),
     },
     {
       header: 'สถานะ SLA ปัจจุบัน',
@@ -96,17 +100,17 @@ export default function LegalArchivePage() {
         <button
           onClick={() => handleOpenArchive(row)}
           disabled={row.status === 'ActivePermanent'}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+          className={`inline-flex items-center space-x-1 !h-7 !px-2.5 !py-0 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all ${
             row.status === 'ActivePermanent'
               ? 'bg-green-50 text-green-700 border border-green-200 cursor-default'
-              : 'bg-primary text-white hover:bg-primary-light shadow-sm'
+              : 'btn-primary shadow-xs'
           }`}
         >
-          <Box className="w-3.5 h-3.5" />
-          <span className="flex items-center space-x-1">
+          <Box className="w-3 h-3" />
+          <span>
             {row.status === 'ActivePermanent' ? (
               <>
-                <Check className="w-3.5 h-3.5 mr-1 inline" />
+                <Check className="w-3 h-3 mr-0.5 inline" />
                 <span>จัดเก็บแล้ว</span>
               </>
             ) : (
@@ -119,24 +123,24 @@ export default function LegalArchivePage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Title Bar */}
-      <div className="p-5 rounded-xl bg-white border border-gray-200 shadow-card flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="p-2.5 rounded-lg bg-blue-50 text-primary">
+      <div className="deves-card p-5 flex items-center justify-between">
+        <div className="flex items-center space-x-3.5">
+          <div className="p-2.5 rounded-lg bg-[#012169]/10 text-[#012169] flex-shrink-0">
             <Archive className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-gray-900">
-              ฝ่ายกฎหมาย: จัดเก็บเอกสารสัญญาตัวจริง (Legal Contract Archive)
+            <h2 className="text-base font-bold text-[#212529]">
+              ฝ่ายกฎหมาย: ตรวจรับและจัดเก็บเอกสารสัญญาตัวจริง (Physical Contract Archiving)
             </h2>
-            <p className="text-xs text-gray-500">
-              ตรวจรับต้นฉบับสัญญาตัวจริงจากสาขา ลงทะเบียนกล่องจัดเก็บ และปลดล็อกสิทธิ์ Active Permanent สมบูรณ์
+            <p className="text-xs text-[#6C757D] mt-0.5">
+              ลงทะเบียนกล่องจัดเก็บเอกสาร (Archive Box) เพื่ออัปเกรดสถานะเป็น Active Permanent และปลดล็อก SLA 30 วัน
             </p>
           </div>
         </div>
-        <div className="text-xs text-primary font-bold bg-blue-50 px-3.5 py-1.5 rounded-lg border border-blue-200">
-          รอจัดเก็บสัญญา: {archiveList.filter((a) => a.status !== 'ActivePermanent').length} รายการ
+        <div className="text-xs text-[#012169] font-bold bg-[#012169]/5 px-3 py-1.5 rounded-lg border border-[#012169]/15 whitespace-nowrap">
+          รอจัดเก็บสัญญา: {archiveList.filter((q) => q.status === 'ActiveTemporary').length} รายการ
         </div>
       </div>
 
@@ -218,19 +222,27 @@ export default function LegalArchivePage() {
               <button
                 type="button"
                 onClick={() => setIsArchiveModalOpen(false)}
-                className="px-4 py-2 rounded-lg text-xs text-gray-700 hover:bg-gray-100 border border-gray-300"
+                className="btn-outline text-xs !h-9"
               >
                 ยกเลิก
               </button>
 
               <button
                 type="button"
-                onClick={() => archiveMutation.mutate()}
+                onClick={() =>
+                  archiveMutation.mutate({
+                    applicationId: selectedApp.id,
+                    boxNumber,
+                    notes: auditorNotes,
+                  })
+                }
                 disabled={archiveMutation.isPending || !boxNumber.trim()}
-                className="flex items-center space-x-2 px-6 py-2.5 rounded-lg text-xs font-bold text-white bg-green-600 hover:bg-green-700 shadow-md disabled:opacity-50 transition-all"
+                className="btn-primary text-xs !h-9 inline-flex items-center space-x-2 shadow-md disabled:opacity-40"
               >
-                <FileCheck className="w-4 h-4" />
-                <span>{archiveMutation.isPending ? 'กำลังบันทึก...' : 'ยืนยันจัดเก็บเอกสารสัญญาตัวจริง'}</span>
+                <CheckCircle2 className="w-4 h-4" />
+                <span>
+                  {archiveMutation.isPending ? 'กำลังบันทึกจัดเก็บ...' : 'บันทึกจัดเก็บ & เปิดสิทธิ์ถาวร'}
+                </span>
               </button>
             </div>
           </div>

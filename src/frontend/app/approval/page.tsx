@@ -3,63 +3,72 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../../services/apiClient';
-import { useToast } from '../../context/ToastContext';
 import { ApplicationListItemDto } from '../../types/domain';
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
-import { PiiMaskedField } from '../../components/ui/PiiMaskedField';
 import { Modal } from '../../components/ui/Modal';
-import { CheckCircle2, XCircle, AlertTriangle, ShieldAlert, Award } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import {
+  Award,
+  CheckCircle2,
+  XCircle,
+  ShieldAlert,
+  FileCheck,
+} from 'lucide-react';
 
-export default function ExecutiveApprovalPage() {
+export default function ApprovalPage() {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
 
   const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [decisionNotes, setDecisionNotes] = useState('');
+  const [decisionNotes, setDecisionNotes] = useState('อนุมัติตามวงเงินและเงื่อนไขที่เสนอ');
 
   const { data: applications = [] } = useQuery({
     queryKey: ['applications'],
     queryFn: () => apiClient.getApplications(),
   });
 
-  const { data: selectedApp } = useQuery({
-    queryKey: ['application', selectedAppId],
-    queryFn: () => (selectedAppId ? apiClient.getApplicationById(selectedAppId) : null),
-    enabled: Boolean(selectedAppId),
-  });
+  const approvalQueue = applications.filter(
+    (app) =>
+      app.status === 'PendingExecutiveApproval' ||
+      app.status === 'ReviewPremium' ||
+      app.status === 'ExecutiveRejected'
+  );
 
-  // Filter applications waiting for Executive Approval
-  const pendingApprovalList = applications.filter((a) => a.status === 'PendingExecutiveApproval');
+  const selectedApp = applications.find((a) => a.id === selectedAppId);
 
-  // Mutation: Process Executive Decision (Approve / Reject)
-  const decisionMutation = useMutation({
-    mutationFn: ({ isApproved, remarks }: { isApproved: boolean; remarks: string }) =>
-      apiClient.processExecutiveDecision(selectedAppId!, isApproved, remarks),
-    onSuccess: (updated, variables) => {
+  const approveMutation = useMutation({
+    mutationFn: (notes?: string) =>
+      apiClient.processExecutiveDecision(selectedAppId!, true, notes || 'อนุมัติตามที่เสนอ'),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['applications'] });
       setIsDecisionModalOpen(false);
-      setDecisionNotes('');
-      if (variables.isApproved) {
-        showToast({
-          type: 'success',
-          title: 'อนุมัติใบสมัครสำเร็จ (Approved)',
-          message: `ใบสมัครเลขที่ ${updated.applicationNumber} ได้รับการอนุมัติแล้ว ส่งต่อไปยังฝ่ายสินเชื่อเพื่อตั้งวงเงินและรหัสตัวแทน`,
-        });
-      } else {
-        showToast({
-          type: 'error',
-          title: 'ปฏิเสธใบสมัคร (Rejected)',
-          message: `ใบสมัครเลขที่ ${updated.applicationNumber} ถูกบันทึกสถานะไม่อนุมัติเรียบร้อยแล้ว`,
-        });
-      }
+      showToast({
+        type: 'success',
+        title: 'อนุมัติใบสมัครสำเร็จ (Approved)',
+        message: 'ใบสมัครถูกส่งต่อไปยังฝ่ายสินเชื่อเพื่อกำหนดวงเงินและสร้างรหัสตัวแทน',
+      });
+    },
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: (reason: string) =>
+      apiClient.processExecutiveDecision(selectedAppId!, false, reason || 'ปฏิเสธใบสมัคร'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      setIsDecisionModalOpen(false);
+      showToast({
+        type: 'error',
+        title: 'ปฏิเสธใบสมัครแล้ว (Rejected)',
+        message: 'สถานะใบสมัครถูกปรับเป็นปฏิเสธและแจ้งเตือนไปยังสาขาต้นสังกัด',
+      });
     },
   });
 
   const handleOpenDecision = (appId: string) => {
     setSelectedAppId(appId);
-    setDecisionNotes('อนุมัติตามวงเงินที่เสนอ');
+    setDecisionNotes('อนุมัติตามวงเงินและเงื่อนไขที่เสนอ');
     setIsDecisionModalOpen(true);
   };
 
@@ -68,21 +77,25 @@ export default function ExecutiveApprovalPage() {
       header: 'เลขที่ใบสมัคร',
       accessorKey: 'applicationNumber',
       sortable: true,
-      cell: (row) => <span className="font-mono font-bold text-primary">{row.applicationNumber}</span>,
+      cell: (row) => (
+        <div>
+          <span className="font-mono font-bold text-[#012169] block">{row.applicationNumber}</span>
+          <span className="text-[10px] text-[#6C757D]">{new Date(row.createdAt).toLocaleDateString('th-TH')}</span>
+        </div>
+      ),
     },
     {
-      header: 'ชื่อผู้สมัคร',
-      accessorKey: 'applicantName',
+      header: 'ชื่อผู้สมัคร / สาขา',
       sortable: true,
-      cell: (row) => <span className="font-semibold text-gray-900">{row.applicantName}</span>,
+      cell: (row) => (
+        <div>
+          <span className="font-semibold text-[#212529] block">{row.applicantName}</span>
+          <span className="text-[11px] text-[#6C757D]">{row.branchName}</span>
+        </div>
+      ),
     },
     {
-      header: 'เลขประจำตัว 13 หลัก',
-      accessorKey: 'nationalIdOrTaxId',
-      cell: (row) => <PiiMaskedField value={row.nationalIdOrTaxId} />,
-    },
-    {
-      header: 'วงเงินที่ขออนุมัติ (บาท)',
+      header: 'วงเงินที่ขอ (บาท)',
       accessorKey: 'requestedCreditLimit',
       sortable: true,
       cell: (row) => (
@@ -92,12 +105,12 @@ export default function ExecutiveApprovalPage() {
       ),
     },
     {
-      header: 'ความเสี่ยง / PEP Flag',
+      header: 'การคัดกรอง / PEP Flag',
       cell: (row) =>
         row.requiresDirectorApproval ? (
           <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
             <ShieldAlert className="w-3.5 h-3.5 mr-1 text-amber-700" />
-            PEP / ต้องระดับ MD
+            PEP / ระดับ MD
           </span>
         ) : (
           <span className="text-[11px] text-green-700 font-medium">ปกติ (Standard)</span>
@@ -113,9 +126,9 @@ export default function ExecutiveApprovalPage() {
       cell: (row) => (
         <button
           onClick={() => handleOpenDecision(row.id)}
-          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light shadow-sm transition-all"
+          className="btn-primary !h-7 !px-3 !py-0 text-[11px] whitespace-nowrap inline-flex items-center space-x-1 shadow-xs"
         >
-          <Award className="w-3.5 h-3.5" />
+          <Award className="w-3 h-3" />
           <span>พิจารณาอนุมัติ</span>
         </button>
       ),
@@ -123,32 +136,32 @@ export default function ExecutiveApprovalPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Title Bar */}
-      <div className="p-5 rounded-xl bg-white border border-gray-200 shadow-card flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="p-2.5 rounded-lg bg-blue-50 text-primary">
+      <div className="deves-card p-5 flex items-center justify-between">
+        <div className="flex items-center space-x-3.5">
+          <div className="p-2.5 rounded-lg bg-[#012169]/10 text-[#012169] flex-shrink-0">
             <Award className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-gray-900">
+            <h2 className="text-base font-bold text-[#212529]">
               ผู้บริหาร: คอนโซลพิจารณาอนุมัติใบสมัคร (Executive Decision Console)
             </h2>
-            <p className="text-xs text-gray-500">
-              อนุมัติใบสมัครตัวแทนและนายหน้าในระบบโดยตรง พร้อมการแจ้งเตือนอีเมลอัตโนมัติ
+            <p className="text-xs text-[#6C757D] mt-0.5">
+              อนุมัติใบสมัครตัวแทนและนายหน้าในระบบโดยตรง พร้อมส่งการแจ้งเตือนอีเมลอัตโนมัติ
             </p>
           </div>
         </div>
-        <div className="text-xs text-primary font-bold bg-blue-50 px-3.5 py-1.5 rounded-lg border border-blue-200">
-          รออนุมัติ: {pendingApprovalList.length} รายการ
+        <div className="text-xs text-[#012169] font-bold bg-[#012169]/5 px-3 py-1.5 rounded-lg border border-[#012169]/15 whitespace-nowrap">
+          รอการอนุมัติ: {approvalQueue.filter((q) => q.status === 'PendingExecutiveApproval').length} รายการ
         </div>
       </div>
 
-      {/* Decision Table */}
+      {/* Decision Queue Table */}
       <DataTable
-        data={pendingApprovalList}
+        data={approvalQueue}
         columns={columns}
-        searchPlaceholder="ค้นหาใบสมัครรออนุมัติ..."
+        searchPlaceholder="ค้นหาตามเลขที่ใบสมัคร หรือ ชื่อผู้สมัคร..."
       />
 
       {/* Executive Decision Modal */}
@@ -156,89 +169,66 @@ export default function ExecutiveApprovalPage() {
         isOpen={isDecisionModalOpen}
         onClose={() => setIsDecisionModalOpen(false)}
         title={`พิจารณาอนุมัติใบสมัคร: ${selectedApp?.applicationNumber || ''}`}
-        maxWidth="xl"
+        maxWidth="lg"
       >
         {selectedApp ? (
-          <div className="space-y-5">
-            {/* Warning if PEP / Orange Flag */}
-            {selectedApp.complianceRecord?.requiresDirectorApproval && (
-              <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-300 flex items-start space-x-3 text-amber-900 text-xs">
-                <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h5 className="font-bold">ใบสมัครนี้ตรวจพบ PEP / Orange Flag หรือวงเงินสูง</h5>
-                  <p className="opacity-90 mt-0.5">
-                    ตามนโยบายกำกับดูแลกิจการ ต้องได้รับความเห็นชอบและลงนามอนุมัติโดยกรรมการผู้จัดการ (Managing Director)
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Applicant Summary */}
+          <div className="space-y-4">
+            {/* Quick Summary Box */}
             <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 space-y-2 text-xs">
-              <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+              <div className="flex justify-between">
                 <span className="text-gray-500">ผู้สมัคร:</span>
-                <span className="font-bold text-gray-900">
-                  {selectedApp.profile.titleTh} {selectedApp.profile.firstNameTh} {selectedApp.profile.lastNameTh}
-                </span>
+                <span className="font-bold text-gray-900">{selectedApp.applicantName}</span>
               </div>
-              <div className="flex justify-between items-center pb-2 border-b border-gray-200">
-                <span className="text-gray-500">ประเภท / สาขา:</span>
-                <span className="font-semibold text-gray-800">
-                  {selectedApp.agentType} | {selectedApp.branchName}
-                </span>
+              <div className="flex justify-between">
+                <span className="text-gray-500">สาขาต้นสังกัด:</span>
+                <span className="font-semibold text-gray-800">{selectedApp.branchName}</span>
               </div>
-              <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+              <div className="flex justify-between">
                 <span className="text-gray-500">วงเงินสินเชื่อที่ขอ:</span>
-                <span className="font-mono text-base font-bold text-green-700">
+                <span className="font-mono text-green-700 font-bold text-sm">
                   ฿{selectedApp.requestedCreditLimit.toLocaleString('th-TH', { minimumFractionDigits: 2 })}
                 </span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-500">เงื่อนไขการชำระ:</span>
-                <span className="font-medium text-gray-800">
-                  Motor {selectedApp.paymentTermMotorDays} วัน / Non-Motor {selectedApp.paymentTermNonMotorDays} วัน
-                </span>
+              <div className="flex justify-between">
+                <span className="text-gray-500">ผลการตรวจ Sanctions (AMLO/OIC):</span>
+                <span className="text-green-700 font-bold">ผ่านเกณฑ์การตรวจสอบ (Clear)</span>
               </div>
             </div>
 
             {/* Decision Notes */}
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1">
-                ความเห็นและเงื่อนไขการอนุมัติ (Decision Remarks) <span className="text-red-500">*</span>
+                บันทึกความเห็น / เงื่อนไขการอนุมัติของผู้บริหาร (Executive Remarks)
               </label>
               <textarea
                 rows={3}
                 value={decisionNotes}
                 onChange={(e) => setDecisionNotes(e.target.value)}
-                placeholder="ระบุความเห็นหรือเงื่อนไขพิเศษประกอบการอนุมัติ..."
+                placeholder="ระบุข้อความเห็นหรือเงื่อนไขประกอบการอนุมัติ..."
                 className="deves-input"
               />
             </div>
 
-            {/* Decision Action Buttons */}
+            {/* Action Buttons */}
             <div className="flex items-center justify-between pt-4 border-t border-gray-200">
               <button
                 type="button"
-                onClick={() =>
-                  decisionMutation.mutate({ isApproved: false, remarks: decisionNotes || 'ไม่อนุมัติ' })
-                }
-                disabled={decisionMutation.isPending}
-                className="flex items-center space-x-1.5 px-4 py-2.5 rounded-lg text-xs font-bold text-red-700 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 transition-all"
+                onClick={() => rejectMutation.mutate(decisionNotes)}
+                disabled={rejectMutation.isPending}
+                className="flex items-center space-x-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-red-700 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 transition-all"
               >
                 <XCircle className="w-4 h-4" />
-                <span>ไม่อนุมัติ (Reject)</span>
+                <span>{rejectMutation.isPending ? 'กำลังบันทึก...' : 'ไม่อนุมัติ (Reject)'}</span>
               </button>
 
               <button
                 type="button"
-                onClick={() =>
-                  decisionMutation.mutate({ isApproved: true, remarks: decisionNotes })
-                }
-                disabled={decisionMutation.isPending}
+                onClick={() => approveMutation.mutate(decisionNotes)}
+                disabled={approveMutation.isPending}
                 className="flex items-center space-x-2 px-6 py-2.5 rounded-lg text-xs font-bold text-white bg-green-600 hover:bg-green-700 shadow-md transition-all"
               >
                 <CheckCircle2 className="w-4 h-4" />
-                <span>{decisionMutation.isPending ? 'กำลังประมวลผล...' : 'อนุมัติใบสมัคร (Approve Application)'}</span>
+                <span>{approveMutation.isPending ? 'กำลังอนุมัติ...' : 'อนุมัติใบสมัคร (Approve)'}</span>
               </button>
             </div>
           </div>

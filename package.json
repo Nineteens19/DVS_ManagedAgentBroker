@@ -10,7 +10,7 @@
     "build:frontend": "cd src/frontend && npm run build",
     "build:backend": "dotnet build",
     "test:backend": "dotnet test",
-    "docker:up": "docker-compose up --build -d",
-    "docker:down": "docker-compose down"
+    "docker:up": "docker compose up --build -d",
+    "docker:down": "docker compose down"
   }
 }

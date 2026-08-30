@@ -535,3 +535,11 @@
 **Context**: Construction - Unit 6 NFR Design Completion
 
 ---
+
+## Construction Phase — Unit 6: Infrastructure Design (Planning)
+**Timestamp**: 2026-08-30T02:16:23Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created Infrastructure Design plan for Unit 6 at aidlc-docs/construction/plans/unit-6-frontend-portal-infrastructure-design-plan.md with questions on standalone Next.js Docker containerization and monorepo root dev scripts. Awaiting user input."
+**Context**: Construction - Unit 6 Infrastructure Design Planning
+
+---

@@ -5,7 +5,6 @@ import './globals.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../context/AuthContext';
 import { ToastProvider } from '../context/ToastContext';
-import { ThemeProvider } from '../context/ThemeContext';
 import { Header } from '../components/layout/Header';
 import { PersonaSwitcherBar } from '../components/layout/PersonaSwitcherBar';
 import { Sidebar } from '../components/layout/Sidebar';
@@ -25,31 +24,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="th" className="dark">
+    <html lang="th">
       <head>
-        <title>Agent & Broker Management System | ระบบบริหารจัดการตัวแทนและนายหน้า</title>
-        <meta name="description" content="Enterprise Non-Life Insurance Agent & Broker Intake, Compliance, Approval & Automated Core Provisioning Platform" />
+        <title>ระบบบริหารจัดการตัวแทนและนายหน้า | บริษัท เทเวศประกันภัย จำกัด (มหาชน)</title>
+        <meta
+          name="description"
+          content="ระบบบริหารจัดการตัวแทนและนายหน้าประกันวินาศภัย เทเวศประกันภัย (Deves Insurance)"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="bg-[#090d16] text-slate-100 min-h-screen antialiased flex flex-col font-sans">
+      <body className="bg-[#F8F9FA] text-[#212529] min-h-screen antialiased flex flex-col font-sans">
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider>
-            <AuthProvider>
-              <ToastProvider>
-                {/* 1. Top Persona Demo Switcher Bar */}
-                <PersonaSwitcherBar />
+          <AuthProvider>
+            <ToastProvider>
+              {/* 1. Top Persona Switcher Bar */}
+              <PersonaSwitcherBar />
 
-                {/* 2. Top Header Navigation */}
-                <Header />
+              {/* 2. Main Layout with Sidebar + Content Shell */}
+              <div className="flex flex-1 min-h-[calc(100vh-42px)]">
+                {/* 260px Fixed Deves Navy Sidebar */}
+                <Sidebar />
 
-                {/* 3. Main Body Container with Sidebar */}
-                <div className="flex-1 flex max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 gap-6">
-                  <Sidebar />
-                  <main className="flex-1 min-w-0">{children}</main>
+                {/* Main Content Area with Header */}
+                <div className="flex-1 flex flex-col min-w-0 bg-[#F8F9FA]">
+                  <Header />
+                  <main className="flex-1 p-6 max-w-7xl w-full mx-auto">{children}</main>
                 </div>
-              </ToastProvider>
-            </AuthProvider>
-          </ThemeProvider>
+              </div>
+            </ToastProvider>
+          </AuthProvider>
         </QueryClientProvider>
       </body>
     </html>

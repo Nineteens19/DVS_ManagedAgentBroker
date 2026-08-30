@@ -38,63 +38,63 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
     <div className="space-y-6">
       {/* Agent Type Selector */}
       <div>
-        <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-          ประเภทตัวแทน / นายหน้า (Applicant Type) <span className="text-rose-400">*</span>
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+          ประเภทผู้สมัคร (Applicant Type) <span className="text-red-500">*</span>
         </label>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button
             type="button"
             onClick={() => setAgentType('Individual')}
-            className={`flex items-center space-x-3 p-4 rounded-2xl border transition-all text-left ${
+            className={`flex items-center space-x-3 p-4 rounded-xl border transition-all text-left ${
               agentType === 'Individual'
-                ? 'bg-sky-950/40 border-sky-500 text-sky-100 shadow-lg shadow-sky-500/10 ring-1 ring-sky-500/50'
-                : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:border-slate-700'
+                ? 'bg-blue-50/70 border-primary shadow-sm ring-2 ring-primary/20'
+                : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
             }`}
           >
-            <div className="p-2.5 rounded-xl bg-sky-500/20 text-sky-400">
+            <div className={`p-2.5 rounded-lg ${agentType === 'Individual' ? 'bg-primary text-secondary' : 'bg-gray-100 text-gray-600'}`}>
               <User className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold">บุคคลธรรมดา (Individual Agent)</div>
-              <div className="text-xs opacity-75">ตัวแทนประกันภัยรายบุคคล</div>
+              <div className="text-sm font-bold text-gray-900">บุคคลธรรมดา (Individual Agent)</div>
+              <div className="text-xs text-gray-500">ตัวแทนประกันวินาศภัยรายบุคคล</div>
             </div>
           </button>
 
           <button
             type="button"
             onClick={() => setAgentType('Corporate')}
-            className={`flex items-center space-x-3 p-4 rounded-2xl border transition-all text-left ${
+            className={`flex items-center space-x-3 p-4 rounded-xl border transition-all text-left ${
               agentType === 'Corporate'
-                ? 'bg-sky-950/40 border-sky-500 text-sky-100 shadow-lg shadow-sky-500/10 ring-1 ring-sky-500/50'
-                : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:border-slate-700'
+                ? 'bg-blue-50/70 border-primary shadow-sm ring-2 ring-primary/20'
+                : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
             }`}
           >
-            <div className="p-2.5 rounded-xl bg-indigo-500/20 text-indigo-400">
+            <div className={`p-2.5 rounded-lg ${agentType === 'Corporate' ? 'bg-primary text-secondary' : 'bg-gray-100 text-gray-600'}`}>
               <Building className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold">นิติบุคคล (Corporate Broker)</div>
-              <div className="text-xs opacity-75">บริษัทนายหน้าประกันวินาศภัย</div>
+              <div className="text-sm font-bold text-gray-900">นิติบุคคล (Corporate Broker)</div>
+              <div className="text-xs text-gray-500">บริษัทนายหน้าประกันวินาศภัย / นิติบุคคล</div>
             </div>
           </button>
         </div>
       </div>
 
       {/* Main Profile Grid */}
-      <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-4">
-        <h4 className="text-sm font-bold text-slate-200 pb-2 border-b border-slate-800">
-          ข้อมูลพื้นฐานและเลขประจำตัวผู้เสียภาษี / บัตรประชาชน
+      <div className="deves-card p-6 space-y-4">
+        <h4 className="text-sm font-bold text-primary pb-2 border-b border-gray-200">
+          ข้อมูลพื้นฐานและเลขประจำตัวผู้เสียภาษี / บัตรประชาชน (ตรวจสอบ Modulo 11)
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              คำนำหน้าชื่อ <span className="text-rose-400">*</span>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
+              คำนำหน้าชื่อ <span className="text-red-500">*</span>
             </label>
             <select
               value={profile.titleTh || 'นาย'}
               onChange={(e) => handleChange('titleTh', e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-slate-100 focus:outline-none focus:border-sky-500"
+              className="deves-input"
             >
               {agentType === 'Individual' ? (
                 <>
@@ -113,37 +113,37 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              {agentType === 'Individual' ? 'ชื่อ (ภาษาไทย)' : 'ชื่อนิติบุคคล'} <span className="text-rose-400">*</span>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
+              {agentType === 'Individual' ? 'ชื่อ (ภาษาไทย)' : 'ชื่อนิติบุคคล'} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={profile.firstNameTh}
               onChange={(e) => handleChange('firstNameTh', e.target.value)}
               placeholder={agentType === 'Individual' ? 'เช่น สมชาย' : 'เช่น สยามอินชัวร์ โบรกเกอร์'}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+              className="deves-input"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              {agentType === 'Individual' ? 'นามสกุล (ภาษาไทย)' : 'สาขา/สำนักงาน'} <span className="text-rose-400">*</span>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
+              {agentType === 'Individual' ? 'นามสกุล (ภาษาไทย)' : 'สาขา/สำนักงาน'} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={profile.lastNameTh}
               onChange={(e) => handleChange('lastNameTh', e.target.value)}
               placeholder={agentType === 'Individual' ? 'เช่น ใจดี' : 'เช่น สำนักงานใหญ่'}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+              className="deves-input"
             />
           </div>
         </div>
 
         {/* 13-Digit National ID with Real-Time Modulo 11 Validation */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              {agentType === 'Individual' ? 'เลขประจำตัวประชาชน 13 หลัก' : 'เลขทะเบียนนิติบุคคล / Tax ID 13 หลัก'} <span className="text-rose-400">*</span>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
+              {agentType === 'Individual' ? 'เลขประจำตัวประชาชน 13 หลัก' : 'เลขทะเบียนนิติบุคคล / Tax ID 13 หลัก'} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -155,20 +155,20 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
                   handleChange('nationalIdOrTaxId', e.target.value.replace(/\D/g, ''));
                 }}
                 placeholder="ระบุตัวเลข 13 หลัก"
-                className={`w-full px-3 py-2 text-xs font-mono rounded-xl bg-slate-950 border text-slate-100 placeholder-slate-500 focus:outline-none transition-all ${
+                className={`deves-input font-mono ${
                   touchedId
                     ? idValidation.isValid || (agentType === 'Corporate' && profile.nationalIdOrTaxId.length === 13)
-                      ? 'border-emerald-500 focus:border-emerald-400 ring-1 ring-emerald-500/20'
-                      : 'border-rose-500 focus:border-rose-400 ring-1 ring-rose-500/20'
-                    : 'border-slate-700 focus:border-sky-500'
+                      ? 'border-green-500 focus:border-green-600 ring-2 ring-green-100'
+                      : 'border-red-500 focus:border-red-600 ring-2 ring-red-100'
+                    : ''
                 }`}
               />
               {touchedId && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
                   {idValidation.isValid || (agentType === 'Corporate' && profile.nationalIdOrTaxId.length === 13) ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
                   ) : (
-                    <AlertCircle className="w-4 h-4 text-rose-400" />
+                    <AlertCircle className="w-4 h-4 text-red-500" />
                   )}
                 </div>
               )}
@@ -177,10 +177,10 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
             {/* Validation Feedback Message */}
             {touchedId && (
               <p
-                className={`text-[11px] mt-1 flex items-center ${
+                className={`text-xs mt-1.5 flex items-center font-medium ${
                   idValidation.isValid || (agentType === 'Corporate' && profile.nationalIdOrTaxId.length === 13)
-                    ? 'text-emerald-400'
-                    : 'text-rose-400'
+                    ? 'text-green-700'
+                    : 'text-red-600'
                 }`}
               >
                 {agentType === 'Individual'
@@ -193,23 +193,23 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              เบอร์โทรศัพท์ติดต่อ <span className="text-rose-400">*</span>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
+              เบอร์โทรศัพท์ติดต่อ <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={profile.phoneNumber || ''}
               onChange={(e) => handleChange('phoneNumber', e.target.value)}
               placeholder="เช่น 0812345678"
-              className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+              className="deves-input"
             />
           </div>
         </div>
 
         {/* Address & Bank Account */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
               ที่อยู่ตามทะเบียนบ้าน / สำนักงาน
             </label>
             <textarea
@@ -217,13 +217,13 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
               value={profile.address || ''}
               onChange={(e) => handleChange('address', e.target.value)}
               placeholder="เลขที่ ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"
-              className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+              className="deves-input"
             />
           </div>
 
           <div className="space-y-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
                 ธนาคารสำหรับรับค่าคอมมิชชั่น
               </label>
               <input
@@ -231,11 +231,11 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
                 value={profile.bankName || ''}
                 onChange={(e) => handleChange('bankName', e.target.value)}
                 placeholder="เช่น ธนาคารกสิกรไทย"
-                className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+                className="deves-input"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
                 เลขที่บัญชีธนาคาร
               </label>
               <input
@@ -243,7 +243,7 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
                 value={profile.bankAccountNumber || ''}
                 onChange={(e) => handleChange('bankAccountNumber', e.target.value)}
                 placeholder="เช่น 0452345678"
-                className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+                className="deves-input font-mono"
               />
             </div>
           </div>
@@ -251,14 +251,15 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
       </div>
 
       {/* Action Navigation */}
-      <div className="flex justify-end pt-4">
+      <div className="flex justify-end pt-2">
         <button
           type="button"
           onClick={onNext}
           disabled={!isFormValid}
-          className="px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-sky-500 hover:bg-sky-400 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-sky-500/25 transition-all"
+          className="px-6 py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all flex items-center space-x-2"
         >
-          ถัดไป: ผู้ค้ำประกันและสินเชื่อ →
+          <span>ถัดไป: ผู้ค้ำประกันและสินเชื่อ</span>
+          <span>→</span>
         </button>
       </div>
     </div>

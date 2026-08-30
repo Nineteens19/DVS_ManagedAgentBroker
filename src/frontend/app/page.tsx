@@ -15,10 +15,10 @@ import {
   Server,
   Archive,
   Clock,
-  ArrowRight,
   TrendingUp,
   ShieldCheck,
-  Sparkles,
+  AlertTriangle,
+  ArrowRight,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -34,196 +34,211 @@ export default function DashboardPage() {
     queryFn: () => apiClient.getApplications(),
   });
 
-  const recentApplications = applications.slice(0, 5);
+  const recentApplications = applications.slice(0, 7);
 
   return (
     <div className="space-y-6">
-      {/* Welcome Banner */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-sky-950/80 via-slate-900/90 to-indigo-950/80 border border-sky-500/20 backdrop-blur-md shadow-2xl relative overflow-hidden">
-        <div className="absolute -right-8 -bottom-8 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-400/30 text-sky-300 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>ยินดีต้อนรับเข้าสู่ระบบ Enterprise Portal</span>
-            </div>
-            <h2 className="text-xl font-extrabold text-white">
-              สวัสดีคุณ {currentUser.fullName}
-            </h2>
-            <p className="text-xs text-slate-300">
-              บทบาทปัจจุบัน: <span className="text-sky-400 font-bold">{currentUser.roleDisplayName}</span> | ประจำ: {currentUser.branchName}
-            </p>
+      {/* 1. Welcome & Action Header Banner */}
+      <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded bg-blue-50 text-primary border border-blue-200 text-xs font-semibold mb-2">
+            <span>เทเวศประกันภัย | Deves Enterprise Portal</span>
           </div>
+          <h2 className="text-xl font-bold text-gray-900">
+            สวัสดีคุณ {currentUser.fullName}
+          </h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            บทบาทการทำงาน: <span className="text-primary font-bold">{currentUser.roleDisplayName}</span> | ประจำสาขา: <span className="font-medium text-gray-700">{currentUser.branchName}</span>
+          </p>
+        </div>
 
-          <div className="flex items-center space-x-3">
-            {canCreateApplication && (
-              <Link
-                href="/intake/new"
-                className="flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-400 hover:to-cyan-400 shadow-lg shadow-sky-500/25 transition-all transform hover:scale-105"
-              >
-                <FilePlus className="w-4 h-4" />
-                <span>ยื่นใบสมัครใหม่</span>
-              </Link>
-            )}
+        <div className="flex items-center space-x-3">
+          {canCreateApplication && (
             <Link
-              href="/sla-dashboard"
-              className="flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-800/80 hover:bg-slate-700 hover:text-white border border-slate-700 transition-all"
+              href="/intake/new"
+              className="flex items-center space-x-2 px-5 py-2.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light shadow-md transition-all"
             >
-              <Clock className="w-4 h-4 text-sky-400" />
-              <span>SLA Monitor</span>
+              <FilePlus className="w-4 h-4" />
+              <span>ยื่นใบสมัครตัวแทนใหม่</span>
             </Link>
-          </div>
+          )}
+          <Link
+            href="/sla-dashboard"
+            className="flex items-center space-x-1.5 px-4 py-2.5 rounded-lg text-xs font-semibold text-primary bg-white hover:bg-blue-50 border border-primary transition-all"
+          >
+            <Clock className="w-4 h-4 text-primary" />
+            <span>SLA Monitoring</span>
+          </Link>
         </div>
       </div>
 
-      {/* KPI Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl glass-card border-slate-800/80 relative overflow-hidden">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-            <span>ใบสมัครทั้งหมด</span>
-            <TrendingUp className="w-4 h-4 text-sky-400" />
+      {/* 2. Deves Pattern: 4 SummaryCards with border-left */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Card 1: Total Applications */}
+        <div className="deves-summary-card border-l-4 border-l-[#012169]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+              ใบสมัครทั้งหมด (Total)
+            </span>
+            <div className="p-2 rounded-lg bg-blue-50 text-primary">
+              <TrendingUp className="w-5 h-5" />
+            </div>
           </div>
-          <div className="mt-2 text-2xl font-black text-white font-mono">
+          <div className="mt-3 text-3xl font-black text-primary font-mono">
             {metrics?.totalApplications ?? applications.length}
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">ทุกสถานะในระบบ</p>
+          <p className="text-xs text-gray-500 mt-1">ทุกสถานะในระบบ</p>
         </div>
 
-        <div className="p-5 rounded-2xl glass-card border-teal-500/20 bg-teal-950/10 relative overflow-hidden">
-          <div className="flex items-center justify-between text-teal-400 text-xs font-semibold">
-            <span>Active Temporary</span>
-            <Clock className="w-4 h-4" />
+        {/* Card 2: Active Temporary (30D SLA) */}
+        <div className="deves-summary-card border-l-4 border-l-[#17A2B8]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+              Active Temporary (30D)
+            </span>
+            <div className="p-2 rounded-lg bg-cyan-50 text-[#17A2B8]">
+              <Clock className="w-5 h-5" />
+            </div>
           </div>
-          <div className="mt-2 text-2xl font-black text-teal-300 font-mono">
+          <div className="mt-3 text-3xl font-black text-[#17A2B8] font-mono">
             {metrics?.activeTemporaryCount ?? 0}
           </div>
-          <p className="text-[11px] text-teal-400/80 mt-1">เปิดสิทธิ์ชั่วคราว (30D SLA)</p>
+          <p className="text-xs text-gray-500 mt-1">เปิดสิทธิ์ชั่วคราว ผ่อนผันส่งสัญญา</p>
         </div>
 
-        <div className="p-5 rounded-2xl glass-card border-amber-500/20 bg-amber-950/10 relative overflow-hidden">
-          <div className="flex items-center justify-between text-amber-400 text-xs font-semibold">
-            <span>ใกล้ครบกำหนด SLA (≤ 7 วัน)</span>
-            <Clock className="w-4 h-4" />
+        {/* Card 3: Near Deadline (<= 7 Days) */}
+        <div className="deves-summary-card border-l-4 border-l-[#FD7E14]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+              ใกล้ครบกำหนด (≤ 7 วัน)
+            </span>
+            <div className="p-2 rounded-lg bg-amber-50 text-[#FD7E14]">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
           </div>
-          <div className="mt-2 text-2xl font-black text-amber-300 font-mono">
+          <div className="mt-3 text-3xl font-black text-[#FD7E14] font-mono">
             {metrics?.nearDeadline7DaysCount ?? 0}
           </div>
-          <p className="text-[11px] text-amber-400/80 mt-1">ต้องเร่งติดตามสัญญาตัวจริง</p>
+          <p className="text-xs text-gray-500 mt-1">ต้องเร่งติดตามสัญญาตัวจริง</p>
         </div>
 
-        <div className="p-5 rounded-2xl glass-card border-emerald-500/20 bg-emerald-950/10 relative overflow-hidden">
-          <div className="flex items-center justify-between text-emerald-400 text-xs font-semibold">
-            <span>Active Permanent</span>
-            <ShieldCheck className="w-4 h-4" />
+        {/* Card 4: Active Permanent */}
+        <div className="deves-summary-card border-l-4 border-l-[#28A745]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+              Active Permanent
+            </span>
+            <div className="p-2 rounded-lg bg-green-50 text-[#28A745]">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
           </div>
-          <div className="mt-2 text-2xl font-black text-emerald-300 font-mono">
+          <div className="mt-3 text-3xl font-black text-[#28A745] font-mono">
             {metrics?.activePermanentCount ?? 0}
           </div>
-          <p className="text-[11px] text-emerald-400/80 mt-1">จัดเก็บสัญญาตัวจริงสมบูรณ์</p>
+          <p className="text-xs text-gray-500 mt-1">จัดเก็บสัญญาตัวจริงสมบูรณ์</p>
         </div>
       </div>
 
-      {/* Quick Action Consoles for Current Role */}
-      <div className="p-6 rounded-2xl glass-card border-slate-800/80 space-y-4">
-        <h3 className="text-sm font-bold text-slate-100 flex items-center space-x-2">
-          <Sparkles className="w-4 h-4 text-sky-400" />
-          <span>คอนโซลการทำงานด่วนตามสิทธิ์ของคุณ (Quick Action Consoles)</span>
+      {/* 3. Quick Action Role Consoles */}
+      <div className="deves-card p-6 space-y-4">
+        <h3 className="text-sm font-bold text-primary flex items-center space-x-2">
+          <span>คอนโซลการทำงานด่วนตามบทบาทของคุณ (Role Consoles)</span>
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {canCreateApplication && (
             <Link
               href="/intake/new"
-              className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/50 transition-all group flex items-start space-x-3"
+              className="p-4 rounded-xl border border-gray-200 hover:border-primary hover:bg-blue-50/30 transition-all flex items-start space-x-3 group"
             >
-              <div className="p-2.5 rounded-lg bg-sky-500/20 text-sky-400 group-hover:scale-110 transition-transform">
+              <div className="p-2.5 rounded-lg bg-blue-100 text-primary group-hover:scale-105 transition-transform">
                 <FilePlus className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-slate-100 group-hover:text-sky-300">ยื่นใบสมัครใหม่ (Intake)</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">กรอกข้อมูลตัวแทน/โบรกเกอร์ และอัปโหลดเอกสาร</p>
+                <h4 className="text-xs font-bold text-gray-900 group-hover:text-primary">ยื่นใบสมัครใหม่ (Intake)</h4>
+                <p className="text-[11px] text-gray-500 mt-0.5">กรอกข้อมูลตัวแทน/โบรกเกอร์ และอัปโหลดเอกสาร</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
             </Link>
           )}
 
           {canReviewCompliance && (
             <Link
               href="/review"
-              className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/50 transition-all group flex items-start space-x-3"
+              className="p-4 rounded-xl border border-gray-200 hover:border-primary hover:bg-blue-50/30 transition-all flex items-start space-x-3 group"
             >
-              <div className="p-2.5 rounded-lg bg-indigo-500/20 text-indigo-400 group-hover:scale-110 transition-transform">
+              <div className="p-2.5 rounded-lg bg-indigo-100 text-indigo-800 group-hover:scale-105 transition-transform">
                 <ClipboardCheck className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-slate-100 group-hover:text-indigo-300">สนญ. ตรวจรับ & AMLO</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">ตรวจสอบเอกสารและตรวจคัดกรอง sanctions</p>
+                <h4 className="text-xs font-bold text-gray-900 group-hover:text-primary">สนญ. ตรวจรับ & AMLO</h4>
+                <p className="text-[11px] text-gray-500 mt-0.5">ตรวจคัดกรอง sanctions และส่งต่อผู้บริหาร</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
             </Link>
           )}
 
           {canApproveExecutive && (
             <Link
               href="/approval"
-              className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/50 transition-all group flex items-start space-x-3"
+              className="p-4 rounded-xl border border-gray-200 hover:border-primary hover:bg-blue-50/30 transition-all flex items-start space-x-3 group"
             >
-              <div className="p-2.5 rounded-lg bg-purple-500/20 text-purple-400 group-hover:scale-110 transition-transform">
+              <div className="p-2.5 rounded-lg bg-purple-100 text-purple-800 group-hover:scale-105 transition-transform">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-slate-100 group-hover:text-purple-300">ผู้บริหารอนุมัติ (E-Approval)</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">พิจารณาอนุมัติใบสมัครในระบบแทน EAS</p>
+                <h4 className="text-xs font-bold text-gray-900 group-hover:text-primary">ผู้บริหารอนุมัติ (E-Approval)</h4>
+                <p className="text-[11px] text-gray-500 mt-0.5">พิจารณาอนุมัติใบสมัครในระบบแทน EAS</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
             </Link>
           )}
 
           {canProvisionCore && (
             <Link
               href="/provisioning"
-              className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/50 transition-all group flex items-start space-x-3"
+              className="p-4 rounded-xl border border-gray-200 hover:border-primary hover:bg-blue-50/30 transition-all flex items-start space-x-3 group"
             >
-              <div className="p-2.5 rounded-lg bg-teal-500/20 text-teal-400 group-hover:scale-110 transition-transform">
+              <div className="p-2.5 rounded-lg bg-teal-100 text-teal-800 group-hover:scale-105 transition-transform">
                 <Server className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-slate-100 group-hover:text-teal-300">ตั้งวงเงิน & Auto-Provisioning</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">เชื่อมต่อ AS400, APAR, SAP, PCSDIS 100%</p>
+                <h4 className="text-xs font-bold text-gray-900 group-hover:text-primary">ตั้งวงเงิน & Provisioning</h4>
+                <p className="text-[11px] text-gray-500 mt-0.5">สร้างรหัสตัวแทนและยิง Core Deves 100%</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-teal-400 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
             </Link>
           )}
 
           {canArchiveLegal && (
             <Link
               href="/archive"
-              className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/50 transition-all group flex items-start space-x-3"
+              className="p-4 rounded-xl border border-gray-200 hover:border-primary hover:bg-blue-50/30 transition-all flex items-start space-x-3 group"
             >
-              <div className="p-2.5 rounded-lg bg-emerald-500/20 text-emerald-400 group-hover:scale-110 transition-transform">
+              <div className="p-2.5 rounded-lg bg-green-100 text-green-800 group-hover:scale-105 transition-transform">
                 <Archive className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-slate-100 group-hover:text-emerald-300">จัดเก็บเอกสารสัญญาตัวจริง</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">ลงทะเบียนกล่องเอกสาร & เปิดสิทธิ์ถาวร</p>
+                <h4 className="text-xs font-bold text-gray-900 group-hover:text-primary">จัดเก็บเอกสารสัญญาตัวจริง</h4>
+                <p className="text-[11px] text-gray-500 mt-0.5">ลงทะเบียนกล่อง & เปิดสิทธิ์ถาวร</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
             </Link>
           )}
         </div>
       </div>
 
-      {/* Recent Applications Table */}
-      <div className="p-6 rounded-2xl glass-card border-slate-800/80 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-100">ใบสมัครล่าสุดในระบบ (Recent Applications)</h3>
-          <span className="text-xs text-slate-400 font-mono">{applications.length} รายการ</span>
+      {/* 4. Recent Applications Table */}
+      <div className="deves-card p-6 space-y-4">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-200">
+          <h3 className="text-sm font-bold text-primary">รายการใบสมัครล่าสุดในระบบ (Recent Applications)</h3>
+          <span className="text-xs text-gray-500 font-mono">{applications.length} รายการ</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-slate-800 text-[11px] text-slate-400 font-semibold uppercase">
+              <tr className="border-b border-gray-200 bg-gray-50 text-[11px] text-gray-600 font-semibold uppercase">
                 <th className="py-2.5 px-3">เลขที่ใบสมัคร</th>
                 <th className="py-2.5 px-3">ชื่อผู้สมัคร</th>
                 <th className="py-2.5 px-3">เลขประจำตัว 13 หลัก</th>
@@ -232,19 +247,19 @@ export default function DashboardPage() {
                 <th className="py-2.5 px-3">SLA / รหัสตัวแทน</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-gray-100 text-sm">
               {recentApplications.map((app) => (
-                <tr key={app.id} className="hover:bg-slate-800/30 transition-colors">
-                  <td className="py-3 px-3 font-mono font-semibold text-sky-400">
+                <tr key={app.id} className="hover:bg-blue-50/40 transition-colors">
+                  <td className="py-3 px-3 font-mono font-bold text-primary">
                     {app.applicationNumber}
                   </td>
-                  <td className="py-3 px-3 font-medium text-slate-100">
+                  <td className="py-3 px-3 font-semibold text-gray-900">
                     {app.applicantName}
                   </td>
                   <td className="py-3 px-3">
                     <PiiMaskedField value={app.nationalIdOrTaxId} />
                   </td>
-                  <td className="py-3 px-3 text-slate-300">
+                  <td className="py-3 px-3 text-gray-600">
                     {app.branchName}
                   </td>
                   <td className="py-3 px-3">
@@ -252,7 +267,9 @@ export default function DashboardPage() {
                   </td>
                   <td className="py-3 px-3">
                     {app.agentCode ? (
-                      <span className="font-mono text-emerald-400 font-bold">{app.agentCode}</span>
+                      <span className="font-mono text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded border border-green-200">
+                        {app.agentCode}
+                      </span>
                     ) : (
                       <SlaCountdownBadge status={app.status} daysRemaining={app.slaDaysRemaining} />
                     )}

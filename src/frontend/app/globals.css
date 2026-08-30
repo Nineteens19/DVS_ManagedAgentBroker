@@ -1,98 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --bg-app: #f8fafc;
-    --bg-surface: rgba(255, 255, 255, 0.85);
-    --bg-card: rgba(255, 255, 255, 0.7);
-    --border-card: rgba(226, 232, 240, 0.8);
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
-    --accent-brand: #0284c7;
-    --accent-brand-hover: #0369a1;
-  }
-
-  .dark {
-    --bg-app: #090d16;
-    --bg-surface: rgba(15, 23, 42, 0.85);
-    --bg-card: rgba(30, 41, 59, 0.6);
-    --border-card: rgba(255, 255, 255, 0.08);
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --accent-brand: #38bdf8;
-    --accent-brand-hover: #0284c7;
+    --primary: #012169;
+    --secondary: #FFCD00;
+    --bg: #F8F9FA;
+    --card-bg: #FFFFFF;
+    --text: #212529;
+    --text-muted: #6C757D;
+    --border: #DEE2E6;
+    --success: #28A745;
+    --danger: #DC3545;
+    --warning: #FD7E14;
+    --info: #17A2B8;
   }
 
   body {
-    background-color: var(--bg-app);
-    color: var(--text-primary);
-    min-height: 100vh;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Prompt', 'Sarabun', sans-serif;
   }
 }
 
-/* Glassmorphic Components */
-.glass-panel {
-  background: var(--bg-surface);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-card);
+/* Deves Card & Panel Styles */
+.deves-card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
 }
 
-.glass-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-card);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+.deves-card:hover {
+  box-shadow: 0 4px 12px rgba(1, 33, 105, 0.06);
 }
 
-.dark .glass-card {
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+.deves-summary-card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.glass-card:hover {
-  border-color: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 12px 28px -4px rgba(56, 189, 248, 0.1);
-  transform: translateY(-1px);
+.deves-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(1, 33, 105, 0.08);
 }
 
-/* Custom Scrollbar */
+/* Deves Form Control Inputs */
+.deves-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  background-color: #FFFFFF;
+  border: 1px solid #CED4DA;
+  border-radius: 0.5rem;
+  color: #212529;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.deves-input:focus {
+  outline: none;
+  border-color: #012169;
+  box-shadow: 0 0 0 3px rgba(1, 33, 105, 0.15);
+}
+
+/* Deves Status Badges */
+.badge-pending {
+  background-color: #FFF3CD;
+  color: #856404;
+  border: 1px solid #FFEEBA;
+}
+
+.badge-approved {
+  background-color: #D4EDDA;
+  color: #155724;
+  border: 1px solid #C3E6CB;
+}
+
+.badge-rejected {
+  background-color: #F8D7DA;
+  color: #721C24;
+  border: 1px solid #F5C6CB;
+}
+
+.badge-draft {
+  background-color: #E2E3E5;
+  color: #383D41;
+  border: 1px solid #D6D8DB;
+}
+
+.badge-returned {
+  background-color: #FFE5D0;
+  color: #7C3A00;
+  border: 1px solid #FFD0B0;
+}
+
+.badge-special {
+  background-color: #F8D7DA;
+  color: #721C24;
+  border: 1px solid #F5C6CB;
+}
+
+.badge-normal {
+  background-color: #D1ECF1;
+  color: #0C5460;
+  border: 1px solid #BEE5EB;
+}
+
+.badge-urgent {
+  background-color: #DC3545;
+  color: #FFFFFF;
+  animation: pulse-urgent 1.5s infinite;
+}
+
+@keyframes pulse-urgent {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Custom Clean Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #F1F3F5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
+  background: #CED4DA;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
-}
-
-/* Animation Keyframes */
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.75;
-    transform: scale(1.05);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background: #ADB5BD;
 }

@@ -35,18 +35,18 @@ export const Step3DocumentUpload: React.FC<Step3DocumentUploadProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-4">
-        <div className="flex items-center space-x-2 text-sky-400 pb-2 border-b border-slate-800">
+      <div className="deves-card p-6 space-y-4">
+        <div className="flex items-center space-x-2 text-primary pb-2 border-b border-gray-200">
           <FileCheck className="w-5 h-5" />
-          <h4 className="text-sm font-bold text-slate-200">
+          <h4 className="text-sm font-bold text-gray-900">
             อัปโหลดเอกสารแนบประกอบการพิจารณา (Document Attachments & Magic Byte Verification)
           </h4>
         </div>
-        <p className="text-xs text-slate-400">
-          ระบบมีกลไกตรวจสอบ Digital Binary Magic Byte Header อัตโนมัติ เพื่อป้องกันการปลอมแปลงนามสกุลไฟล์ตามมาตรฐาน ISO 27001
+        <p className="text-xs text-gray-500">
+          ระบบมีระบบตรวจสอบ Digital Binary Magic Byte Header อัตโนมัติ เพื่อป้องกันการปลอมแปลงนามสกุลไฟล์ตามมาตรฐานความปลอดภัย ISO 27001
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
           {/* Document 1: ID Card or Company Affidavit */}
           {agentType === 'Individual' ? (
             <MagicByteDropzone
@@ -103,11 +103,11 @@ export const Step3DocumentUpload: React.FC<Step3DocumentUploadProps> = ({
       </div>
 
       {/* Action Navigation */}
-      <div className="flex items-center justify-between pt-4">
+      <div className="flex items-center justify-between pt-2">
         <button
           type="button"
           onClick={onBack}
-          className="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700 transition-all"
+          className="px-5 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:text-primary hover:bg-gray-100 border border-gray-300 transition-all"
         >
           ← ย้อนกลับ
         </button>
@@ -115,9 +115,10 @@ export const Step3DocumentUpload: React.FC<Step3DocumentUploadProps> = ({
           type="button"
           onClick={onNext}
           disabled={!hasIdCard}
-          className="px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-sky-500 hover:bg-sky-400 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-sky-500/25 transition-all"
+          className="px-6 py-2.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all flex items-center space-x-2"
         >
-          ถัดไป: ตรวจสอบและยื่นใบสมัคร →
+          <span>ถัดไป: ตรวจสอบและยื่นใบสมัคร</span>
+          <span>→</span>
         </button>
       </div>
     </div>

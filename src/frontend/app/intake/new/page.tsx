@@ -158,14 +158,16 @@ export default function NewApplicationIntakePage() {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Title Bar */}
-      <div className="flex items-center space-x-3 p-4 rounded-2xl glass-panel">
-        <div className="p-2.5 rounded-xl bg-sky-500/20 text-sky-400">
+      <div className="flex items-center space-x-3 p-5 rounded-xl bg-white border border-gray-200 shadow-card">
+        <div className="p-2.5 rounded-lg bg-blue-50 text-primary">
           <FilePlus className="w-6 h-6" />
         </div>
         <div>
-          <h2 className="text-lg font-extrabold text-white">ยื่นใบสมัครตัวแทน / โบรกเกอร์ใหม่ (Application Intake Wizard)</h2>
-          <p className="text-xs text-slate-400">
-            ระบบตรวจสอบ Modulo 11 เลขบัตร ปชช. และ Magic Byte ลายเซ็นไฟล์เอกสารแบบ Real-time
+          <h2 className="text-base font-bold text-gray-900">
+            ยื่นใบสมัครตัวแทน / โบรกเกอร์ใหม่ (Application Intake Wizard)
+          </h2>
+          <p className="text-xs text-gray-500">
+            สาขา: <span className="font-semibold text-gray-800">{currentUser.branchName}</span> | ตรวจสอบ Modulo 11 บัตร ปชช. และ Magic Byte ลายเซ็นไฟล์เอกสารแบบ Real-time
           </p>
         </div>
       </div>
@@ -174,7 +176,7 @@ export default function NewApplicationIntakePage() {
       <WizardStepper currentStep={currentStep} onStepClick={(s) => setCurrentStep(s)} />
 
       {/* Step Content Card */}
-      <div className="p-6 rounded-3xl glass-panel shadow-2xl">
+      <div className="deves-card p-6 shadow-card">
         {currentStep === 1 && (
           <Step1ApplicantProfile
             agentType={agentType}

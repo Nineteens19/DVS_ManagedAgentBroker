@@ -2,63 +2,73 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import { ShieldCheck, Moon, Sun, Bell, Building2 } from 'lucide-react';
+import { Building2, Bell, ChevronRight } from 'lucide-react';
 
 export const Header: React.FC = () => {
+  const pathname = usePathname();
   const { currentUser } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+
+  const getPageTitle = (path: string) => {
+    switch (path) {
+      case '/':
+        return 'ภาพรวมระบบ (Overview Dashboard)';
+      case '/intake/new':
+        return 'ยื่นใบสมัครตัวแทน/นายหน้าใหม่ (Application Intake)';
+      case '/review':
+        return 'สนญ. ตรวจรับเอกสาร & คัดกรอง AMLO (Review)';
+      case '/approval':
+        return 'ผู้บริหารพิจารณาอนุมัติ (Executive Approval)';
+      case '/provisioning':
+        return 'ฝ่ายสินเชื่อ & 100% IT Provisioning (Core Sync)';
+      case '/archive':
+        return 'ฝ่ายกฎหมายจัดเก็บสัญญาตัวจริง (Legal Archive)';
+      case '/sla-dashboard':
+        return 'SLA Dashboard & Monitoring';
+      default:
+        return 'ระบบบริหารจัดการตัวแทนและนายหน้า';
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-3.5 transition-colors">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Brand Logo & Name */}
-        <Link href="/" className="flex items-center space-x-3 group">
-          <div className="p-2 rounded-xl bg-gradient-to-tr from-sky-600 to-cyan-400 text-white shadow-lg shadow-sky-500/25 group-hover:scale-105 transition-transform">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-base font-extrabold tracking-tight bg-gradient-to-r from-slate-100 via-sky-200 to-sky-400 bg-clip-text text-transparent">
-              AGENT & BROKER PORTAL
-            </h1>
-            <p className="text-[10px] font-semibold text-slate-400 tracking-wider">
-              ระบบบริหารจัดการตัวแทนและนายหน้าประกันภัย
-            </p>
-          </div>
-        </Link>
+    <header className="bg-white border-b border-gray-200 px-6 py-3 shadow-header sticky top-0 z-40 transition-all">
+      <div className="flex items-center justify-between">
+        {/* Left: Breadcrumbs */}
+        <div className="flex items-center space-x-2 text-xs">
+          <Link href="/" className="text-gray-500 hover:text-primary transition-colors font-medium">
+            หน้าหลัก
+          </Link>
+          {pathname !== '/' && (
+            <>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+              <span className="text-primary font-bold text-sm">{getPageTitle(pathname)}</span>
+            </>
+          )}
+        </div>
 
-        {/* Right Tools: Branch, Notifications, Theme, User */}
+        {/* Right Tools: Branch Info, Notifications, User Menu */}
         <div className="flex items-center space-x-4">
-          {/* Branch Badge */}
-          <div className="hidden sm:flex items-center space-x-1.5 px-3 py-1 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs text-slate-300">
-            <Building2 className="w-3.5 h-3.5 text-sky-400" />
-            <span className="font-medium">{currentUser.branchName}</span>
+          {/* Branch Pill */}
+          <div className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-700">
+            <Building2 className="w-3.5 h-3.5 text-primary" />
+            <span className="font-semibold text-gray-800">{currentUser.branchName}</span>
           </div>
-
-          {/* Theme Switcher */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-xl border border-slate-700/60 bg-slate-800/60 text-slate-300 hover:text-sky-400 hover:bg-slate-800 transition-colors"
-            title="สลับโหมดมืด/สว่าง"
-          >
-            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
 
           {/* Notifications */}
-          <button className="relative p-2 rounded-xl border border-slate-700/60 bg-slate-800/60 text-slate-300 hover:text-sky-400 hover:bg-slate-800 transition-colors">
+          <button className="relative p-2 rounded-lg text-gray-500 hover:text-primary hover:bg-gray-100 transition-colors">
             <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500"></span>
           </button>
 
-          {/* Active Profile Pill */}
-          <div className="flex items-center space-x-2.5 pl-2 border-l border-slate-800">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sky-500/20">
+          {/* User Avatar & Name Block */}
+          <div className="flex items-center space-x-2.5 pl-3 border-l border-gray-200">
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shadow-sm">
               {currentUser.fullName.charAt(0)}
             </div>
-            <div className="hidden md:block text-left">
-              <p className="text-xs font-bold text-slate-100">{currentUser.fullName}</p>
-              <p className="text-[10px] text-sky-400 font-medium">{currentUser.roleDisplayName}</p>
+            <div className="text-left">
+              <p className="text-xs font-bold text-gray-900 leading-tight">{currentUser.fullName}</p>
+              <p className="text-[11px] text-gray-500">{currentUser.roleDisplayName}</p>
             </div>
           </div>
         </div>

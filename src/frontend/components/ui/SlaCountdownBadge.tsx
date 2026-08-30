@@ -11,29 +11,28 @@ interface SlaCountdownBadgeProps {
 export const SlaCountdownBadge: React.FC<SlaCountdownBadgeProps> = ({
   status,
   daysRemaining,
-  slaDeadline,
 }) => {
   if (status === 'ActivePermanent') {
     return (
-      <span className="inline-flex items-center text-xs text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-500/30">
-        <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
-        สัญญาตัวจริงจัดเก็บแล้ว (Archived)
+      <span className="inline-flex items-center text-xs text-green-700 bg-green-50 px-2.5 py-1 rounded-md border border-green-200">
+        <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-green-600" />
+        จัดเก็บสัญญาแล้ว (Permanent)
       </span>
     );
   }
 
   if (status === 'Suspended30D') {
     return (
-      <span className="inline-flex items-center text-xs text-rose-400 bg-rose-950/50 px-2 py-0.5 rounded-md border border-rose-500/40 animate-pulse">
+      <span className="inline-flex items-center text-xs text-white bg-red-600 px-2.5 py-1 rounded-md font-semibold animate-pulse shadow-sm">
         <XCircle className="w-3.5 h-3.5 mr-1" />
-        ระงับสิทธิ์แล้ว (ขาดส่งสัญญา 30 วัน)
+        ระงับสิทธิ์ชั่วคราว (ขาดส่งสัญญา 30 วัน)
       </span>
     );
   }
 
   if (status === 'Terminated90D') {
     return (
-      <span className="inline-flex items-center text-xs text-slate-400 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-700 font-bold">
+      <span className="inline-flex items-center text-xs text-gray-700 bg-gray-200 px-2.5 py-1 rounded-md font-bold">
         เพิกถอนสิทธิ์ถาวร (90D Terminated)
       </span>
     );
@@ -44,8 +43,8 @@ export const SlaCountdownBadge: React.FC<SlaCountdownBadgeProps> = ({
 
     if (daysRemaining <= 3) {
       return (
-        <span className="inline-flex items-center text-xs text-rose-300 bg-rose-950/60 px-2 py-0.5 rounded-md border border-rose-500/50 animate-pulse">
-          <AlertTriangle className="w-3.5 h-3.5 mr-1 text-rose-400" />
+        <span className="inline-flex items-center text-xs text-red-800 bg-red-100 px-2.5 py-1 rounded-md border border-red-300 font-bold animate-pulse">
+          <AlertTriangle className="w-3.5 h-3.5 mr-1 text-red-600" />
           วิกฤต: เหลืออีก {daysRemaining} วัน (30D SLA)
         </span>
       );
@@ -53,16 +52,16 @@ export const SlaCountdownBadge: React.FC<SlaCountdownBadgeProps> = ({
 
     if (daysRemaining <= 7) {
       return (
-        <span className="inline-flex items-center text-xs text-amber-300 bg-amber-950/50 px-2 py-0.5 rounded-md border border-amber-500/40">
-          <Clock className="w-3.5 h-3.5 mr-1 text-amber-400" />
+        <span className="inline-flex items-center text-xs text-amber-900 bg-amber-100 px-2.5 py-1 rounded-md border border-amber-300 font-semibold">
+          <Clock className="w-3.5 h-3.5 mr-1 text-amber-600" />
           เตือน: เหลืออีก {daysRemaining} วัน (30D SLA)
         </span>
       );
     }
 
     return (
-      <span className="inline-flex items-center text-xs text-teal-300 bg-teal-950/40 px-2 py-0.5 rounded-md border border-teal-500/30">
-        <Clock className="w-3.5 h-3.5 mr-1 text-teal-400" />
+      <span className="inline-flex items-center text-xs text-blue-800 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
+        <Clock className="w-3.5 h-3.5 mr-1 text-blue-600" />
         เหลืออีก {daysRemaining} วัน (ส่งสัญญาตัวจริง)
       </span>
     );

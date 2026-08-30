@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../../services/apiClient';
-import { ApplicationListItemDto, AgentApplicationDetailDto, AttachmentDto } from '../../types/domain';
+import { ApplicationListItemDto, AgentApplicationDetailDto } from '../../types/domain';
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { Modal } from '../../components/ui/Modal';
@@ -14,7 +14,6 @@ import {
   CheckCircle2,
   XCircle,
   ShieldAlert,
-  FileCheck,
   Eye,
   FileText,
   ShieldCheck,
@@ -97,6 +96,7 @@ export default function ApprovalPage() {
     {
       header: 'เลขที่ใบสมัคร',
       accessorKey: 'applicationNumber',
+      width: '20%',
       sortable: true,
       cell: (row) => (
         <div>
@@ -107,17 +107,27 @@ export default function ApprovalPage() {
     },
     {
       header: 'ชื่อผู้สมัคร / สาขา',
+      width: '35%',
       sortable: true,
       cell: (row) => (
         <div>
-          <span className="font-semibold text-[#212529] block">{row.applicantName}</span>
-          <span className="text-[11px] text-[#6C757D]">{row.branchName}</span>
+          <div className="flex items-center space-x-1.5">
+            <span className="font-semibold text-[#212529]">{row.applicantName}</span>
+            {row.requiresDirectorApproval && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                <ShieldAlert className="w-3 h-3 mr-0.5 text-amber-700" />
+                PEP / ระดับ MD
+              </span>
+            )}
+          </div>
+          <span className="text-[11px] text-[#6C757D] block">{row.branchName}</span>
         </div>
       ),
     },
     {
       header: 'วงเงินที่ขอ (บาท)',
       accessorKey: 'requestedCreditLimit',
+      width: '18%',
       sortable: true,
       cell: (row) => (
         <span className="font-mono text-green-700 font-bold">
@@ -126,43 +136,33 @@ export default function ApprovalPage() {
       ),
     },
     {
-      header: 'การคัดกรอง / PEP Flag',
-      cell: (row) =>
-        row.requiresDirectorApproval ? (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
-            <ShieldAlert className="w-3.5 h-3.5 mr-1 text-amber-700" />
-            PEP / ระดับ MD
-          </span>
-        ) : (
-          <span className="text-[11px] text-green-700 font-medium">ปกติ (Standard)</span>
-        ),
-    },
-    {
       header: 'สถานะ',
       accessorKey: 'status',
+      width: '14%',
       cell: (row) => <StatusBadge status={row.status} />,
     },
     {
       header: 'การตัดสินใจ',
+      width: '13%',
+      className: 'text-right',
       cell: (row) => (
-        <div className="inline-flex items-center space-x-1.5 justify-end" onClick={(e) => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={() => handleRowClick(row.id)}
-            className="btn-outline !h-7 !px-2.5 !py-0 text-[11px] whitespace-nowrap inline-flex items-center space-x-1"
-            title="ดูเอกสารและรายละเอียดฉบับเต็ม"
-          >
-            <Eye className="w-3 h-3" />
-            <span>ดูข้อมูล</span>
-          </button>
-
-          {row.status === 'PendingExecutiveApproval' && (
+        <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
+          {row.status === 'PendingExecutiveApproval' ? (
             <button
               onClick={() => handleOpenDecision(row.id)}
               className="btn-primary !h-7 !px-3 !py-0 text-[11px] whitespace-nowrap inline-flex items-center space-x-1 shadow-xs"
             >
               <Award className="w-3 h-3" />
               <span>พิจารณาอนุมัติ</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleRowClick(row.id)}
+              className="btn-outline !h-7 !px-2.5 !py-0 text-[11px] whitespace-nowrap inline-flex items-center space-x-1"
+            >
+              <Eye className="w-3 h-3" />
+              <span>ดูข้อมูล</span>
             </button>
           )}
         </div>

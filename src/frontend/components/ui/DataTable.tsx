@@ -9,6 +9,7 @@ export interface Column<T> {
   cell?: (row: T) => React.ReactNode;
   sortable?: boolean;
   className?: string;
+  width?: string;
 }
 
 interface DataTableProps<T> {
@@ -74,7 +75,7 @@ export function DataTable<T extends { id: string }>({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 w-full">
       {/* Top Search & Actions Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
@@ -93,61 +94,64 @@ export function DataTable<T extends { id: string }>({
         {actions && <div className="flex items-center space-x-2">{actions}</div>}
       </div>
 
-      {/* Table Container */}
-      <div className="deves-card overflow-hidden !p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-[#DEE2E6] bg-[#F8F9FA] text-xs font-semibold text-[#6C757D] uppercase tracking-wider">
-                {columns.map((col, idx) => (
-                  <th
-                    key={idx}
-                    onClick={() => col.sortable && handleSort(col.accessorKey)}
-                    className={`py-3 px-4 whitespace-nowrap ${col.sortable ? 'cursor-pointer select-none hover:text-[#012169]' : ''} ${
-                      col.className || ''
-                    }`}
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>{col.header}</span>
-                      {col.sortable && sortKey === col.accessorKey && (
-                        sortAsc ? <ChevronUp className="w-3.5 h-3.5 text-[#012169]" /> : <ChevronDown className="w-3.5 h-3.5 text-[#012169]" />
-                      )}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#DEE2E6]/60 text-sm">
-              {paginatedData.length > 0 ? (
-                paginatedData.map((row) => (
-                  <tr
-                    key={row.id}
-                    onClick={() => onRowClick && onRowClick(row)}
-                    className={`transition-colors ${
-                      onRowClick ? 'cursor-pointer hover:bg-[#F8F9FA]' : 'hover:bg-[#F8F9FA]'
-                    }`}
-                  >
-                    {columns.map((col, cIdx) => (
-                      <td key={cIdx} className={`py-3 px-4 text-[#212529] whitespace-nowrap ${col.className || ''}`}>
-                        {col.cell ? col.cell(row) : col.accessorKey ? String(row[col.accessorKey] ?? '-') : '-'}
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={columns.length} className="py-12 text-center text-[#6C757D]">
-                    <Inbox className="w-10 h-10 mx-auto text-gray-300 mb-2" />
-                    <p className="font-medium text-sm">ไม่พบข้อมูลที่ค้นหา</p>
-                  </td>
+      {/* Table Container - Fits 100% width cleanly */}
+      <div className="deves-card overflow-hidden !p-0 w-full">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b border-[#DEE2E6] bg-[#F8F9FA] text-[11px] font-semibold text-[#6C757D] uppercase tracking-wider">
+              {columns.map((col, idx) => (
+                <th
+                  key={idx}
+                  style={col.width ? { width: col.width } : undefined}
+                  onClick={() => col.sortable && handleSort(col.accessorKey)}
+                  className={`py-3 px-3.5 ${col.sortable ? 'cursor-pointer select-none hover:text-[#012169]' : ''} ${
+                    col.className || ''
+                  }`}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>{col.header}</span>
+                    {col.sortable && sortKey === col.accessorKey && (
+                      sortAsc ? <ChevronUp className="w-3.5 h-3.5 text-[#012169]" /> : <ChevronDown className="w-3.5 h-3.5 text-[#012169]" />
+                    )}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#DEE2E6]/60 text-xs">
+            {paginatedData.length > 0 ? (
+              paginatedData.map((row) => (
+                <tr
+                  key={row.id}
+                  onClick={() => onRowClick && onRowClick(row)}
+                  className={`transition-colors ${
+                    onRowClick ? 'cursor-pointer hover:bg-blue-50/40' : 'hover:bg-[#F8F9FA]'
+                  }`}
+                >
+                  {columns.map((col, cIdx) => (
+                    <td
+                      key={cIdx}
+                      style={col.width ? { width: col.width } : undefined}
+                      className={`py-3 px-3.5 text-[#212529] ${col.className || ''}`}
+                    >
+                      {col.cell ? col.cell(row) : col.accessorKey ? String(row[col.accessorKey] ?? '-') : '-'}
+                    </td>
+                  ))}
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={columns.length} className="py-12 text-center text-[#6C757D]">
+                  <Inbox className="w-10 h-10 mx-auto text-gray-300 mb-2" />
+                  <p className="font-medium text-sm">ไม่พบข้อมูลที่ค้นหา</p>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
         {/* Pagination Bar */}
-        <div className="flex items-center justify-between px-4 py-3 border-t border-[#DEE2E6] bg-[#F8F9FA] text-xs text-[#6C757D]">
+        <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#DEE2E6] bg-[#F8F9FA] text-xs text-[#6C757D]">
           <div>
             แสดง {sortedData.length > 0 ? (page - 1) * pageSize + 1 : 0} ถึง{' '}
             {Math.min(page * pageSize, sortedData.length)} จากทั้งหมด {sortedData.length} รายการ

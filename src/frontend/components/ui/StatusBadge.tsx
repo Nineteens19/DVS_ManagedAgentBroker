@@ -14,22 +14,19 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className = ''
         return 'badge-draft';
       case 'Submitted':
       case 'PendingHeadOfficeReview':
+      case 'PendingExecutiveApproval':
         return 'badge-pending';
       case 'DeficiencyPendingBranch':
         return 'badge-returned';
-      case 'PendingExecutiveApproval':
-        return 'badge-pending font-semibold';
       case 'ExecutiveRejected':
         return 'badge-rejected';
       case 'ReviewPremium':
       case 'CoreAutoProvisioning':
-        return 'badge-normal';
       case 'ActiveTemporary':
-        return 'bg-blue-50 text-blue-700 border border-blue-200';
+        return 'badge-normal';
       case 'Suspended30D':
-        return 'badge-urgent';
       case 'Terminated90D':
-        return 'bg-gray-800 text-white border border-gray-900 font-bold';
+        return 'badge-urgent';
       case 'ActivePermanent':
         return 'badge-approved font-semibold';
       default:
@@ -39,7 +36,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className = ''
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${getBadgeClass(
+      className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold ${getBadgeClass(
         status
       )} ${className}`}
     >

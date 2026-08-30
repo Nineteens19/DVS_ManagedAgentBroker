@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -19,16 +17,20 @@
     --info: #17A2B8;
   }
 
+  * {
+    font-family: var(--font-sarabun), 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
   body {
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #F8F9FA;
+    color: #212529;
+    font-family: var(--font-sarabun), 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Prompt', 'Sarabun', sans-serif;
+  input, button, select, textarea {
+    font-family: inherit;
   }
 }
 
@@ -36,29 +38,25 @@
 .deves-card {
   background-color: #FFFFFF;
   border-radius: 0.75rem;
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  transition: all 0.2s ease-in-out;
-}
-
-.deves-card:hover {
-  box-shadow: 0 4px 12px rgba(1, 33, 105, 0.06);
+  border: 1px solid #DEE2E6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem;
 }
 
 .deves-summary-card {
   background-color: #FFFFFF;
   border-radius: 0.75rem;
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #DEE2E6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   padding: 1.25rem;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .deves-summary-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(1, 33, 105, 0.08);
+  box-shadow: 0 4px 12px rgba(1, 33, 105, 0.08);
 }
 
 /* Deves Form Control Inputs */
@@ -79,7 +77,50 @@
   box-shadow: 0 0 0 3px rgba(1, 33, 105, 0.15);
 }
 
-/* Deves Status Badges */
+/* Deves Buttons */
+.btn-primary {
+  background-color: #012169;
+  color: #FFFFFF;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #001a52;
+  box-shadow: 0 2px 6px rgba(1, 33, 105, 0.25);
+}
+
+.btn-secondary {
+  background-color: #FFCD00;
+  color: #012169;
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-secondary:hover {
+  background-color: #e6b800;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: #012169;
+  border: 1px solid #012169;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-outline:hover {
+  background-color: #012169;
+  color: #FFFFFF;
+}
+
+/* Deves Status Badges (Strict Spec) */
 .badge-pending {
   background-color: #FFF3CD;
   color: #856404;
@@ -137,7 +178,7 @@
   }
 }
 
-/* Custom Clean Scrollbars */
+/* Clean Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

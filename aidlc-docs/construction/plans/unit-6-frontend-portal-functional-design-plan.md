@@ -7,23 +7,23 @@ This plan details the functional specifications for **Unit 6: Next.js Enterprise
 
 ## Execution Checklist (Part 1: Planning)
 
-- [ ] **Step 1: Define Frontend UI Models & Page Specs (`domain-entities.md`)**
-  - [ ] Persona views (Branch Officer, HO Reviewer, MD Executive, Premium Reviewer, Legal Auditor, Admin)
-  - [ ] Multi-step application intake wizard state models
-  - [ ] Dashboard metrics, SLA countdown badges, and status indicator components
+- [x] **Step 1: Define Frontend UI Models & Page Specs (`domain-entities.md`)**
+  - [x] Persona views (Branch Officer, HO Reviewer, MD Executive, Premium Reviewer, Legal Auditor, Admin)
+  - [x] Multi-step application intake wizard state models
+  - [x] Dashboard metrics, SLA countdown badges, and status indicator components
 
-- [ ] **Step 2: Define UI User Journeys & State Transitions (`business-logic-model.md`)**
-  - [ ] Branch Intake Journey: Draft creation, live Modulo 11 check, document drag & drop, submission
-  - [ ] Head Office Journey: Review queue, deficiency rejection checklist, compliance screening
-  - [ ] Executive Approval Journey: One-click approval/rejection with PEP/Orange warning modal
-  - [ ] Premium Review & Provisioning Journey: Credit limit approval & live core sync progress
-  - [ ] Legal Archive Journey: Physical contract box number assignment & ActivePermanent upgrade
-  - [ ] SLA Dashboard Journey: Active temporary countdown, 30-day suspension, 90-day termination tracking
+- [x] **Step 2: Define UI User Journeys & State Transitions (`business-logic-model.md`)**
+  - [x] Branch Intake Journey: Draft creation, live Modulo 11 check, document drag & drop, submission
+  - [x] Head Office Journey: Review queue, deficiency rejection checklist, compliance screening
+  - [x] Executive Approval Journey: One-click approval/rejection with PEP/Orange warning modal
+  - [x] Premium Review & Provisioning Journey: Credit limit approval & live core sync progress
+  - [x] Legal Archive Journey: Physical contract box number assignment & ActivePermanent upgrade
+  - [x] SLA Dashboard Journey: Active temporary countdown, 30-day suspension, 90-day termination tracking
 
-- [ ] **Step 3: Define UI Business Rules & Client Validations (`business-rules.md`)**
-  - [ ] Form validation rules (Thai National ID, credit limit thresholds, file type filters)
-  - [ ] Role-based menu and button visibility matrices
-  - [ ] Confirmation modals and feedback banners
+- [x] **Step 3: Define UI Business Rules & Client Validations (`business-rules.md`)**
+  - [x] Form validation rules (Thai National ID, credit limit thresholds, file type filters)
+  - [x] Role-based menu and button visibility matrices
+  - [x] Confirmation modals and feedback banners
 
 ---
 
@@ -42,7 +42,7 @@ B) บังคับให้ต้อง Logout แล้วพิมพ์ Us
 
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A
 
 ---
 
@@ -59,7 +59,7 @@ B) Single Long Form: กรอกทุกอย่างรวมอยู่�
 
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A
 
 ---
 
@@ -74,6 +74,6 @@ B) บังคับต่อเชื่อม Live Backend API เท่า�
 
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A
 
 ---

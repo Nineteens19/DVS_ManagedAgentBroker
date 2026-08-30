@@ -15,51 +15,63 @@ export const WizardStepper: React.FC<WizardStepperProps> = ({ currentStep, onSte
   ];
 
   return (
-    <div className="w-full py-2 mb-6">
-      <div className="flex items-center justify-between relative max-w-3xl mx-auto">
-        {/* Background Connecting Line */}
-        <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2 z-0 rounded-full" />
-        <div
-          className="absolute top-1/2 left-0 h-1 bg-primary -translate-y-1/2 z-0 rounded-full transition-all duration-300"
-          style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
-        />
-
-        {steps.map((step) => {
+    <div className="w-full bg-white rounded-xl border border-[#DEE2E6] p-4 shadow-sm">
+      <div className="flex items-start max-w-2xl mx-auto">
+        {steps.map((step, idx) => {
           const isCompleted = currentStep > step.number;
           const isActive = currentStep === step.number;
+          const isLast = idx === steps.length - 1;
 
           return (
-            <div
-              key={step.number}
-              onClick={() => onStepClick && isCompleted && onStepClick(step.number)}
-              className={`relative z-10 flex flex-col items-center ${
-                isCompleted ? 'cursor-pointer' : ''
-              }`}
-            >
+            <React.Fragment key={step.number}>
+              {/* Step Item */}
               <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all shadow-sm ${
-                  isActive
-                    ? 'bg-primary text-secondary ring-4 ring-primary/20 scale-110 shadow-md font-bold'
-                    : isCompleted
-                    ? 'bg-green-600 text-white'
-                    : 'bg-white text-gray-400 border-2 border-gray-300'
+                onClick={() => onStepClick && isCompleted && onStepClick(step.number)}
+                className={`flex flex-col items-center flex-1 ${
+                  isCompleted ? 'cursor-pointer' : ''
                 }`}
               >
-                {step.icon}
+                {/* Circle Icon (w-10 h-10 -> 40px, center at 20px) */}
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
+                    isActive
+                      ? 'bg-[#012169] text-[#FFCD00] ring-4 ring-[#012169]/15 shadow-md scale-105'
+                      : isCompleted
+                      ? 'bg-[#28A745] text-white shadow-xs'
+                      : 'bg-[#F8F9FA] text-[#6C757D] border-2 border-[#DEE2E6]'
+                  }`}
+                >
+                  {step.icon}
+                </div>
+
+                {/* Step Labels */}
+                <span
+                  className={`mt-2 text-xs text-center leading-tight transition-colors ${
+                    isActive
+                      ? 'text-[#012169] font-bold'
+                      : isCompleted
+                      ? 'text-[#212529] font-semibold'
+                      : 'text-[#6C757D]'
+                  }`}
+                >
+                  {step.label}
+                </span>
+                <span className="text-[10px] text-[#6C757D] hidden sm:block mt-0.5">
+                  {step.desc}
+                </span>
               </div>
-              <span
-                className={`mt-2 text-xs font-semibold text-center transition-colors ${
-                  isActive
-                    ? 'text-primary font-bold'
-                    : isCompleted
-                    ? 'text-gray-800'
-                    : 'text-gray-400'
-                }`}
-              >
-                {step.label}
-              </span>
-              <span className="text-[10px] text-gray-400 hidden sm:inline">{step.desc}</span>
-            </div>
+
+              {/* Symmetric Connector Bar */}
+              {!isLast && (
+                <div className="flex-1 self-start mt-5 px-1">
+                  <div
+                    className={`h-0.5 w-full rounded-full transition-all duration-300 ${
+                      currentStep > step.number ? 'bg-[#012169]' : 'bg-[#DEE2E6]'
+                    }`}
+                  />
+                </div>
+              )}
+            </React.Fragment>
           );
         })}
       </div>

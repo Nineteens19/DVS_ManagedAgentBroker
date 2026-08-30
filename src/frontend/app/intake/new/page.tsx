@@ -156,27 +156,27 @@ export default function NewApplicationIntakePage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Title Bar */}
-      <div className="flex items-center space-x-3 p-5 rounded-xl bg-white border border-gray-200 shadow-card">
-        <div className="p-2.5 rounded-lg bg-blue-50 text-primary">
+    <div className="space-y-5 max-w-4xl mx-auto pb-10">
+      {/* 1. Title Banner */}
+      <div className="deves-card p-5 flex items-center space-x-3.5">
+        <div className="p-2.5 rounded-lg bg-[#012169]/10 text-[#012169] flex-shrink-0">
           <FilePlus className="w-6 h-6" />
         </div>
         <div>
-          <h2 className="text-base font-bold text-gray-900">
+          <h2 className="text-base font-bold text-[#212529]">
             ยื่นใบสมัครตัวแทน / โบรกเกอร์ใหม่ (Application Intake Wizard)
           </h2>
-          <p className="text-xs text-gray-500">
-            สาขา: <span className="font-semibold text-gray-800">{currentUser.branchName}</span> | ตรวจสอบ Modulo 11 บัตร ปชช. และ Magic Byte ลายเซ็นไฟล์เอกสารแบบ Real-time
+          <p className="text-xs text-[#6C757D] mt-0.5">
+            สาขา: <span className="font-semibold text-[#012169]">{currentUser.branchName}</span> | ตรวจสอบ Modulo 11 บัตร ปชช. และ Magic Byte ลายเซ็นไฟล์เอกสารแบบ Real-time
           </p>
         </div>
       </div>
 
-      {/* 4-Step Stepper */}
+      {/* 2. Symmetrical 4-Step Stepper */}
       <WizardStepper currentStep={currentStep} onStepClick={(s) => setCurrentStep(s)} />
 
-      {/* Step Content Card */}
-      <div className="deves-card p-6 shadow-card">
+      {/* 3. Step Content (Clean unnested layout) */}
+      <div className="pt-1">
         {currentStep === 1 && (
           <Step1ApplicantProfile
             agentType={agentType}

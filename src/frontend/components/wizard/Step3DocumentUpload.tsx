@@ -34,15 +34,15 @@ export const Step3DocumentUpload: React.FC<Step3DocumentUploadProps> = ({
   const hasIdCard = attachments.some((a) => a.documentType === 'IdCardCopy' || a.documentType === 'CompanyAffidavit');
 
   return (
-    <div className="space-y-6">
-      <div className="deves-card p-6 space-y-4">
-        <div className="flex items-center space-x-2 text-primary pb-2 border-b border-gray-200">
-          <FileCheck className="w-5 h-5" />
-          <h4 className="text-sm font-bold text-gray-900">
+    <div className="space-y-5">
+      <div className="deves-card p-5 space-y-4">
+        <div className="flex items-center space-x-2 text-[#012169] pb-2 border-b border-[#DEE2E6]">
+          <FileCheck className="w-4 h-4" />
+          <h4 className="text-xs font-bold text-[#212529]">
             อัปโหลดเอกสารแนบประกอบการพิจารณา (Document Attachments & Magic Byte Verification)
           </h4>
         </div>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-[#6C757D]">
           ระบบมีระบบตรวจสอบ Digital Binary Magic Byte Header อัตโนมัติ เพื่อป้องกันการปลอมแปลงนามสกุลไฟล์ตามมาตรฐานความปลอดภัย ISO 27001
         </p>
 
@@ -107,7 +107,7 @@ export const Step3DocumentUpload: React.FC<Step3DocumentUploadProps> = ({
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center space-x-1.5 px-5 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:text-primary hover:bg-gray-100 border border-gray-300 transition-all"
+          className="btn-outline flex items-center space-x-1.5 text-xs"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>ย้อนกลับ</span>
@@ -116,7 +116,7 @@ export const Step3DocumentUpload: React.FC<Step3DocumentUploadProps> = ({
           type="button"
           onClick={onNext}
           disabled={!hasIdCard}
-          className="px-6 py-2.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all flex items-center space-x-2"
+          className="btn-primary flex items-center space-x-2 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span>ถัดไป: ตรวจสอบและยื่นใบสมัคร</span>
           <ArrowRight className="w-4 h-4" />

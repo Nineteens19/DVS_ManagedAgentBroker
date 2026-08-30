@@ -3,6 +3,7 @@
   <Folder Name="/src/backend/">
     <Project Path="src/backend/ManagedAgentBroker.Domain/ManagedAgentBroker.Domain.csproj" />
     <Project Path="src/backend/ManagedAgentBroker.Infrastructure/ManagedAgentBroker.Infrastructure.csproj" />
+    <Project Path="src/backend/ManagedAgentBroker.API/ManagedAgentBroker.API.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/backend/">

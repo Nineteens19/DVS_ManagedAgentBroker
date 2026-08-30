@@ -81,12 +81,12 @@ This plan details the step-by-step implementation tasks for **Unit 5: Automated 
 
 ## Execution Checklist
 
-- [ ] Step 1: Implement `ProvisioningDtos.cs`
-- [ ] Step 2: Implement `ProvisioningSettings.cs`
-- [ ] Step 3: Implement `IDevesMasterApiClient.cs` & `DevesMasterApiClient.cs`
-- [ ] Step 4: Implement `ICoreProvisioningService.cs` & `CoreProvisioningService.cs`
-- [ ] Step 5: Implement `ISlaMonitoringService.cs` & `SlaMonitoringService.cs`
-- [ ] Step 6: Implement `SlaMonitoringBackgroundService.cs`
-- [ ] Step 7: Implement `IHardCopyArchiveService.cs` & `HardCopyArchiveService.cs`
-- [ ] Step 8: Update `DependencyInjection.cs`
-- [ ] Step 9: Implement and execute test suites (PBT-06 + Unit Tests)
+- [x] Step 1: Implement `ProvisioningDtos.cs`
+- [x] Step 2: Implement `ProvisioningSettings.cs`
+- [x] Step 3: Implement `IDevesMasterApiClient.cs` & `DevesMasterApiClient.cs`
+- [x] Step 4: Implement `ICoreProvisioningService.cs` & `CoreProvisioningService.cs`
+- [x] Step 5: Implement `ISlaMonitoringService.cs` & `SlaMonitoringService.cs`
+- [x] Step 6: Implement `SlaMonitoringBackgroundService.cs`
+- [x] Step 7: Implement `IHardCopyArchiveService.cs` & `HardCopyArchiveService.cs`
+- [x] Step 8: Update `DependencyInjection.cs`
+- [x] Step 9: Implement and execute test suites (PBT-06 + Unit Tests)

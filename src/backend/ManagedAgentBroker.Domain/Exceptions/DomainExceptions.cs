@@ -26,4 +26,17 @@ namespace ManagedAgentBroker.Domain.Exceptions
             RuleCode = ruleCode;
         }
     }
+
+    public class EntityNotFoundException : Exception
+    {
+        public string EntityName { get; }
+        public object Key { get; }
+
+        public EntityNotFoundException(string entityName, object key)
+            : base($"Entity '{entityName}' with key '{key}' was not found.")
+        {
+            EntityName = entityName;
+            Key = key;
+        }
+    }
 }

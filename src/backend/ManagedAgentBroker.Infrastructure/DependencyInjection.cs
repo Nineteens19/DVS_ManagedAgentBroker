@@ -52,6 +52,15 @@ namespace ManagedAgentBroker.Infrastructure
             services.AddScoped<IComplianceScreeningService, ComplianceScreeningService>();
             services.AddScoped<IApprovalWorkflowService, ApprovalWorkflowService>();
 
+            // Unit 5 Automated Provisioning & Background SLA Daemon
+            services.Configure<Configuration.ProvisioningSettings>(options =>
+                configuration.GetSection(Configuration.ProvisioningSettings.SectionName).Bind(options));
+            services.AddScoped<IDevesMasterApiClient, DevesMasterApiClient>();
+            services.AddScoped<ICoreProvisioningService, CoreProvisioningService>();
+            services.AddScoped<ISlaMonitoringService, SlaMonitoringService>();
+            services.AddScoped<IHardCopyArchiveService, HardCopyArchiveService>();
+            services.AddHostedService<SlaMonitoringBackgroundService>();
+
             // Persistence
             services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {

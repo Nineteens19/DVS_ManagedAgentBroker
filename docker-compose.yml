@@ -4,6 +4,7 @@ services:
     container_name: agentbroker-db
     platform: linux/amd64
     user: root
+    restart: unless-stopped
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Password123!
@@ -20,6 +21,7 @@ services:
       context: .
       dockerfile: src/backend/Dockerfile
     container_name: agentbroker-api
+    restart: unless-stopped
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=database,1433;Database=ManagedAgentBrokerDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
@@ -36,6 +38,7 @@ services:
       context: ./src/frontend
       dockerfile: Dockerfile
     container_name: agentbroker-portal
+    restart: unless-stopped
     environment:
       - NEXT_PUBLIC_API_URL=http://backend-api:8080/api
       - NEXT_PUBLIC_ENABLE_DEMO_MODE=true

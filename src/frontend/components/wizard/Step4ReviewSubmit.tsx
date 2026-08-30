@@ -3,7 +3,7 @@
 import React from 'react';
 import { AgentType, AgentProfileDto, GuarantorDto, CollateralDto, AttachmentDto } from '../../types/domain';
 import { PiiMaskedField } from '../ui/PiiMaskedField';
-import { CheckCircle2, User, ShieldCheck, Landmark, FileText, Send, Save } from 'lucide-react';
+import { CheckCircle2, User, ShieldCheck, Landmark, FileText, Send, Save, ArrowLeft } from 'lucide-react';
 
 interface Step4ReviewSubmitProps {
   agentType: AgentType;
@@ -153,7 +153,10 @@ export const Step4ReviewSubmit: React.FC<Step4ReviewSubmitProps> = ({
               {attachments.map((att) => (
                 <div key={att.id} className="flex items-center justify-between text-xs text-gray-800 bg-gray-50 px-2.5 py-1.5 rounded border border-gray-200">
                   <span className="truncate max-w-[200px]">{att.fileName}</span>
-                  <span className="text-[11px] text-green-700 font-semibold font-mono">Magic Byte OK ✓</span>
+                  <span className="text-[11px] text-green-700 font-semibold font-mono flex items-center space-x-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-600 inline mr-1" />
+                    <span>Magic Byte Valid</span>
+                  </span>
                 </div>
               ))}
             </div>
@@ -166,9 +169,10 @@ export const Step4ReviewSubmit: React.FC<Step4ReviewSubmitProps> = ({
         <button
           type="button"
           onClick={onBack}
-          className="px-5 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:text-primary hover:bg-gray-100 border border-gray-300 transition-all"
+          className="flex items-center space-x-1.5 px-5 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:text-primary hover:bg-gray-100 border border-gray-300 transition-all"
         >
-          ← ย้อนกลับ
+          <ArrowLeft className="w-4 h-4" />
+          <span>ย้อนกลับ</span>
         </button>
 
         <div className="flex items-center space-x-3">

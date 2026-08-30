@@ -4,11 +4,14 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import { Building2, Bell, ChevronRight } from 'lucide-react';
+import { Building2, Bell, ChevronRight, LogOut, UserCheck } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const pathname = usePathname();
   const { currentUser } = useAuth();
+
+  // If on login page, don't render standard header
+  if (pathname === '/login') return null;
 
   const getPageTitle = (path: string) => {
     switch (path) {
@@ -47,13 +50,23 @@ export const Header: React.FC = () => {
           )}
         </div>
 
-        {/* Right Tools: Branch Info, Notifications, User Menu */}
-        <div className="flex items-center space-x-4">
+        {/* Right Tools: Branch Info, Switch Role / Login, User Menu */}
+        <div className="flex items-center space-x-3">
           {/* Branch Pill */}
           <div className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-700">
             <Building2 className="w-3.5 h-3.5 text-primary" />
             <span className="font-semibold text-gray-800">{currentUser.branchName}</span>
           </div>
+
+          {/* Switch Role / Login Quick Link */}
+          <Link
+            href="/login"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-primary hover:bg-blue-50 border border-primary/30 transition-colors"
+            title="ไปที่หน้าเข้าสู่ระบบเพื่อสลับบทบาทการทดสอบ"
+          >
+            <UserCheck className="w-3.5 h-3.5 text-primary" />
+            <span className="hidden md:inline">สลับบทบาท (Demo Role)</span>
+          </Link>
 
           {/* Notifications */}
           <button className="relative p-2 rounded-lg text-gray-500 hover:text-primary hover:bg-gray-100 transition-colors">
@@ -66,10 +79,17 @@ export const Header: React.FC = () => {
             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shadow-sm">
               {currentUser.fullName.charAt(0)}
             </div>
-            <div className="text-left">
+            <div className="text-left hidden sm:block">
               <p className="text-xs font-bold text-gray-900 leading-tight">{currentUser.fullName}</p>
               <p className="text-[11px] text-gray-500">{currentUser.roleDisplayName}</p>
             </div>
+            <Link
+              href="/login"
+              className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors ml-1"
+              title="ออกจากระบบ"
+            >
+              <LogOut className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </div>

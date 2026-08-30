@@ -9,7 +9,7 @@ import { DataTable, Column } from '../../components/ui/DataTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { SlaCountdownBadge } from '../../components/ui/SlaCountdownBadge';
 import { Modal } from '../../components/ui/Modal';
-import { Archive, Box, FileCheck, ShieldCheck } from 'lucide-react';
+import { Archive, Box, FileCheck, ShieldCheck, Check } from 'lucide-react';
 
 export default function LegalArchivePage() {
   const queryClient = useQueryClient();
@@ -103,7 +103,16 @@ export default function LegalArchivePage() {
           }`}
         >
           <Box className="w-3.5 h-3.5" />
-          <span>{row.status === 'ActivePermanent' ? 'จัดเก็บแล้ว ✓' : 'ลงทะเบียนจัดเก็บกล่อง'}</span>
+          <span className="flex items-center space-x-1">
+            {row.status === 'ActivePermanent' ? (
+              <>
+                <Check className="w-3.5 h-3.5 mr-1 inline" />
+                <span>จัดเก็บแล้ว</span>
+              </>
+            ) : (
+              <span>ลงทะเบียนจัดเก็บกล่อง</span>
+            )}
+          </span>
         </button>
       ),
     },

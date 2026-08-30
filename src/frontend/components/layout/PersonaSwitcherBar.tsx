@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/domain';
-import { Users, Shield, CheckCircle, Award, FileSpreadsheet, Lock } from 'lucide-react';
+import { Users, Shield, CheckCircle, Award, FileSpreadsheet, Lock, LogIn } from 'lucide-react';
 
 export const PersonaSwitcherBar: React.FC = () => {
-  const { currentUser, switchPersona } = useAuth();
+  const { currentUser, loginAsPersona } = useAuth();
 
   const personas: { role: UserRole; title: string; desc: string; icon: React.ReactNode }[] = [
     {
@@ -51,13 +52,17 @@ export const PersonaSwitcherBar: React.FC = () => {
     <div className="bg-[#001744] text-white border-b border-[#FFCD00]/30 px-4 py-2 text-xs shadow-sm">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
         <div className="flex items-center space-x-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#FFCD00] animate-pulse"></span>
+          <span className="inline-block w-2 h-2 rounded-full bg-[#FFCD00]"></span>
           <span className="font-bold text-[#FFCD00] tracking-wide">
             DEMO PERSONA SWITCHER:
           </span>
-          <span className="text-gray-300 text-[11px] hidden sm:inline">
-            (คลิกสลับบทบาทเพื่อทดสอบสิทธิ์ในแต่ละขั้นตอน)
-          </span>
+          <Link
+            href="/login"
+            className="text-gray-300 hover:text-white underline text-[11px] ml-2 flex items-center space-x-1"
+          >
+            <LogIn className="w-3 h-3 text-secondary inline" />
+            <span>ไปที่หน้า Login หลัก</span>
+          </Link>
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
@@ -66,16 +71,15 @@ export const PersonaSwitcherBar: React.FC = () => {
             return (
               <button
                 key={p.role}
-                onClick={() => switchPersona(p.role)}
+                onClick={() => loginAsPersona(p.role)}
                 className={`flex items-center space-x-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all ${
                   isActive
-                    ? 'bg-[#FFCD00] text-[#012169] font-bold shadow-md scale-105 ring-2 ring-[#FFCD00]/50'
+                    ? 'bg-[#FFCD00] text-[#012169] font-bold shadow-md ring-2 ring-[#FFCD00]/50'
                     : 'bg-white/10 text-white hover:bg-white/20'
                 }`}
               >
                 {p.icon}
                 <span>{p.title}</span>
-                <span className="text-[10px] opacity-75 hidden lg:inline">({p.desc})</span>
               </button>
             );
           })}

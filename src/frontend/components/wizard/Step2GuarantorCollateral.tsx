@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { GuarantorDto, CollateralDto, CollateralType } from '../../types/domain';
 import { validateThaiNationalId } from '../../services/fileValidation';
-import { ShieldCheck, Landmark, CreditCard, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, Landmark, CreditCard, AlertTriangle, ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface Step2GuarantorCollateralProps {
   guarantor?: GuarantorDto;
@@ -324,9 +324,10 @@ export const Step2GuarantorCollateral: React.FC<Step2GuarantorCollateralProps> =
         <button
           type="button"
           onClick={onBack}
-          className="px-5 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:text-primary hover:bg-gray-100 border border-gray-300 transition-all"
+          className="flex items-center space-x-1.5 px-5 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:text-primary hover:bg-gray-100 border border-gray-300 transition-all"
         >
-          ← ย้อนกลับ
+          <ArrowLeft className="w-4 h-4" />
+          <span>ย้อนกลับ</span>
         </button>
         <button
           type="button"
@@ -335,7 +336,7 @@ export const Step2GuarantorCollateral: React.FC<Step2GuarantorCollateralProps> =
           className="px-6 py-2.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all flex items-center space-x-2"
         >
           <span>ถัดไป: อัปโหลดเอกสารแนบ</span>
-          <span>→</span>
+          <ArrowRight className="w-4 h-4" />
         </button>
       </div>
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserRole, UserProfile } from '../types/domain';
 
 export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
@@ -12,7 +12,7 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
     roleDisplayName: 'เจ้าหน้าที่สาขา (Branch Officer)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
-    email: 'naree.bkk@insurance-broker.com',
+    email: 'naree.bkk@deves.co.th',
   },
   ho_reviewer: {
     userId: 'usr-ho-01',
@@ -22,17 +22,17 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
     roleDisplayName: 'เจ้าหน้าที่ตรวจรับ สนญ. (HO Reviewer)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
-    email: 'piyachat.ho@insurance-broker.com',
+    email: 'piyachat.ho@deves.co.th',
   },
   approver_md: {
     userId: 'usr-md-01',
     username: 'md.executive',
-    fullName: 'ดร. กิตติภพ กรรมการผู้จัดการ (MD)',
+    fullName: 'ดร. กิตติภพ กรรมการผู้จัดการ',
     role: 'approver_md',
-    roleDisplayName: 'ผู้บริหารผู้อนุมัติ (Executive Approver / MD)',
+    roleDisplayName: 'กรรมการผู้จัดการ (Managing Director)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
-    email: 'kittipob.md@insurance-broker.com',
+    email: 'kittipob.md@deves.co.th',
   },
   premium_reviewer: {
     userId: 'usr-prem-01',
@@ -42,7 +42,7 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
     roleDisplayName: 'ฝ่ายสินเชื่อ & รหัสตัวแทน (Premium Reviewer)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
-    email: 'montri.prem@insurance-broker.com',
+    email: 'montri.prem@deves.co.th',
   },
   auditor_legal: {
     userId: 'usr-legal-01',
@@ -52,7 +52,7 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
     roleDisplayName: 'ฝ่ายกฎหมายจัดเก็บเอกสาร (Legal Auditor)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
-    email: 'tatsanee.legal@insurance-broker.com',
+    email: 'tatsanee.legal@deves.co.th',
   },
   admin: {
     userId: 'usr-admin-01',
@@ -62,13 +62,15 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
     roleDisplayName: 'ผู้ดูแลระบบ (Administrator)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
-    email: 'admin@insurance-broker.com',
+    email: 'admin@deves.co.th',
   },
 };
 
 interface AuthContextType {
   currentUser: UserProfile;
-  switchPersona: (role: UserRole) => void;
+  isAuthenticated: boolean;
+  loginAsPersona: (role: UserRole) => void;
+  logout: () => void;
   canCreateApplication: boolean;
   canReviewCompliance: boolean;
   canApproveExecutive: boolean;
@@ -78,11 +80,37 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const AUTH_STORAGE_KEY = 'deves_auth_persona';
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<UserProfile>(PRESET_PERSONAS.branch_officer);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-  const switchPersona = (role: UserRole) => {
-    setCurrentUser(PRESET_PERSONAS[role]);
+  // Restore saved role on client mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (saved && PRESET_PERSONAS[saved as UserRole]) {
+        setCurrentUser(PRESET_PERSONAS[saved as UserRole]);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const loginAsPersona = (role: UserRole) => {
+    const persona = PRESET_PERSONAS[role] || PRESET_PERSONAS.branch_officer;
+    setCurrentUser(persona);
+    setIsAuthenticated(true);
+    try {
+      localStorage.setItem(AUTH_STORAGE_KEY, role);
+    } catch {
+      // ignore
+    }
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
   };
 
   const canCreateApplication = currentUser.role === 'branch_officer' || currentUser.role === 'admin';
@@ -95,7 +123,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider
       value={{
         currentUser,
-        switchPersona,
+        isAuthenticated,
+        loginAsPersona,
+        logout,
         canCreateApplication,
         canReviewCompliance,
         canApproveExecutive,

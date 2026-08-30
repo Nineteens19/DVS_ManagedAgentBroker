@@ -9,7 +9,7 @@ import { DataTable, Column } from '../../components/ui/DataTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { PiiMaskedField } from '../../components/ui/PiiMaskedField';
 import { Modal } from '../../components/ui/Modal';
-import { ClipboardCheck, ShieldCheck, Send, FileX2, Eye } from 'lucide-react';
+import { ClipboardCheck, ShieldCheck, Send, FileX2, Eye, Zap, CheckCircle2, AlertTriangle, AlertCircle } from 'lucide-react';
 
 export default function HeadOfficeReviewPage() {
   const queryClient = useQueryClient();
@@ -198,9 +198,10 @@ export default function HeadOfficeReviewPage() {
                   type="button"
                   onClick={() => complianceMutation.mutate(selectedApp.id)}
                   disabled={complianceMutation.isPending}
-                  className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-50 transition-all shadow-sm"
+                  className="flex items-center space-x-1.5 px-4 py-2 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-50 transition-all shadow-sm"
                 >
-                  {complianceMutation.isPending ? 'กำลังประมวลผล...' : '⚡ รันตรวจคัดกรอง Sanctions (AMLO/OIC)'}
+                  <Zap className="w-3.5 h-3.5 text-secondary" />
+                  <span>{complianceMutation.isPending ? 'กำลังประมวลผล...' : 'รันตรวจคัดกรอง Sanctions (AMLO/OIC)'}</span>
                 </button>
               </div>
 
@@ -216,18 +217,32 @@ export default function HeadOfficeReviewPage() {
                     }`}
                   >
                     <span className="font-bold block">สถานะ AMLO (ปปง.):</span>
-                    <span className="font-medium mt-0.5 block">
-                      {selectedApp.complianceRecord.amloStatus === 'Clear'
-                        ? '🟢 ปกติ (Clear) — ไม่พบบุคคลต้องห้าม'
-                        : selectedApp.complianceRecord.amloStatus === 'PepOrange'
-                        ? '🟠 PEP / Orange Flag (ต้องระดับ MD อนุมัติ)'
-                        : '🔴 บุคคลถูกกำหนด (Designated Entity)'}
+                    <span className="font-medium mt-0.5 flex items-center space-x-1">
+                      {selectedApp.complianceRecord.amloStatus === 'Clear' ? (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-green-600 inline mr-1" />
+                          <span>ปกติ (Clear) — ไม่พบบุคคลต้องห้าม</span>
+                        </>
+                      ) : selectedApp.complianceRecord.amloStatus === 'PepOrange' ? (
+                        <>
+                          <AlertTriangle className="w-3.5 h-3.5 text-amber-600 inline mr-1" />
+                          <span>PEP / Orange Flag (ต้องระดับ MD อนุมัติ)</span>
+                        </>
+                      ) : (
+                        <>
+                          <AlertCircle className="w-3.5 h-3.5 text-red-600 inline mr-1" />
+                          <span>บุคคลถูกกำหนด (Designated Entity)</span>
+                        </>
+                      )}
                     </span>
                   </div>
 
                   <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-800">
                     <span className="font-bold block">สถานะ Blacklist คปภ. (OIC):</span>
-                    <span className="font-medium mt-0.5 block">🟢 ปกติ (Clear) — ไม่พบประวัติเพิกถอน</span>
+                    <span className="font-medium mt-0.5 flex items-center space-x-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-green-600 inline mr-1" />
+                      <span>ปกติ (Clear) — ไม่พบประวัติเพิกถอน</span>
+                    </span>
                   </div>
                 </div>
               ) : (
@@ -247,7 +262,10 @@ export default function HeadOfficeReviewPage() {
                     className="flex items-center justify-between p-2.5 rounded-lg bg-gray-50 border border-gray-200 text-xs"
                   >
                     <span className="font-medium text-gray-800">{att.fileName}</span>
-                    <span className="text-green-700 font-mono text-[11px] font-semibold">Valid Signature ✓</span>
+                    <span className="flex items-center text-green-700 font-mono text-[11px] font-semibold">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-green-600 mr-1 inline" />
+                      <span>Valid Signature</span>
+                    </span>
                   </div>
                 ))}
               </div>

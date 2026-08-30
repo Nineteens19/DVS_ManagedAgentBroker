@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { AgentType, AgentProfileDto } from '../../types/domain';
 import { validateThaiNationalId } from '../../services/fileValidation';
-import { CheckCircle2, AlertCircle, User, Building } from 'lucide-react';
+import { CheckCircle2, AlertCircle, User, Building, ArrowRight } from 'lucide-react';
 
 interface Step1ApplicantProfileProps {
   agentType: AgentType;
@@ -256,10 +256,10 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
           type="button"
           onClick={onNext}
           disabled={!isFormValid}
-          className="px-6 py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all flex items-center space-x-2"
+          className="px-6 py-2.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all flex items-center space-x-2"
         >
           <span>ถัดไป: ผู้ค้ำประกันและสินเชื่อ</span>
-          <span>→</span>
+          <ArrowRight className="w-4 h-4" />
         </button>
       </div>
     </div>

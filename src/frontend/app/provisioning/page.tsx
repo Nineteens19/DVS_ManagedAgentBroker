@@ -8,7 +8,7 @@ import { ApplicationListItemDto } from '../../types/domain';
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { Modal } from '../../components/ui/Modal';
-import { Server, Sparkles, Clock, Zap } from 'lucide-react';
+import { Server, Sparkles, Clock, Zap, Check } from 'lucide-react';
 
 export default function CoreProvisioningPage() {
   const queryClient = useQueryClient();
@@ -121,7 +121,16 @@ export default function CoreProvisioningPage() {
           }`}
         >
           <Zap className="w-3.5 h-3.5" />
-          <span>{row.status === 'ActiveTemporary' ? 'Provisioned ✓' : 'ตั้งวงเงิน & ยิง Core'}</span>
+          <span className="flex items-center space-x-1">
+            {row.status === 'ActiveTemporary' ? (
+              <>
+                <Check className="w-3.5 h-3.5 mr-1 inline" />
+                <span>Provisioned</span>
+              </>
+            ) : (
+              <span>ตั้งวงเงิน & ยิง Core</span>
+            )}
+          </span>
         </button>
       ),
     },

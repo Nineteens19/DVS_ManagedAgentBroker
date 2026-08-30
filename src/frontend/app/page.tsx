@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../services/apiClient';
@@ -8,6 +8,8 @@ import { useAuth } from '../context/AuthContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { SlaCountdownBadge } from '../components/ui/SlaCountdownBadge';
 import { PiiMaskedField } from '../components/ui/PiiMaskedField';
+import { ApplicationDetailModal } from '../components/ui/ApplicationDetailModal';
+import { AgentApplicationDetailDto } from '../types/domain';
 import {
   FilePlus,
   ClipboardCheck,
@@ -20,6 +22,7 @@ import {
   AlertTriangle,
   ArrowRight,
   Edit3,
+  Eye,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -32,6 +35,9 @@ export default function DashboardPage() {
     canArchiveLegal,
   } = useAuth();
 
+  const [selectedApp, setSelectedApp] = useState<AgentApplicationDetailDto | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
   const { data: metrics } = useQuery({
     queryKey: ['slaMetrics'],
     queryFn: () => apiClient.getSlaMetrics(),
@@ -43,6 +49,14 @@ export default function DashboardPage() {
   });
 
   const recentApplications = applications.slice(0, 7);
+
+  const handleRowClick = async (appId: string) => {
+    const detail = await apiClient.getApplicationById(appId);
+    if (detail) {
+      setSelectedApp(detail);
+      setIsDetailModalOpen(true);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -239,7 +253,10 @@ export default function DashboardPage() {
       {/* 4. Recent Applications Table */}
       <div className="deves-card p-6 space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-[#DEE2E6]">
-          <h3 className="text-sm font-bold text-[#012169]">รายการใบสมัครล่าสุดในระบบ (Recent Applications)</h3>
+          <div>
+            <h3 className="text-sm font-bold text-[#012169]">รายการใบสมัครล่าสุดในระบบ (Recent Applications)</h3>
+            <p className="text-[11px] text-[#6C757D]">คลิกที่แถวของรายการเพื่อเปิดดูรายละเอียดฉบับเต็มได้ทันที</p>
+          </div>
           <span className="text-xs text-[#6C757D] font-mono">{applications.length} รายการ</span>
         </div>
 
@@ -258,14 +275,18 @@ export default function DashboardPage() {
             </thead>
             <tbody className="divide-y divide-[#DEE2E6]/60 text-sm">
               {recentApplications.map((app) => (
-                <tr key={app.id} className="hover:bg-[#F8F9FA] transition-colors whitespace-nowrap">
-                  <td className="py-3 px-3 font-mono font-bold text-[#012169]">
+                <tr
+                  key={app.id}
+                  onClick={() => handleRowClick(app.id)}
+                  className="hover:bg-blue-50/40 transition-colors whitespace-nowrap cursor-pointer group"
+                >
+                  <td className="py-3 px-3 font-mono font-bold text-[#012169] group-hover:underline">
                     {app.applicationNumber}
                   </td>
                   <td className="py-3 px-3 font-semibold text-[#212529]">
                     {app.applicantName}
                   </td>
-                  <td className="py-3 px-3">
+                  <td className="py-3 px-3" onClick={(e) => e.stopPropagation()}>
                     <PiiMaskedField value={app.nationalIdOrTaxId} />
                   </td>
                   <td className="py-3 px-3 text-[#6C757D]">
@@ -290,29 +311,31 @@ export default function DashboardPage() {
                       <SlaCountdownBadge status={app.status} daysRemaining={app.slaDaysRemaining} />
                     )}
                   </td>
-                  <td className="py-3 px-3 text-right">
-                    {app.status === 'Draft' || app.status === 'DeficiencyPendingBranch' ? (
-                      <Link
-                        href={`/intake/new?id=${app.id}`}
-                        className="btn-primary !h-8 !px-3 !py-0 text-xs whitespace-nowrap inline-flex items-center space-x-1.5 shadow-xs"
-                        title="เปิดแก้ไขและยื่นต่อ"
+                  <td className="py-3 px-3 text-right" onClick={(e) => e.stopPropagation()}>
+                    <div className="inline-flex items-center space-x-1.5 justify-end">
+                      {/* View Details Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleRowClick(app.id)}
+                        className="btn-outline !h-8 !px-2.5 !py-0 text-xs whitespace-nowrap inline-flex items-center space-x-1"
+                        title="ดูรายละเอียดฉบับเต็ม"
                       >
-                        <Edit3 className="w-3.5 h-3.5" />
-                        <span>แก้ไข / ยื่นต่อ</span>
-                      </Link>
-                    ) : (
-                      <span className="text-xs text-[#6C757D] whitespace-nowrap">
-                        {app.status === 'Submitted' || app.status === 'PendingHeadOfficeReview'
-                          ? 'รอ สนญ. ตรวจ'
-                          : app.status === 'PendingExecutiveApproval'
-                          ? 'รอ MD อนุมัติ'
-                          : app.status === 'ReviewPremium' || app.status === 'CoreAutoProvisioning'
-                          ? 'รอตั้งวงเงิน'
-                          : app.status === 'ActiveTemporary'
-                          ? 'รอส่งสัญญา'
-                          : 'สมบูรณ์'}
-                      </span>
-                    )}
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>ดูข้อมูล</span>
+                      </button>
+
+                      {/* Edit / Continue button for Draft / Deficiency */}
+                      {(app.status === 'Draft' || app.status === 'DeficiencyPendingBranch') && (
+                        <Link
+                          href={`/intake/new?id=${app.id}`}
+                          className="btn-primary !h-8 !px-3 !py-0 text-xs whitespace-nowrap inline-flex items-center space-x-1 shadow-xs"
+                          title="เปิดแก้ไขและยื่นต่อ"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span>แก้ไข / ยื่นต่อ</span>
+                        </Link>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -320,6 +343,13 @@ export default function DashboardPage() {
           </table>
         </div>
       </div>
+
+      {/* 5. Comprehensive Application Detail Modal */}
+      <ApplicationDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        application={selectedApp}
+      />
     </div>
   );
 }

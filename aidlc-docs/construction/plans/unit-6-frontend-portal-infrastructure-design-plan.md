@@ -7,16 +7,16 @@ This plan specifies the build pipeline, dependency configurations, containerizat
 
 ## Execution Checklist (Part 1: Planning)
 
-- [ ] **Step 1: Define Frontend Package & Tooling Configurations (`infrastructure-design.md`)**
-  - [ ] `package.json` dependencies (Next.js 14+, React 18, TanStack Query v5, Lucide React, Tailwind CSS)
-  - [ ] `tsconfig.json` paths and TypeScript 5 compiler settings
-  - [ ] `tailwind.config.ts` & `postcss.config.js` design tokens and color scales
-  - [ ] `next.config.js` standalone output, security headers, and compression
+- [x] **Step 1: Define Frontend Package & Tooling Configurations (`infrastructure-design.md`)**
+  - [x] `package.json` dependencies (Next.js 14+, React 18, TanStack Query v5, Lucide React, Tailwind CSS)
+  - [x] `tsconfig.json` paths and TypeScript 5 compiler settings
+  - [x] `tailwind.config.ts` & `postcss.config.js` design tokens and color scales
+  - [x] `next.config.js` standalone output, security headers, and compression
 
-- [ ] **Step 2: Define Containerization & Deployment Topology (`deployment-architecture.md`)**
-  - [ ] Multi-stage `Dockerfile.frontend` (builder, runner stages with Node.js Alpine)
-  - [ ] `docker-compose.yml` service definition (Port 3000 $\rightarrow$ Frontend, Port 5000 $\rightarrow$ Backend, Port 1433 $\rightarrow$ SQL Server)
-  - [ ] Environment variables schema (`NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_APP_NAME`, `NEXT_PUBLIC_ENABLE_DEMO_MODE`)
+- [x] **Step 2: Define Containerization & Deployment Topology (`deployment-architecture.md`)**
+  - [x] Multi-stage `Dockerfile.frontend` (builder, runner stages with Node.js Alpine)
+  - [x] `docker-compose.yml` service definition (Port 3000 $\rightarrow$ Frontend, Port 5000 $\rightarrow$ Backend, Port 1433 $\rightarrow$ SQL Server)
+  - [x] Environment variables schema (`NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_APP_NAME`, `NEXT_PUBLIC_ENABLE_DEMO_MODE`)
 
 ---
 
@@ -35,7 +35,7 @@ B) Static HTML Export (`output: 'export'`): สำหรับรันเป็
 
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A
 
 ---
 
@@ -49,6 +49,6 @@ B) แยกคำสั่งรันอิสระในแต่ละโ�
 
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A
 
 ---

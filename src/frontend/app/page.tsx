@@ -64,7 +64,7 @@ export default function DashboardPage() {
           {canCreateApplication && (
             <Link
               href="/intake/new"
-              className="btn-primary flex items-center space-x-2 text-xs"
+              className="btn-primary flex items-center space-x-2 text-xs whitespace-nowrap"
             >
               <FilePlus className="w-4 h-4" />
               <span>ยื่นใบสมัครตัวแทนใหม่</span>
@@ -72,7 +72,7 @@ export default function DashboardPage() {
           )}
           <Link
             href="/sla-dashboard"
-            className="btn-outline flex items-center space-x-1.5 text-xs"
+            className="btn-outline flex items-center space-x-1.5 text-xs whitespace-nowrap"
           >
             <Clock className="w-4 h-4" />
             <span>SLA Monitoring</span>
@@ -246,19 +246,19 @@ export default function DashboardPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[#DEE2E6] bg-[#F8F9FA] text-[11px] text-[#6C757D] font-semibold uppercase">
-                <th className="py-2.5 px-3">เลขที่ใบสมัคร</th>
-                <th className="py-2.5 px-3">ชื่อผู้สมัคร</th>
-                <th className="py-2.5 px-3">เลขประจำตัว 13 หลัก</th>
-                <th className="py-2.5 px-3">สาขา</th>
-                <th className="py-2.5 px-3">สถานะ</th>
-                <th className="py-2.5 px-3">SLA / รหัสตัวแทน</th>
-                <th className="py-2.5 px-3 text-right">การดำเนินการ</th>
+              <tr className="border-b border-[#DEE2E6] bg-[#F8F9FA] text-[11px] text-[#6C757D] font-semibold uppercase whitespace-nowrap">
+                <th className="py-3 px-3">เลขที่ใบสมัคร</th>
+                <th className="py-3 px-3">ชื่อผู้สมัคร</th>
+                <th className="py-3 px-3">เลขประจำตัว 13 หลัก</th>
+                <th className="py-3 px-3">สาขา</th>
+                <th className="py-3 px-3">สถานะ</th>
+                <th className="py-3 px-3">รหัส Agent / Source</th>
+                <th className="py-3 px-3 text-right">การดำเนินการ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#DEE2E6]/60 text-sm">
               {recentApplications.map((app) => (
-                <tr key={app.id} className="hover:bg-[#F8F9FA] transition-colors">
+                <tr key={app.id} className="hover:bg-[#F8F9FA] transition-colors whitespace-nowrap">
                   <td className="py-3 px-3 font-mono font-bold text-[#012169]">
                     {app.applicationNumber}
                   </td>
@@ -276,9 +276,16 @@ export default function DashboardPage() {
                   </td>
                   <td className="py-3 px-3">
                     {app.agentCode ? (
-                      <span className="font-mono text-[#155724] font-bold bg-[#D4EDDA] px-2 py-0.5 rounded border border-[#C3E6CB]">
-                        {app.agentCode}
-                      </span>
+                      <div className="flex flex-col space-y-0.5">
+                        <span className="font-mono text-xs font-bold text-[#012169] bg-[#012169]/5 px-2 py-0.5 rounded border border-[#012169]/15 inline-block">
+                          Agent: {app.agentCode}
+                        </span>
+                        {app.sourceCode && (
+                          <span className="font-mono text-[11px] text-[#6C757D]">
+                            Src: {app.sourceCode}
+                          </span>
+                        )}
+                      </div>
                     ) : (
                       <SlaCountdownBadge status={app.status} daysRemaining={app.slaDaysRemaining} />
                     )}
@@ -287,14 +294,14 @@ export default function DashboardPage() {
                     {app.status === 'Draft' || app.status === 'DeficiencyPendingBranch' ? (
                       <Link
                         href={`/intake/new?id=${app.id}`}
-                        className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-[#012169] text-white hover:bg-[#001a52] text-xs font-semibold shadow-xs transition-colors"
+                        className="btn-primary !h-8 !px-3 !py-0 text-xs whitespace-nowrap inline-flex items-center space-x-1.5 shadow-xs"
                         title="เปิดแก้ไขและยื่นต่อ"
                       >
-                        <Edit3 className="w-3.5 h-3.5 mr-1" />
+                        <Edit3 className="w-3.5 h-3.5" />
                         <span>แก้ไข / ยื่นต่อ</span>
                       </Link>
                     ) : (
-                      <span className="text-[11px] text-[#6C757D]">
+                      <span className="text-xs text-[#6C757D] whitespace-nowrap">
                         {app.status === 'Submitted' || app.status === 'PendingHeadOfficeReview'
                           ? 'รอ สนญ. ตรวจ'
                           : app.status === 'PendingExecutiveApproval'

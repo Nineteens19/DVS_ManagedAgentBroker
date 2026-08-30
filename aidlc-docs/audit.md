@@ -407,3 +407,19 @@
 **Context**: Construction - Unit 4 Code Generation Completion
 
 ---
+
+## Construction Phase — Unit 5: Functional Design (Planning)
+**Timestamp**: 2026-08-30T01:48:48Z
+**User Input**: "Approve & Continue"
+**AI Response**: "Entered Unit 5 (Automated Provisioning & Background SLA Suspension Daemon). Created functional design plan at aidlc-docs/construction/plans/unit-5-provisioning-sla-functional-design-plan.md with questions on automated multi-system provisioning pipelines, agent/source code formatting rules, and background SLA daemon scheduling/early warning alerts. Awaiting user input."
+**Context**: Construction - Unit 5 Functional Design Planning
+
+---
+
+## Construction Phase — Unit 5: Functional Design (Generation)
+**Timestamp**: 2026-08-30T01:50:55Z
+**User Input**: "Continue [Answers: Q1: A (Automated Multi-System Provisioner with Individual System Idempotency), Q2: Agentcode Source จะทำ API ไปเชื่อมกับระบบ deves master เพื่อสร้างเราจะได้เลขกลับมา, Q3: A (Hourly/Daily Worker with D-7 and D-3 warning alerts)]"
+**AI Response**: "Generated domain-entities.md, business-logic-model.md, and business-rules.md for Unit 5 (Automated Provisioning & Background SLA Suspension Daemon). Defined Deves Master code generation integration, 100% automated multi-system provisioning (AS400, APAR, SAP, PCSDIS), provisional selling timer inception (ActiveTemporary), background SLA daemon evaluation (Suspended30D, Terminated90D), and legal physical contract archiving (ActivePermanent). Marked Functional Design complete in aidlc-state.md. Awaiting user approval to proceed to NFR Requirements."
+**Context**: Construction - Unit 5 Functional Design Completion
+
+---

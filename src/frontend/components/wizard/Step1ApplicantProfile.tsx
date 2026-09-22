@@ -93,7 +93,7 @@ export const Step1ApplicantProfile: React.FC<Step1ApplicantProfileProps> = ({
         <div className="flex items-center space-x-2 text-[#012169] pb-2 border-b border-[#DEE2E6]">
           <User className="w-4 h-4" />
           <h4 className="text-xs font-bold text-[#212529]">
-            ข้อมูลพื้นฐานและเลขประจำตัวผู้เสียภาษี / บัตรประชาชน (ตรวจสอบ Modulo 11)
+            ข้อมูลพื้นฐานและเลขประจำตัวผู้เสียภาษี / บัตรประชาชน (ตรวจสอบความถูกต้อง 13 หลัก)
           </h4>
         </div>
 

@@ -90,15 +90,18 @@ This document specifies the high-level functional components, their responsibili
 ### 3.4 `AutomatedCoreProvisioningService`
 - **Purpose**: Executes 100% automated background multi-system provisioning (zero manual IT tasks).
 - **Responsibilities**:
-  - Coordinate concurrent/sequential API calls to `IAs400ApiClient`, `IAparApiClient`, `ISapApiClient`, and `IPcsdisApiClient`.
+  - Transform 100% complete intake payload and call `IDevesMasterApiClient.ProvisionAgentAndSourceAsync` to create Agent Code and Source Code(s) in Deves Master.
+  - Coordinate cascading downstream sync to `IAs400ApiClient`, `IAparApiClient`, `ISapApiClient`, and `IPcsdisApiClient`.
   - Configure Unit Executive (UE), node bindings, and commission percentage schedules.
-  - Grant provisional selling permissions (`ACTIVE_TEMPORARY`) upon successful provisioning.
+  - Grant provisional selling permissions (`ACTIVE_TEMPORARY`) upon successful provisioning and start the 30/90-day SLA timer.
 
 ### 3.5 `SlaSuspensionDaemonService`
-- **Purpose**: Background worker daemon that monitors SLA deadlines and executes automated selling suspensions.
+- **Purpose**: Background worker daemon that monitors SLA deadlines and executes tiered automated selling suspensions.
 - **Responsibilities**:
   - Scan active temporary applications daily for SLA breaches (> 30 days without hard copy / uncorrected defects).
-  - Automatically call AS400 and PCSDIS APIs to set status to `SUSPENDED_TEMPORARY` and block policy submissions.
+  - Automatically call `IDevesMasterApiClient` and `IAs400ApiClient` to execute tiered suspensions:
+    - Agent-level: locks agent code and cascades suspension to all linked sources.
+    - Source-level: locks specific branch/source channel while leaving other sources active.
   - Automatically call core APIs to set status to `TERMINATED_PERMANENT` for expired contracts (> 90 days).
 
 ### 3.6 `DashboardAndReportingService`
@@ -113,7 +116,8 @@ This document specifies the high-level functional components, their responsibili
 
 | Component / Adapter | Interface Contract | Target System / Protocol | Description |
 |---|---|---|---|
-| `As400ApiClient` | `IAs400ApiClient` | AS400 Core API (REST/JSON) | Provisions agent code, sets temporary/permanent selling rights, and triggers auto-suspension. |
+| `DevesMasterApiClient` | `IDevesMasterApiClient` | Deves Master Core (REST/JSON) | 100% Automated Provisioning: creates Agent Code, Source Code(s), and registers UE. |
+| `As400ApiClient` | `IAs400ApiClient` | AS400 Core API (REST/JSON) | Synchronizes agent master, sets temporary/permanent selling rights, and triggers auto-suspension. |
 | `SapApiClient` | `ISapApiClient` | SAP Financials API (REST/OData) | Creates and maintains Business Partner / Vendor accounting entities. |
 | `AparApiClient` | `IAparApiClient` | APAR Accounts API (REST/JSON) | Configures Accounts Payable and Receivable ledgers. |
 | `PcsdisApiClient` | `IPcsdisApiClient` | PCS / PCSDIS API (REST/JSON) | Sets up policy nodes, Unit Executive (UE) mappings, and commission percentage schedules. |

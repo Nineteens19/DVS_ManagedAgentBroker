@@ -57,8 +57,8 @@ export default function ArchivePage() {
       setIsArchiveModalOpen(false);
       showToast({
         type: 'success',
-        title: 'จัดเก็บสัญญาตัวจริงสำเร็จ (Active Permanent)',
-        message: 'ปลดล็อกสถานะถาวรและยกเลิกการนับถอยหลัง 30 วัน SLA อัตโนมัติเรียบร้อยแล้ว',
+        title: 'จัดเก็บสัญญาฉบับจริงสำเร็จ (เปิดขายถาวร)',
+        message: 'ปลดล็อกเปิดสิทธิ์ขายถาวร และสิ้นสุดการนับกำหนดเวลาส่งสัญญา 30 วัน เรียบร้อยแล้ว',
       });
     },
   });
@@ -80,7 +80,7 @@ export default function ArchivePage() {
 
   const columns: Column<ApplicationListItemDto>[] = [
     {
-      header: 'เลขที่ใบสมัคร / รหัส Agent',
+      header: 'เลขที่ใบสมัคร / รหัสตัวแทน',
       cell: (row) => (
         <div>
           <span className="font-mono font-bold text-[#012169] block">{row.applicationNumber}</span>
@@ -99,7 +99,7 @@ export default function ArchivePage() {
       ),
     },
     {
-      header: 'สถานะ SLA ปัจจุบัน',
+      header: 'สถานะและการส่งสัญญา',
       cell: (row) => (
         <div className="space-y-1">
           <StatusBadge status={row.status} />
@@ -157,10 +157,10 @@ export default function ArchivePage() {
           </div>
           <div>
             <h2 className="text-base font-bold text-[#212529]">
-              ฝ่ายกฎหมาย: ตรวจรับและจัดเก็บเอกสารสัญญาตัวจริง (Physical Contract Archiving)
+              ฝ่ายกฎหมาย / สำนักนิติกรรม: ตรวจรับและจัดเก็บเอกสารสัญญาฉบับจริง
             </h2>
             <p className="text-xs text-[#6C757D] mt-0.5">
-              คลิกแถวเพื่อดูเอกสารสัญญา หรือลงทะเบียนกล่องจัดเก็บเอกสาร (Archive Box) เพื่อเปิดสิทธิ์ถาวร
+              ตรวจรับสัญญาฉบับจริง (F-CM-018) จากสาขา บันทึกหมายเลขกล่องจัดเก็บ และปลดล็อกเป็นสถานะเปิดขายถาวร
             </p>
           </div>
         </div>

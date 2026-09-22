@@ -205,7 +205,7 @@ export default function ApprovalPage() {
           </div>
           <div>
             <h2 className="text-base font-bold text-[#212529]">
-              ผู้บริหาร: คอนโซลพิจารณาอนุมัติใบสมัคร (Executive Decision Console)
+              ผู้บริหาร: พิจารณาอนุมัติคำขอเปิดตัวแทนและสัญญา
             </h2>
             <p className="text-xs text-[#6C757D] mt-0.5">
               คลิกที่แถวหรือกดพิจารณาอนุมัติ เพื่อตรวจสอบข้อมูลผู้สมัครและเอกสารแนบทุกฉบับก่อนลงนาม
@@ -296,29 +296,29 @@ export default function ApprovalPage() {
               <div className="deves-card p-3.5 space-y-2 bg-blue-50/40 border-blue-200">
                 <div className="flex items-center space-x-1.5 text-primary font-bold text-xs pb-1.5 border-b border-blue-200">
                   <ShieldCheck className="w-4 h-4 text-green-600" />
-                  <span>ผลตรวจคัดกรอง Sanctions (AMLO/OIC)</span>
+                  <span>ผลการตรวจสอบรายชื่อต้องห้าม (ปปง. / คปภ.)</span>
                 </div>
                 <div className="text-xs space-y-1.5">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">AMLO Sanctions List:</span>
+                    <span className="text-gray-600">รายชื่อผู้ถูกกำหนด ปปง.:</span>
                     <span className="text-green-700 font-bold flex items-center">
                       <CheckCircle2 className="w-3 h-3 mr-1 inline" />
-                      ไม่พบรายชื่อ (Clear)
+                      ไม่พบรายชื่อ (ปกติ)
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">OIC Blacklist:</span>
+                    <span className="text-gray-600">บัญชีดำ/เพิกถอนใบอนุญาต คปภ.:</span>
                     <span className="text-green-700 font-bold flex items-center">
                       <CheckCircle2 className="w-3 h-3 mr-1 inline" />
-                      ไม่พบประวัติเพิกถอน
+                      ไม่พบประวัติเพิกถอน (ปกติ)
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">ผู้มีสถานะการเมือง (PEP):</span>
+                    <span className="text-gray-600">ผู้มีสถานภาพทางการเมือง (PEP):</span>
                     <span className="text-gray-800 font-semibold">
                       {fullDetail.complianceRecord?.requiresDirectorApproval
-                        ? 'ตรวจพบ (ต้องการ MD อนุมัติ)'
-                        : 'ไม่พบสถานะ PEP (ปกติ)'}
+                        ? 'ตรวจพบสถานะ (ต้องเสนอผู้บริหารพิจารณา)'
+                        : 'ไม่พบสถานะ (ปกติ)'}
                     </span>
                   </div>
                 </div>

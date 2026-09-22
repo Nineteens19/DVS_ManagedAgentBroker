@@ -88,7 +88,7 @@ export default function DashboardPage() {
             className="btn-outline flex items-center space-x-1.5 text-xs whitespace-nowrap"
           >
             <Clock className="w-4 h-4" />
-            <span>SLA Monitoring</span>
+            <span>ติดตามกำหนดส่งสัญญา (30 วัน)</span>
           </Link>
         </div>
       </div>
@@ -115,7 +115,7 @@ export default function DashboardPage() {
         <div className="deves-summary-card border-l-4 border-l-[#17A2B8]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#6C757D] uppercase tracking-wider">
-              Active Temporary (30D)
+              เปิดขายชั่วคราว (รอสัญญา 30 วัน)
             </span>
             <div className="p-2 rounded-lg bg-[#17A2B8]/10 text-[#17A2B8]">
               <Clock className="w-5 h-5" />
@@ -124,14 +124,14 @@ export default function DashboardPage() {
           <div className="mt-3 text-3xl font-bold font-mono text-[#17A2B8]">
             {metrics?.activeTemporaryCount ?? 0}
           </div>
-          <p className="text-xs text-[#6C757D] mt-1">เปิดสิทธิ์ชั่วคราว ผ่อนผันส่งสัญญา</p>
+          <p className="text-xs text-[#6C757D] mt-1">เปิดสิทธิ์ขายชั่วคราว ผ่อนผันส่งสัญญาตัวจริง</p>
         </div>
 
         {/* Card 3: Near Deadline */}
         <div className="deves-summary-card border-l-4 border-l-[#FD7E14]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#6C757D] uppercase tracking-wider">
-              ใกล้ครบกำหนด (≤ 7 วัน)
+              ใกล้ครบกำหนดส่งสัญญา (≤ 7 วัน)
             </span>
             <div className="p-2 rounded-lg bg-[#FD7E14]/10 text-[#FD7E14]">
               <AlertTriangle className="w-5 h-5" />
@@ -140,14 +140,14 @@ export default function DashboardPage() {
           <div className="mt-3 text-3xl font-bold font-mono text-[#FD7E14]">
             {metrics?.nearDeadline7DaysCount ?? 0}
           </div>
-          <p className="text-xs text-[#6C757D] mt-1">ต้องเร่งติดตามสัญญาตัวจริง</p>
+          <p className="text-xs text-[#6C757D] mt-1">ต้องเร่งติดตามสัญญาตัวจริงจากสาขา</p>
         </div>
 
         {/* Card 4: Active Permanent */}
         <div className="deves-summary-card border-l-4 border-l-[#28A745]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#6C757D] uppercase tracking-wider">
-              Active Permanent
+              เปิดขายถาวร (สัญญาครบถ้วน)
             </span>
             <div className="p-2 rounded-lg bg-[#28A745]/10 text-[#28A745]">
               <ShieldCheck className="w-5 h-5" />
@@ -156,14 +156,14 @@ export default function DashboardPage() {
           <div className="mt-3 text-3xl font-bold font-mono text-[#28A745]">
             {metrics?.activePermanentCount ?? 0}
           </div>
-          <p className="text-xs text-[#6C757D] mt-1">จัดเก็บสัญญาตัวจริงสมบูรณ์</p>
+          <p className="text-xs text-[#6C757D] mt-1">จัดเก็บสัญญาตัวจริงเข้าคลังสมบูรณ์</p>
         </div>
       </div>
 
       {/* 3. Role Consoles Grid */}
       <div className="deves-card p-6 space-y-4">
         <h3 className="text-sm font-bold text-[#012169]">
-          คอนโซลการทำงานตามสิทธิ์ของคุณ (Role Consoles)
+          เมนูการทำงานตามบทบาทหน้าที่ของคุณ
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -176,8 +176,8 @@ export default function DashboardPage() {
                 <FilePlus className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">ยื่นใบสมัครใหม่ (Intake)</h4>
-                <p className="text-[11px] text-[#6C757D] mt-0.5">กรอกข้อมูลตัวแทน/โบรกเกอร์ และอัปโหลดเอกสาร</p>
+                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">ยื่นใบสมัครตัวแทน/นายหน้าใหม่</h4>
+                <p className="text-[11px] text-[#6C757D] mt-0.5">บันทึกข้อมูลตัวแทนและอัปโหลดเอกสารประกอบ</p>
               </div>
               <ArrowRight className="w-4 h-4 text-[#6C757D] group-hover:text-[#012169] group-hover:translate-x-1 transition-all" />
             </Link>
@@ -192,8 +192,8 @@ export default function DashboardPage() {
                 <ClipboardCheck className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">สนญ. ตรวจรับ & AMLO</h4>
-                <p className="text-[11px] text-[#6C757D] mt-0.5">ตรวจคัดกรอง Sanctions และส่งต่อผู้บริหาร</p>
+                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">สนญ. ตรวจรับ & ตรวจ ปปง./คปภ.</h4>
+                <p className="text-[11px] text-[#6C757D] mt-0.5">ตรวจเอกสาร & ตรวจสอบรายชื่อต้องห้าม (ปปง./คปภ.)</p>
               </div>
               <ArrowRight className="w-4 h-4 text-[#6C757D] group-hover:text-[#012169] group-hover:translate-x-1 transition-all" />
             </Link>
@@ -208,8 +208,8 @@ export default function DashboardPage() {
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">ผู้บริหารอนุมัติ (E-Approval)</h4>
-                <p className="text-[11px] text-[#6C757D] mt-0.5">พิจารณาอนุมัติใบสมัครในระบบแทน EAS</p>
+                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">ผู้บริหารพิจารณาอนุมัติคำขอ</h4>
+                <p className="text-[11px] text-[#6C757D] mt-0.5">ลงนามพิจารณาอนุมัติคำขอเปิดตัวแทนผ่านระบบ</p>
               </div>
               <ArrowRight className="w-4 h-4 text-[#6C757D] group-hover:text-[#012169] group-hover:translate-x-1 transition-all" />
             </Link>
@@ -224,8 +224,8 @@ export default function DashboardPage() {
                 <Server className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">ตั้งวงเงิน & Provisioning</h4>
-                <p className="text-[11px] text-[#6C757D] mt-0.5">สร้างรหัสตัวแทนและยิง Core Deves 100%</p>
+                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">ฝ่ายบริหารเบี้ย & เปิดรหัสระบบหลัก</h4>
+                <p className="text-[11px] text-[#6C757D] mt-0.5">อนุมัติวงเงินและเปิดรหัสตัวแทนเข้าระบบหลักอัตโนมัติ 100%</p>
               </div>
               <ArrowRight className="w-4 h-4 text-[#6C757D] group-hover:text-[#012169] group-hover:translate-x-1 transition-all" />
             </Link>
@@ -240,8 +240,8 @@ export default function DashboardPage() {
                 <Archive className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">จัดเก็บเอกสารสัญญาตัวจริง</h4>
-                <p className="text-[11px] text-[#6C757D] mt-0.5">ลงทะเบียนกล่อง & เปิดสิทธิ์ถาวร</p>
+                <h4 className="text-xs font-bold text-[#212529] group-hover:text-[#012169]">ฝ่ายกฎหมาย จัดเก็บสัญญาฉบับจริง</h4>
+                <p className="text-[11px] text-[#6C757D] mt-0.5">ลงทะเบียนกล่องจัดเก็บ & ปลดล็อกเปิดขายถาวร</p>
               </div>
               <ArrowRight className="w-4 h-4 text-[#6C757D] group-hover:text-[#012169] group-hover:translate-x-1 transition-all" />
             </Link>

@@ -2,18 +2,19 @@ import { AgentApplicationDetailDto, ApplicationListItemDto, SlaDashboardMetricsD
 
 export const STATUS_LABELS_TH: Record<ApplicationStatus, string> = {
   Draft: 'แบบร่าง',
-  Submitted: 'ยื่นแล้ว',
-  PendingHeadOfficeReview: 'รอ สนญ. ตรวจ',
-  DeficiencyPendingBranch: 'ส่งกลับแก้ไข',
-  PendingExecutiveApproval: 'รอ MD อนุมัติ',
-  ExecutiveRejected: 'ไม่อนุมัติ',
-  ReviewPremium: 'รอตั้งวงเงิน',
-  CoreAutoProvisioning: 'กำลัง Sync Core',
-  ActiveTemporary: 'Active ชั่วคราว (30D)',
-  Suspended30D: 'ระงับสิทธิ์ (SLA)',
-  Terminated90D: 'เพิกถอนสิทธิ์',
-  ActivePermanent: 'Active ถาวร',
+  Submitted: 'ยื่นใบสมัครแล้ว',
+  PendingHeadOfficeReview: 'รอ สนญ. ตรวจรับ',
+  DeficiencyPendingBranch: 'ส่งกลับให้สาขาแก้ไข',
+  PendingExecutiveApproval: 'รอผู้บริหารอนุมัติ',
+  ExecutiveRejected: 'ไม่อนุมัติ (ยกเลิก)',
+  ReviewPremium: 'รอฝ่ายบริหารเบี้ยพิจารณา',
+  CoreAutoProvisioning: 'กำลังเปิดรหัสระบบหลัก',
+  ActiveTemporary: 'เปิดขายชั่วคราว (รอสัญญา 30 วัน)',
+  Suspended30D: 'ระงับการขาย (เกินกำหนด 30 วัน)',
+  Terminated90D: 'เพิกถอนรหัสถาวร (เกิน 90 วัน)',
+  ActivePermanent: 'เปิดขายถาวร (สัญญาครบถ้วน)',
 };
+
 
 let MOCK_APPLICATIONS: AgentApplicationDetailDto[] = [
   {
@@ -34,7 +35,7 @@ let MOCK_APPLICATIONS: AgentApplicationDetailDto[] = [
       lastNameTh: 'ใจดีมั่นคง',
       firstNameEn: 'Somchai',
       lastNameEn: 'Jaidee',
-      nationalIdOrTaxId: '1100400011223',
+      nationalIdOrTaxId: '1100400892348',
       dateOfBirth: '1985-05-15',
       phoneNumber: '0812345678',
       email: 'somchai.j@example.com',
@@ -447,6 +448,7 @@ export const MockDataEngine = {
 
     // Simulate 100% IT Automation multi-system provisioning
     app.syncTransactions = [
+      { id: `sync-${Date.now()}-0`, targetSystem: 'Deves Master', status: 'Success', completedAt: new Date().toISOString() },
       { id: `sync-${Date.now()}-1`, targetSystem: 'AS400', status: 'Success', completedAt: new Date().toISOString() },
       { id: `sync-${Date.now()}-2`, targetSystem: 'APAR', status: 'Success', completedAt: new Date().toISOString() },
       { id: `sync-${Date.now()}-3`, targetSystem: 'SAP', status: 'Success', completedAt: new Date().toISOString() },

@@ -73,7 +73,7 @@ export default function SlaDashboardPage() {
       cell: (row) => <StatusBadge status={row.status} />,
     },
     {
-      header: 'SLA Countdown / การติดตาม',
+      header: 'กำหนดส่งสัญญาตัวจริง (ผ่อนผัน 30 วัน)',
       cell: (row) => (
         <SlaCountdownBadge
           status={row.status}
@@ -110,16 +110,16 @@ export default function SlaDashboardPage() {
           </div>
           <div>
             <h2 className="text-base font-bold text-[#212529]">
-              SLA Dashboard & Background Suspension Monitor
+              ระบบติดตามระยะเวลากำหนดส่งสัญญา & ระงับสิทธิ์อัตโนมัติ
             </h2>
             <p className="text-xs text-[#6C757D] mt-0.5">
-              คลิกแถวเพื่อดูรายละเอียดสัญญา ระบบตรวจสอบ SLA ผ่อนผันส่งสัญญาฉบับจริง 30 วัน และกลไก Daemon ระงับสิทธิ์ชั่วคราวอัตโนมัติ
+              คลิกแถวเพื่อดูรายละเอียดสัญญา ระบบตรวจสอบระยะเวลาผ่อนผันส่งสัญญาฉบับจริง 30 วัน และกลไกระงับสิทธิ์ชั่วคราวอัตโนมัติเมื่อพ้นกำหนด
             </p>
           </div>
         </div>
         <div className="flex items-center space-x-2 text-xs text-[#212529] bg-green-50 px-3.5 py-1.5 rounded-lg border border-green-200">
           <Activity className="w-4 h-4 text-green-600 animate-pulse" />
-          <span>SlaSuspensionDaemon: <b className="text-green-700">Active (Hourly)</b></span>
+          <span>ระบบตรวจจับเวลาอัตโนมัติ: <b className="text-green-700">ทำงานต่อเนื่อง (ทุก 1 ชม.)</b></span>
         </div>
       </div>
 
@@ -127,46 +127,46 @@ export default function SlaDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="deves-summary-card border-l-4 border-l-[#17A2B8]">
           <div className="flex items-center justify-between text-xs font-bold text-gray-500">
-            <span>Active Temporary</span>
+            <span>เปิดขายชั่วคราว (รอสัญญา 30 วัน)</span>
             <Clock className="w-4 h-4 text-[#17A2B8]" />
           </div>
           <div className="mt-2 text-3xl font-black text-[#17A2B8] font-mono">
             {metrics?.activeTemporaryCount ?? 0}
           </div>
-          <p className="text-xs text-gray-500 mt-1">อยู่ในเกณฑ์ 30 วัน SLA</p>
+          <p className="text-xs text-gray-500 mt-1">อยู่ในเกณฑ์ผ่อนผัน 30 วัน</p>
         </div>
 
         <div className="deves-summary-card border-l-4 border-l-[#FD7E14]">
           <div className="flex items-center justify-between text-xs font-bold text-gray-500">
-            <span>ใกล้ครบกำหนด (≤ 7 วัน)</span>
+            <span>ใกล้ครบกำหนดส่งสัญญา (≤ 7 วัน)</span>
             <AlertTriangle className="w-4 h-4 text-[#FD7E14]" />
           </div>
           <div className="mt-2 text-3xl font-black text-[#FD7E14] font-mono">
             {metrics?.nearDeadline7DaysCount ?? 0}
           </div>
-          <p className="text-xs text-gray-500 mt-1">แจ้งเตือนเร่งรัดสาขา</p>
+          <p className="text-xs text-gray-500 mt-1">ส่งแจ้งเตือนเร่งรัดสาขา</p>
         </div>
 
         <div className="deves-summary-card border-l-4 border-l-[#DC3545]">
           <div className="flex items-center justify-between text-xs font-bold text-gray-500">
-            <span>Suspended 30D</span>
+            <span>ระงับการขายชั่วคราว (เกิน 30 วัน)</span>
             <AlertOctagon className="w-4 h-4 text-[#DC3545]" />
           </div>
           <div className="mt-2 text-3xl font-black text-[#DC3545] font-mono">
             {metrics?.suspended30DCount ?? 0}
           </div>
-          <p className="text-xs text-gray-500 mt-1">ระบบระงับสิทธิ์ชั่วคราวแล้ว</p>
+          <p className="text-xs text-gray-500 mt-1">ระบบระงับสิทธิ์ในระบบหลักแล้ว</p>
         </div>
 
         <div className="deves-summary-card border-l-4 border-l-[#28A745]">
           <div className="flex items-center justify-between text-xs font-bold text-gray-500">
-            <span>Active Permanent</span>
+            <span>เปิดขายถาวร (สัญญาครบถ้วน)</span>
             <ShieldCheck className="w-4 h-4 text-[#28A745]" />
           </div>
           <div className="mt-2 text-3xl font-black text-[#28A745] font-mono">
             {metrics?.activePermanentCount ?? 0}
           </div>
-          <p className="text-xs text-gray-500 mt-1">จัดเก็บสัญญาตัวจริงครบถ้วน</p>
+          <p className="text-xs text-gray-500 mt-1">จัดเก็บสัญญาตัวจริงเข้าคลังสมบูรณ์</p>
         </div>
       </div>
 

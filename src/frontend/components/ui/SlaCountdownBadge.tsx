@@ -16,7 +16,7 @@ export const SlaCountdownBadge: React.FC<SlaCountdownBadgeProps> = ({
     return (
       <span className="inline-flex items-center text-xs text-green-700 bg-green-50 px-2.5 py-1 rounded-md border border-green-200">
         <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-green-600" />
-        จัดเก็บสัญญาแล้ว (Permanent)
+        จัดเก็บสัญญาแล้ว (เปิดขายถาวร)
       </span>
     );
   }
@@ -25,7 +25,7 @@ export const SlaCountdownBadge: React.FC<SlaCountdownBadgeProps> = ({
     return (
       <span className="inline-flex items-center text-xs text-white bg-red-600 px-2.5 py-1 rounded-md font-semibold animate-pulse shadow-sm">
         <XCircle className="w-3.5 h-3.5 mr-1" />
-        ระงับสิทธิ์ชั่วคราว (ขาดส่งสัญญา 30 วัน)
+        ระงับการขายชั่วคราว (ขาดส่งสัญญาเกิน 30 วัน)
       </span>
     );
   }
@@ -33,7 +33,7 @@ export const SlaCountdownBadge: React.FC<SlaCountdownBadgeProps> = ({
   if (status === 'Terminated90D') {
     return (
       <span className="inline-flex items-center text-xs text-gray-700 bg-gray-200 px-2.5 py-1 rounded-md font-bold">
-        เพิกถอนสิทธิ์ถาวร (90D Terminated)
+        เพิกถอนรหัสถาวร (ขาดส่งสัญญาเกิน 90 วัน)
       </span>
     );
   }
@@ -45,7 +45,7 @@ export const SlaCountdownBadge: React.FC<SlaCountdownBadgeProps> = ({
       return (
         <span className="inline-flex items-center text-xs text-red-800 bg-red-100 px-2.5 py-1 rounded-md border border-red-300 font-bold animate-pulse">
           <AlertTriangle className="w-3.5 h-3.5 mr-1 text-red-600" />
-          วิกฤต: เหลืออีก {daysRemaining} วัน (30D SLA)
+          วิกฤต: เหลือเวลาอีก {daysRemaining} วัน (ครบ 30 วัน)
         </span>
       );
     }
@@ -54,7 +54,7 @@ export const SlaCountdownBadge: React.FC<SlaCountdownBadgeProps> = ({
       return (
         <span className="inline-flex items-center text-xs text-amber-900 bg-amber-100 px-2.5 py-1 rounded-md border border-amber-300 font-semibold">
           <Clock className="w-3.5 h-3.5 mr-1 text-amber-600" />
-          เตือน: เหลืออีก {daysRemaining} วัน (30D SLA)
+          แจ้งเตือน: เหลือเวลาอีก {daysRemaining} วัน (ครบ 30 วัน)
         </span>
       );
     }
@@ -62,7 +62,7 @@ export const SlaCountdownBadge: React.FC<SlaCountdownBadgeProps> = ({
     return (
       <span className="inline-flex items-center text-xs text-blue-800 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
         <Clock className="w-3.5 h-3.5 mr-1 text-blue-600" />
-        เหลืออีก {daysRemaining} วัน (ส่งสัญญาตัวจริง)
+        เหลือเวลาอีก {daysRemaining} วัน (ผ่อนผันส่งสัญญา)
       </span>
     );
   }

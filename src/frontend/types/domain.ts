@@ -91,7 +91,7 @@ export interface ComplianceRecordDto {
 
 export interface CoreSyncTransactionDto {
   id: string;
-  targetSystem: 'AS400' | 'APAR' | 'SAP' | 'PCSDIS';
+  targetSystem: 'Deves Master' | 'AS400' | 'APAR' | 'SAP' | 'PCSDIS';
   status: 'Pending' | 'Success' | 'Failed';
   errorMessage?: string;
   completedAt?: string;

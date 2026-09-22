@@ -12,5 +12,8 @@
     "test:backend": "dotnet test",
     "docker:up": "docker compose up --build -d",
     "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
   }
 }

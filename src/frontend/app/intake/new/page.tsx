@@ -26,7 +26,15 @@ function IntakeWizardContent() {
   const [existingAppId, setExistingAppId] = useState<string | null>(editId);
   const [existingAppNumber, setExistingAppNumber] = useState<string | null>(null);
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const stepParam = searchParams.get('step');
+  const [currentStep, setCurrentStep] = useState<number>(stepParam ? parseInt(stepParam, 10) : 1);
+
+  useEffect(() => {
+    if (stepParam) {
+      const parsed = parseInt(stepParam, 10);
+      if (parsed >= 1 && parsed <= 4) setCurrentStep(parsed);
+    }
+  }, [stepParam]);
   const [agentType, setAgentType] = useState<AgentType>('Individual');
   const [profile, setProfile] = useState<AgentProfileDto>({
     titleTh: 'นาย',

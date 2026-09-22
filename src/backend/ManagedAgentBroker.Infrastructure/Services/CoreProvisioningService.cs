@@ -73,9 +73,10 @@ namespace ManagedAgentBroker.Infrastructure.Services
 
             var codes = await _devesMasterClient.GenerateCodesAsync(codeCmd, ct);
 
-            // 3. Parallel Idempotent Multi-System Provisioning across 4 Core Systems (AS400, APAR, SAP, PCSDIS)
+            // 3. Parallel Idempotent Multi-System Provisioning across 5 Core Systems (Deves Master, AS400, APAR, SAP, PCSDIS)
             var targetSystems = new[]
             {
+                TargetSystem.DevesMaster,
                 TargetSystem.AS400,
                 TargetSystem.APAR,
                 TargetSystem.SAP,

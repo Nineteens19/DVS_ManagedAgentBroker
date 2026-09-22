@@ -12,38 +12,38 @@ export const PersonaSwitcherBar: React.FC = () => {
   const personas: { role: UserRole; title: string; desc: string; icon: React.ReactNode }[] = [
     {
       role: 'branch_officer',
-      title: 'Branch Officer',
-      desc: 'เจ้าหน้าที่สาขา',
+      title: 'ฝ่ายธุรกิจสาขา',
+      desc: 'ยื่นใบสมัคร & แนบเอกสาร',
       icon: <Users className="w-3.5 h-3.5" />,
     },
     {
       role: 'ho_reviewer',
-      title: 'HO Reviewer',
-      desc: 'สนญ. ตรวจรับ & AMLO',
+      title: 'ฝ่ายธุรกิจ สนญ.',
+      desc: 'ตรวจรับ & คัดกรอง ปปง./คปภ.',
       icon: <Shield className="w-3.5 h-3.5" />,
     },
     {
       role: 'approver_md',
-      title: 'MD Approver',
-      desc: 'ผู้บริหารอนุมัติ',
+      title: 'กรรมการผู้จัดการ',
+      desc: 'ผู้บริหารลงนามอนุมัติ',
       icon: <CheckCircle className="w-3.5 h-3.5" />,
     },
     {
       role: 'premium_reviewer',
-      title: 'Premium Reviewer',
-      desc: 'สินเชื่อ & Provisioning',
+      title: 'ฝ่ายบริหารจัดการเบี้ย',
+      desc: 'อนุมัติวงเงิน & เปิดรหัสระบบ',
       icon: <Award className="w-3.5 h-3.5" />,
     },
     {
       role: 'auditor_legal',
-      title: 'Legal Auditor',
+      title: 'สำนักนิติกรรม',
       desc: 'ฝ่ายกฎหมายจัดเก็บสัญญา',
       icon: <FileSpreadsheet className="w-3.5 h-3.5" />,
     },
     {
       role: 'admin',
-      title: 'System Admin',
-      desc: 'ผู้ดูแลระบบ',
+      title: 'ผู้ดูแลระบบไอที',
+      desc: 'ดูแลระบบ & ติดตามคิวงาน',
       icon: <Lock className="w-3.5 h-3.5" />,
     },
   ];
@@ -54,7 +54,7 @@ export const PersonaSwitcherBar: React.FC = () => {
         <div className="flex items-center space-x-2">
           <span className="inline-block w-2 h-2 rounded-full bg-[#FFCD00]"></span>
           <span className="font-bold text-[#FFCD00] tracking-wide">
-            DEMO PERSONA SWITCHER:
+            สลับบทบาทผู้ใช้งาน (ทดสอบระบบ):
           </span>
           <Link
             href="/login"

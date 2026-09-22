@@ -39,11 +39,11 @@ export const Step3DocumentUpload: React.FC<Step3DocumentUploadProps> = ({
         <div className="flex items-center space-x-2 text-[#012169] pb-2 border-b border-[#DEE2E6]">
           <FileCheck className="w-4 h-4" />
           <h4 className="text-xs font-bold text-[#212529]">
-            อัปโหลดเอกสารแนบประกอบการพิจารณา (Document Attachments & Magic Byte Verification)
+            อัปโหลดเอกสารแนบประกอบการพิจารณา
           </h4>
         </div>
         <p className="text-xs text-[#6C757D]">
-          ระบบมีระบบตรวจสอบ Digital Binary Magic Byte Header อัตโนมัติ เพื่อป้องกันการปลอมแปลงนามสกุลไฟล์ตามมาตรฐานความปลอดภัย ISO 27001
+          ระบบมีระบบตรวจสอบโครงสร้างไฟล์ดิจิทัลอัตโนมัติ เพื่อยืนยันความถูกต้องแท้จริงของเอกสารและป้องกันไฟล์อันตราย
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">

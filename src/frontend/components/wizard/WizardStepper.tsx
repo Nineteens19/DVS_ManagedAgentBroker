@@ -8,10 +8,10 @@ interface WizardStepperProps {
 
 export const WizardStepper: React.FC<WizardStepperProps> = ({ currentStep, onStepClick }) => {
   const steps = [
-    { number: 1, label: '1. ข้อมูลผู้สมัคร', desc: 'Applicant Profile', icon: <User className="w-4 h-4" /> },
-    { number: 2, label: '2. ผู้ค้ำ & สินเชื่อ', desc: 'Guarantor & Terms', icon: <ShieldCheck className="w-4 h-4" /> },
-    { number: 3, label: '3. อัปโหลดเอกสาร', desc: 'Magic Byte Upload', icon: <UploadCloud className="w-4 h-4" /> },
-    { number: 4, label: '4. ตรวจสอบ & ยื่น', desc: 'Review & Submit', icon: <CheckCircle className="w-4 h-4" /> },
+    { number: 1, label: '1. ข้อมูลผู้สมัคร', desc: 'ข้อมูลทั่วไป & ที่อยู่', icon: <User className="w-4 h-4" /> },
+    { number: 2, label: '2. ผู้ค้ำ & สินเชื่อ', desc: 'ผู้ค้ำประกัน & วงเงิน', icon: <ShieldCheck className="w-4 h-4" /> },
+    { number: 3, label: '3. อัปโหลดเอกสาร', desc: 'อัปโหลดเอกสารแนบ', icon: <UploadCloud className="w-4 h-4" /> },
+    { number: 4, label: '4. ตรวจสอบ & ยื่น', desc: 'ตรวจสอบความถูกต้อง', icon: <CheckCircle className="w-4 h-4" /> },
   ];
 
   return (

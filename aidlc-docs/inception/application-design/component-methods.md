@@ -160,9 +160,15 @@ namespace ManagedAgentBroker.Application.Interfaces
             IssueDefectCommand command, 
             CancellationToken ct = default);
 
-        // Automatically executes policy submission suspension in AS400 and PCSDIS
-        Task<SuspensionExecutionDto> AutoSuspendSellingRightsAsync(
-            Guid applicationId, 
+        // Automatically executes tiered policy submission suspension in Deves Master and AS400
+        Task<SuspensionExecutionDto> AutoSuspendAgentAsync(
+            string agentCode, 
+            string reason, 
+            CancellationToken ct = default);
+
+        Task<SuspensionExecutionDto> AutoSuspendSourceAsync(
+            string agentCode, 
+            string sourceCode, 
             string reason, 
             CancellationToken ct = default);
 
@@ -182,9 +188,24 @@ namespace ManagedAgentBroker.Application.Interfaces
 ```csharp
 namespace ManagedAgentBroker.Infrastructure.Clients
 {
+    public interface IDevesMasterApiClient
+    {
+        // 100% Automated Provisioning: creates Agent Code, Source Code(s), and registers UE
+        Task<DevesMasterProvisionResponse> ProvisionAgentAndSourceAsync(
+            DevesMasterProvisionRequest request, 
+            CancellationToken ct = default);
+
+        // Updates selling status (Active, Suspended, Terminated) at Agent or Source level
+        Task<DevesMasterStatusResponse> UpdateSellingStatusAsync(
+            string agentCode, 
+            string? sourceCode, 
+            string statusCode, 
+            CancellationToken ct = default);
+    }
+
     public interface IAs400ApiClient
     {
-        Task<As400ProvisionResponse> CreateAgentCodeAsync(As400CreateAgentRequest request, CancellationToken ct = default);
+        Task<As400ProvisionResponse> SyncAgentMasterAsync(As400SyncAgentRequest request, CancellationToken ct = default);
         Task<As400StatusResponse> UpdateAgentStatusAsync(string agentCode, string statusCode, CancellationToken ct = default);
     }
 

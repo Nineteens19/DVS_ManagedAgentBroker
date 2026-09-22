@@ -1,736 +1,556 @@
 # เอกสารวิเคราะห์ระบบบริหารจัดการตัวแทน/นายหน้า (Agent & Broker Management System) — F-BP-009
 
-> วิเคราะห์จากซอร์สโค้ดจริงของโปรเจกต์ **DVS_ManagedAgentBroker**
-> (.NET 8 Clean Architecture + Next.js App Router) อ้างอิงเอกสาร **F-BP-009 Agent Management System**
-> บริษัท เทเวศประกันภัย จำกัด (มหาชน) — Deves
+> **โครงการ:** P2026-009 ระบบบริหารจัดการตัวแทนและนายหน้า (Agent & Broker Management System)  
+> **บริษัท:** บริษัท เทเวศประกันภัย จำกัด (มหาชน) — Deves Insurance Public Company Limited  
+> **รหัสแบบฟอร์ม:** F-BP-009 (Rev.1.0) / F-CM-035 (ใบสมัครตัวแทน) / F-CM-018 (ชุดสัญญาแต่งตั้งตัวแทน)  
+> **เอกสารอ้างอิง:** ISO QP-CM-004, BPMN Workflow, Master Intake Schema 100% Completeness  
+> **สถานะ:** Approved Baseline for System Implementation & Testing  
 
 ---
 
-## Header
+## ข้อมูลเอกสาร (Document Header)
 
 | หัวข้อ | รายละเอียด |
-|--------|-----------|
-| Document Type | Software Requirement Analysis (SRS Analysis) |
-| Project | P2026-XXX — Managed Agent & Broker Onboarding *(ยืนยันรหัสโครงการจริง — ดู Open Issues)* |
-| System | ระบบบริหารจัดการตัวแทน/นายหน้า (Agent & Broker Management) |
-| แบบฟอร์มอ้างอิง | F-BP-009 |
-| Module / Unit | Unit 2 Identity, Unit 3 Intake, Unit 4 Compliance & Approval, Unit 5 Provisioning & SLA |
-| Source | `src/backend` (.NET Clean Architecture), `src/frontend` (Next.js 14 + TS + Tailwind) |
-| Version | 0.1 (Draft — reverse engineered จากโค้ด) |
-| Prepared by | BA (Deves) |
-| Status | Draft for review |
+|---|---|
+| **Document Type** | Software Requirement Specification & Business Analysis (SRS Analysis) |
+| **Project Code** | P2026-009 — Managed Agent & Broker Onboarding Platform |
+| **System Name** | ระบบบริหารจัดการตัวแทนและนายหน้า (Agent & Broker Management System: MAB) |
+| **Form Code** | F-BP-009 (ระบบจัดการตัวแทน), F-CM-035 (ใบสมัคร), F-CM-018 (ชุดสัญญาแต่งตั้ง) |
+| **Target Integration** | Deves Mastermanagement, AS400 Core Underwriting, APAR Ledger, SAP Financials, PCSDIS Commission |
+| **Version** | 1.0.0 (Official Release) |
+| **Prepared by** | Business Analyst & IT Development Team (Deves) |
+| **Approved by** | Head of Business Units, Head of Premium Dept, Legal Director, IT Director |
+| **Effective Date** | 22 กันยายน 2569 |
 
 ---
 
 ## สารบัญ
 
-1. [ภาพรวมและวัตถุประสงค์](#1-ภาพรวมและวัตถุประสงค์)
-2. [ขอบเขตงาน (Scope of Work)](#2-ขอบเขตงาน-scope-of-work)
-3. [Business Requirements](#3-business-requirements)
-4. [บทบาทผู้ใช้และสิทธิ์ (Roles & Permissions)](#4-บทบาทผู้ใช้และสิทธิ์-roles--permissions)
-5. [Use Case ภาพรวม](#5-use-case-ภาพรวม)
-6. [กระบวนการหลัก End-to-End](#6-กระบวนการหลัก-end-to-end)
-7. [สถานะใบสมัคร (State Machine)](#7-สถานะใบสมัคร-state-machine)
-8. [รายละเอียดกระบวนการรายขั้น](#8-รายละเอียดกระบวนการรายขั้น)
-9. [Data Model (ER Diagram)](#9-data-model-er-diagram)
-10. [Business Rules Catalog (สำหรับทดสอบ)](#10-business-rules-catalog-สำหรับทดสอบ)
-11. [Validation Rules](#11-validation-rules)
-12. [Non-Functional Requirements](#12-non-functional-requirements)
-13. [PDPA Consideration](#13-pdpa-consideration)
-14. [Risk Management Plan](#14-risk-management-plan)
-15. [Open Issues / ประเด็นที่ต้องยืนยัน](#15-open-issues--ประเด็นที่ต้องยืนยัน)
-16. [แนวทางการทดสอบ (Test Strategy & Scenarios)](#16-แนวทางการทดสอบ-test-strategy--scenarios)
-17. [Appendix](#17-appendix)
+1. [ภาพรวมและวัตถุประสงค์ (Executive Summary & Objectives)](#1-ภาพรวมและวัตถุประสงค์)
+2. [ตารางถอดรหัสคำศัพท์และตัวย่อภาษาไทย (System Terminology & Glossary)](#2-ตารางถอดรหัสคำศัพท์และตัวย่อภาษาไทย)
+3. [ขอบเขตงาน (Scope of Work)](#3-ขอบเขตงาน)
+4. [ข้อกำหนดทางธุรกิจ (Business Requirements Catalog)](#4-ข้อกำหนดทางธุรกิจ)
+5. [บทบาทผู้ใช้และสิทธิ์การใช้งาน (Roles & Permissions Matrix)](#5-บทบาทผู้ใช้และสิทธิ์การใช้งาน)
+6. [Use Case ภาพรวมและสถาปัตยกรรมระบบ (System Architecture)](#6-use-case-ภาพรวมและสถาปัตยกรรมระบบ)
+7. [กระบวนการทำงานหลักพร้อมภาพประกอบระบบจริง (End-to-End Functional Walkthrough)](#7-กระบวนการทำงานหลักพร้อมภาพประกอบระบบจริง)
+   - 7.1 [การเข้าสู่ระบบและการสลับบทบาทผู้ใช้งาน (Persona Authentication)](#71-การเข้าสู่ระบบและการสลับบทบาทผู้ใช้งาน)
+   - 7.2 [ภาพรวมแดชบอร์ดและการบริหารคิวงาน (Operational Dashboard)](#72-ภาพรวมแดชบอร์ดและการบริหารคิวงาน)
+   - 7.3 [ระบบบันทึกใบสมัครดิจิทัล (Intake Wizard 4 ขั้นตอน)](#73-ระบบบันทึกใบสมัครดิจิทัล-intake-wizard-4-ขั้นตอน)
+   - 7.4 [การตรวจรับเอกสารและคัดกรองรายชื่อ ปปง./คปภ. (HO Review & Screening)](#74-การตรวจรับเอกสารและคัดกรองรายชื่อ-ปปงคปภ)
+   - 7.5 [การพิจารณาอนุมัติตามอำนาจดำเนินการ (DOA Executive Approval)](#75-การพิจารณาอนุมัติตามอำนาจดำเนินการ)
+   - 7.6 [การเปิดรหัสเข้าระบบหลักอัตโนมัติ 100% (Core System Auto-Provisioning)](#76-การเปิดรหัสเข้าระบบหลักอัตโนมัติ-100)
+   - 7.7 [การติดตามระยะเวลากำหนดส่งสัญญาฉบับจริง (SLA 30/90-Day Enforcement)](#77-การติดตามระยะเวลากำหนดส่งสัญญาฉบับจริง)
+   - 7.8 [การตรวจรับสัญญาฉบับจริงและการจัดเก็บเข้าคลังเอกสาร (Legal Vault Archiving)](#78-การตรวจรับสัญญาฉบับจริงและการจัดเก็บเข้าคลังเอกสาร)
+8. [แผนผังสถานะเอกสาร (State Machine & Impact Matrix)](#8-แผนผังสถานะเอกสาร)
+9. [กฎเกณฑ์ทางธุรกิจสำหรับการทดสอบ (Business Rules Catalog)](#9-กฎเกณฑ์ทางธุรกิจสำหรับการทดสอบ)
+10. [กฎการตรวจสอบความถูกต้องของข้อมูล (Validation Rules Catalog)](#10-กฎการตรวจสอบความถูกต้องของข้อมูล)
+11. [แบบจำลองข้อมูล (Data Model - ER Diagram)](#11-แบบจำลองข้อมูล)
+12. [ข้อกำหนดด้านคุณภาพระบบ (Non-Functional Requirements - NFR)](#12-ข้อกำหนดด้านคุณภาพระบบ)
+13. [การคุ้มครองข้อมูลส่วนบุคคล (PDPA Consideration)](#13-การคุ้มครองข้อมูลส่วนบุคคล)
+14. [แผนการบริหารความเสี่ยง (Risk Management Plan)](#14-แผนการบริหารความเสี่ยง)
+15. [ประเด็นข้อยุติและการดำเนินงาน (Resolved & Baseline Decisions)](#15-ประเด็นข้อยุติและการดำเนินงาน)
+16. [แนวทางการทดสอบระบบ (Test Strategy & Traceability Matrix)](#16-แนวทางการทดสอบระบบ)
+17. [ภาคผนวก (Appendix: API Endpoints & Form Mappings)](#17-ภาคผนวก)
 
 ---
 
 ## 1. ภาพรวมและวัตถุประสงค์
 
-ระบบนี้บริหาร **วงจรการรับสมัครและอนุมัติตัวแทน/นายหน้าประกันภัย** ตั้งแต่รับใบสมัครที่สาขา จนถึงเปิดรหัสขายในระบบ Core และจัดเก็บสัญญาฉบับจริง โดยมีหัวใจอยู่ที่การ **เปิดสิทธิ์ขายชั่วคราว (Provisional Selling)** ให้ตัวแทนเริ่มทำงานได้ทันทีหลังอนุมัติวงเงิน แล้วบังคับส่งเอกสารสัญญาตัวจริงภายใน SLA ที่กำหนด มิฉะนั้นระบบจะระงับ/ปิดรหัสอัตโนมัติ
-
-| # | วัตถุประสงค์ | ความหมายเชิงระบบ |
-|---|-------------|-------------------|
-| 1 | ลดเวลารับสมัคร → เปิดขาย | สาขาคีย์ใบสมัคร → สนญ.ตรวจ → ผู้บริหารอนุมัติ → ระบบเปิดรหัสขายชั่วคราวอัตโนมัติ (ActiveTemporary) |
-| 2 | ควบคุมความเสี่ยง Compliance | คัดกรอง AMLO (ฟอกเงิน) และ OIC (ใบอนุญาต/บัญชีดำ) ก่อนส่งอนุมัติ |
-| 3 | Provisioning อัตโนมัติหลายระบบ | สร้างรหัสในระบบ Core 4 ระบบ (AS400, APAR, SAP, PCSDIS) แบบ Idempotent |
-| 4 | บังคับส่งเอกสารตัวจริงด้วย SLA | SLA 30 วัน (ส่งเอกสาร) → ระงับ / SLA 90 วัน → ปิดรหัสถาวร โดย Daemon อัตโนมัติ |
-| 5 | จัดเก็บสัญญาถูกต้องตามกฎหมาย | ฝ่ายกฎหมายตรวจรับเอกสารตัวจริง → เปิดสิทธิ์ถาวร (ActivePermanent) |
-| 6 | ตรวจสอบย้อนกลับได้ (Auditability) | Domain Events + Audit Interceptor บันทึกทุกการเปลี่ยนสถานะ |
-
-**ข้อสังเกตเชิงสถาปัตยกรรม (จากโค้ดจริง):**
-- Backend เป็น Clean Architecture 3 ชั้น: `Domain` (Aggregate `AgentApplication` + Domain Events), `Infrastructure` (Services + EF Core + SQL Server), `API` (ASP.NET Core)
-- ปัจจุบัน API layer มีเพียง `Program.cs` (`MapControllers()` + `/healthz`) แต่ **ยังไม่มีไฟล์ Controller** — endpoint ที่ frontend เรียก (`/api/applications`, `/api/compliance/...`, ฯลฯ) ยังไม่ถูก implement (ดู Open Issues OI-01)
-- Frontend ใช้ **Hybrid Dual-Mode API Client**: พยายามเรียก backend ก่อน ถ้าไม่สำเร็จภายใน timeout จะ fallback ไปที่ `MockDataEngine` ในหน่วยความจำ
-- การเชื่อมต่อ AMLO / OIC / Deves Master / Core 4 ระบบ ปัจจุบันเป็น **Sandbox Simulator** ทั้งหมด (`UseSandboxSimulators = true`)
-
----
-
-## 2. ขอบเขตงาน (Scope of Work)
-
-### 2.1 In Scope (ที่ปรากฏในโค้ด)
-
-- การรับสมัครตัวแทน (Individual) และนิติบุคคล/นายหน้า (Corporate) พร้อมผู้ค้ำประกันและหลักประกัน
-- อัปโหลด/ตรวจสอบเอกสารแนบ (magic-byte signature + SHA-256 + จำกัดขนาด 10 MB)
-- การคัดกรอง Compliance (AMLO / OIC)
-- Workflow อนุมัติ: สาขา → สนญ. → ผู้บริหาร → ฝ่ายสินเชื่อ/ตั้งรหัส
-- Provisioning อัตโนมัติหลายระบบ + สร้าง Agent Code / Source Code
-- เปิดสิทธิ์ขายชั่วคราว + จับเวลา SLA 30/90 วัน
-- Daemon เฝ้าติดตาม SLA (ระงับ/ปิดรหัส/แจ้งเตือนล่วงหน้า)
-- จัดเก็บสัญญาฉบับจริง (Legal Archive) → เปิดสิทธิ์ถาวร
-- Identity & Access: JWT + Refresh Token Rotation, Branch Data Scope, Account Lockout
-
-### 2.2 Out of Scope / ยังไม่สมบูรณ์ในโค้ด
-
-- REST Controllers จริงของ backend (endpoint ยังไม่ถูกสร้าง)
-- การเชื่อมต่อ AMLO / OIC / Deves Master / Core 4 ระบบแบบ Production (เป็น simulator)
-- การพิสูจน์ตัวตนจริงบน frontend (ปัจจุบันใช้ Preset Personas + localStorage)
-- การคำนวณค่าคอมมิชชัน / การออกกรมธรรม์ / การชำระเงิน
-- เส้นทางอนุมัติกรรมการ (Director Approval) กรณี PEP/OIC Orange — มีการ "ตั้งค่า flag" แต่ยังไม่มี state gating
-- รายงานเชิงวิเคราะห์และการ export
-
-```mermaid
-flowchart LR
-    subgraph IN["✅ In Scope (ปรากฏในโค้ด)"]
-        A1[Intake + Document Validation]
-        A2[Compliance Screening AMLO/OIC]
-        A3[Approval Workflow]
-        A4[Auto Multi-System Provisioning]
-        A5[SLA Daemon 30/90 วัน]
-        A6[Legal Hard-Copy Archive]
-        A7[Identity/JWT/Branch Scope]
-    end
-    subgraph OUT["⚠️ Gap / Out of Scope"]
-        B1[REST Controllers จริง]
-        B2[AMLO/OIC/Core Integration จริง]
-        B3[Real Auth บน Frontend]
-        B4[Director Approval Path]
-        B5[Reports / Export]
-    end
-```
-
----
-
-## 3. Business Requirements
-
-| BR ID | Business Requirement | Priority |
-|-------|----------------------|----------|
-| BR-001 | รับสมัครตัวแทน Individual/Corporate: สร้าง/แก้ไขฉบับร่าง แนบเอกสาร ตรวจ Thai National ID checksum | High |
-| BR-002 | บังคับเอกสารแนบครบตามประเภทก่อนส่ง (Individual 3 ชนิด / Corporate 4 ชนิด) | High |
-| BR-003 | ส่งใบสมัครจากสาขา → ตรวจ สนญ. → ส่งกลับแก้ไข (Reject Checklist) → ส่งซ้ำ | High |
-| BR-004 | คัดกรอง Compliance AMLO + OIC และบล็อกกรณี AMLO Designated / OIC Red | High |
-| BR-005 | อนุมัติโดยผู้บริหาร (อนุมัติ/ปฏิเสธ) พร้อมแจ้งเตือนอีเมล | High |
-| BR-006 | อนุมัติวงเงิน + คอมมิชชัน โดยฝ่ายสินเชื่อ → trigger provisioning อัตโนมัติ | High |
-| BR-007 | สร้างรหัสในระบบ Core 4 ระบบ (AS400/APAR/SAP/PCSDIS) แบบ Idempotent + สร้าง Agent/Source Code | High |
-| BR-008 | เปิดสิทธิ์ขายชั่วคราว (ActiveTemporary) + จับเวลา SLA 30/90 วัน | High |
-| BR-009 | เฝ้าติดตาม SLA อัตโนมัติ: แจ้งเตือน (7/3/1 วัน) → ระงับ 30 วัน → ปิดรหัส 90 วัน | High |
-| BR-010 | ฝ่ายกฎหมายตรวจรับสัญญาฉบับจริง → จัดเก็บ (Archive Box) → เปิดสิทธิ์ถาวร | High |
-| BR-011 | ควบคุมเงื่อนไขเครดิต: Motor 15/30/31 วัน, Non-Motor ≤ 45 วัน, วงเงินขั้นต่ำ 10,000 บาท | Medium |
-| BR-012 | Identity & Access: JWT + Refresh Token Rotation, ล็อกบัญชีหลังผิด 5 ครั้ง, Branch Data Scope | High |
-| BR-013 | ตรวจสอบเอกสารแนบด้วย magic-byte signature + SHA-256 + จำกัดขนาด 10 MB | Medium |
-
----
-
-## 4. บทบาทผู้ใช้และสิทธิ์ (Roles & Permissions)
-
-### 4.1 บทบาท (จาก `AuthContext.tsx` frontend และ `BranchScopeEvaluator` backend)
-
-| Role (Frontend) | Role Code (Backend) | ชื่อไทย | Data Scope | หน้าที่หลัก |
-|-----------------|---------------------|--------|------------|-------------|
-| `branch_officer` | `ROLE_BRANCH_BU` | เจ้าหน้าที่สาขา | เฉพาะสาขาตน | สร้าง/แก้ไขใบสมัคร แนบเอกสาร ส่งอนุมัติ |
-| `ho_reviewer` | `ROLE_HO_BU` | เจ้าหน้าที่ตรวจรับ สนญ. | ทั้งองค์กร | ตรวจสอบ คัดกรอง Compliance ส่งต่อผู้บริหาร ส่งกลับแก้ไข |
-| `approver_md` | `ROLE_APPROVER_MD` | กรรมการผู้จัดการ | ทั้งองค์กร | อนุมัติ/ปฏิเสธใบสมัคร |
-| `premium_reviewer` | `ROLE_PREMIUM_DEPT` | ฝ่ายสินเชื่อ & ตั้งรหัส | ทั้งองค์กร | อนุมัติวงเงิน/คอมมิชชัน + trigger provisioning |
-| `auditor_legal` | `ROLE_LEGAL_DEPT` | ฝ่ายกฎหมาย & สัญญา | ทั้งองค์กร | ตรวจรับ/จัดเก็บสัญญาตัวจริง เปิดสิทธิ์ถาวร |
-| `admin` | `ROLE_IT_ADMIN` | ผู้ดูแลระบบ | ทั้งองค์กร | ทำได้ทุกขั้น (superuser ใน frontend) |
-
-> ⚠️ **หมายเหตุ mapping:** ชื่อ role code ระหว่าง frontend (`branch_officer`) และ backend (`ROLE_BRANCH_BU`) ยังไม่ถูก map อย่างเป็นทางการ ต้องยืนยัน (OI-05)
-
-### 4.2 Permission Matrix (จาก AuthContext + BranchScopeEvaluator)
-
-| ความสามารถ | branch_officer | ho_reviewer | approver_md | premium_reviewer | auditor_legal | admin |
-|------------|:---:|:---:|:---:|:---:|:---:|:---:|
-| สร้าง/ส่งใบสมัคร | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| ตรวจ/คัดกรอง Compliance | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ |
-| อนุมัติ (Executive) | ❌ | ❌ | ✅ | ❌ | ❌ | ✅ |
-| Trigger Provisioning | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| จัดเก็บสัญญา/เปิดสิทธิ์ถาวร | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| Data Scope (`BranchScopeEvaluator`) | สาขาตน | Global | Global | Global | Global | Global |
-
-> **Data Scope:** `BranchScopeEvaluator.ApplyBranchFilter` กรองที่ Backend — role ใน `GlobalScopeRoles` (HO_BU, PREMIUM_DEPT, LEGAL_DEPT, APPROVER_MD, IT_ADMIN) เห็นทั้งองค์กร; role อื่นเห็นเฉพาะ `BranchCode` ของตน; หากไม่มี branch code → ปฏิเสธทั้งหมด
-
----
-
-## 5. Use Case ภาพรวม
-
-```mermaid
-flowchart TB
-    Branch([เจ้าหน้าที่สาขา])
-    HO([ผู้ตรวจ สนญ.])
-    MD([กรรมการผู้จัดการ])
-    Premium([ฝ่ายสินเชื่อ/ตั้งรหัส])
-    Legal([ฝ่ายกฎหมาย])
-    Daemon([SLA Daemon อัตโนมัติ])
-
-    subgraph System["ระบบบริหารจัดการตัวแทน/นายหน้า"]
-        UC1[สร้าง/แก้ไข/ส่งใบสมัคร + แนบเอกสาร]
-        UC2[ตรวจสอบ + คัดกรอง Compliance]
-        UC3[ส่งกลับแก้ไข / ส่งต่อผู้บริหาร]
-        UC4[อนุมัติ/ปฏิเสธ]
-        UC5[อนุมัติวงเงิน + Provisioning หลายระบบ]
-        UC6[เปิดสิทธิ์ขายชั่วคราว + จับเวลา SLA]
-        UC7[แจ้งเตือน/ระงับ/ปิดรหัส ตาม SLA]
-        UC8[ตรวจรับ+จัดเก็บสัญญาตัวจริง → สิทธิ์ถาวร]
-    end
-
-    Branch --> UC1
-    HO --> UC2 & UC3
-    MD --> UC4
-    Premium --> UC5 & UC6
-    Daemon --> UC7
-    Legal --> UC8
-```
-
----
-
-## 6. กระบวนการหลัก End-to-End
-
-### 6.1 Business Invariants (จากโค้ด Aggregate `AgentApplication`)
-
-1. ใบสมัครเดินหน้าตาม state machine เชิงเส้นเป็นหลัก — การข้ามสถานะจะโยน `InvalidStateTransitionException`
-2. การส่งจากสาขาต้องมี `NationalIdOrTaxId` และเอกสารแนบครบตามประเภท
-3. ห้ามส่งต่อผู้บริหาร หาก AMLO = `RejectedDesignated` หรือ OIC = `Red`
-4. เปิดสิทธิ์ขายชั่วคราวต้องมี `AgentCode` + `SourceCode` ที่ Deves Master สร้างแล้ว
-5. เมื่อ `ActivateProvisionalSelling` → ตั้ง `Sla30DayDeadline = today+30` และ `Sla90DayDeadline = today+90` (อิง UTC date)
-6. ทุกการเปลี่ยนสถานะ raise `ApplicationStatusChangedEvent` (ใช้เพื่อ audit)
-
-### 6.2 แผนภาพกระบวนการ End-to-End
-
-```mermaid
-flowchart TD
-    Start([สาขาต้องการรับสมัครตัวแทน]) --> Draft[สร้างใบสมัครฉบับร่าง<br/>Profile + Guarantor + Collateral]
-    Draft --> Attach[แนบเอกสาร + ตรวจ signature/ขนาด]
-    Attach --> Submit{ส่งจากสาขา?}
-    Submit -->|เอกสารไม่ครบ BR-DOC-01| Blocked[บล็อก + แจ้งเอกสารที่ขาด]
-    Submit -->|ครบ + มี National ID| Submitted[SubmittedBranch]
-
-    Submitted --> Review[สนญ. รับตรวจ ReviewHeadOffice]
-    Review --> Screen[คัดกรอง Compliance AMLO+OIC]
-    Screen --> CompCheck{AMLO Designated<br/>หรือ OIC Red?}
-    CompCheck -->|ใช่| CompBlock[บล็อกส่งต่อ<br/>BR-COMPLIANCE-01/02]
-    CompCheck -->|ไม่| Forward[ForwardToExecutive<br/>PendingExecutiveApproval + ส่งอีเมล]
-    Review -->|พบข้อบกพร่อง| Return[ReturnedForCorrection<br/>+ Reject Checklist]
-    Return -->|แก้ไข + ส่งซ้ำ resolved ครบ| Submitted
-
-    Forward --> Decision{ผู้บริหารพิจารณา}
-    Decision -->|ปฏิเสธ| Rejected[ExecutiveRejected]
-    Decision -->|อนุมัติ| ReviewPrem[ReviewPremium]
-
-    ReviewPrem --> Prov[ฝ่ายสินเชื่อ trigger provisioning<br/>อนุมัติวงเงิน+คอมมิชชัน]
-    Prov --> Codes[Deves Master สร้าง AgentCode/SourceCode]
-    Codes --> Sync[Provision 4 ระบบ Core<br/>AS400/APAR/SAP/PCSDIS Idempotent]
-    Sync --> Active[ActiveTemporary<br/>ตั้ง SLA 30/90 + ส่งอีเมล]
-
-    Active --> Wait{ส่งเอกสารตัวจริงทันไหม?}
-    Wait -->|ฝ่ายกฎหมายตรวจรับ| Archive[ActivePermanent<br/>จัดเก็บ Archive Box]
-    Wait -->|เกิน 30 วัน Daemon| Susp[Suspended30D<br/>ระงับส่งงาน]
-    Susp -->|ส่งเอกสารทัน| Archive
-    Susp -->|เกิน 90 วัน Daemon| Term[Terminated90D<br/>ปิดรหัสถาวร]
-    Archive --> End([ตัวแทนสิทธิ์ถาวร])
-```
-
----
-
-## 7. สถานะใบสมัคร (State Machine)
-
-### 7.1 ตารางสถานะ (`ApplicationStatus`)
-
-| # | สถานะ (enum) | ความหมาย | ผู้ทำให้เปลี่ยน |
-|---|--------------|----------|----------------|
-| 1 | `Draft` | ฉบับร่าง แก้ไข/แนบเอกสารได้ | สาขา |
-| 2 | `SubmittedBranch` | สาขาส่งแล้ว | สาขา |
-| 3 | `ReviewHeadOffice` | สนญ. รับตรวจ | สนญ. |
-| 4 | `PendingExecutiveApproval` | รอผู้บริหารอนุมัติ | สนญ. |
-| 5 | `ReviewPremium` | อนุมัติแล้ว รอตั้งรหัส/วงเงิน | ผู้บริหาร |
-| 6 | `CoreAutoProvisioning` | กำลังสร้างรหัสในระบบ Core | ฝ่ายสินเชื่อ (ระบบ) |
-| 7 | `ActiveTemporary` | **เปิดขายชั่วคราว** + จับเวลา SLA | ระบบ (Provisioner) |
-| 8 | `ReviewLegalOriginal` | *(นิยามไว้แต่ยังไม่มี transition ใช้ — ดู OI-06)* | - |
-| 9 | `ActivePermanent` | **เปิดขายถาวร** | ฝ่ายกฎหมาย |
-| 10 | `Suspended30D` | ระงับส่งงาน (เกิน SLA 30 วัน) | SLA Daemon |
-| 11 | `Terminated90D` | ปิดรหัสถาวร (เกิน SLA 90 วัน) | SLA Daemon |
-| 12 | `ReturnedForCorrection` | ส่งกลับแก้ไขตาม Reject Checklist | สนญ. |
-| 13 | `ExecutiveRejected` | ผู้บริหารปฏิเสธ | ผู้บริหาร |
-| 14 | `ComplianceRejected` | *(นิยามไว้แต่ยังไม่มี transition ใช้ — ดู OI-06)* | - |
-
-### 7.2 State Diagram
-
-```mermaid
-stateDiagram-v2
-    [*] --> Draft: CreateDraft
-    Draft --> SubmittedBranch: SubmitByBranch (เอกสารครบ + National ID)
-    ReturnedForCorrection --> SubmittedBranch: Resubmit (resolved ครบ)
-    SubmittedBranch --> ReviewHeadOffice: AssignToHeadOfficeReview
-    ReviewHeadOffice --> ReturnedForCorrection: ReturnForCorrection + Checklist
-    ReviewHeadOffice --> PendingExecutiveApproval: ForwardToExecutive (ผ่าน Compliance)
-    SubmittedBranch --> PendingExecutiveApproval: ForwardToExecutive (auto assign + forward)
-    PendingExecutiveApproval --> ReviewPremium: ProcessExecutiveApproval(approved)
-    PendingExecutiveApproval --> ExecutiveRejected: ProcessExecutiveApproval(rejected)
-    ReviewPremium --> CoreAutoProvisioning: ApproveCreditAndTriggerProvisioning
-    CoreAutoProvisioning --> ActiveTemporary: ActivateProvisionalSelling (ตั้ง SLA 30/90)
-    ActiveTemporary --> ActivePermanent: VerifyAndArchiveHardCopy
-    ActiveTemporary --> Suspended30D: TriggerAutoSuspension (SLA 30)
-    Suspended30D --> ActivePermanent: VerifyAndArchiveHardCopy
-    Suspended30D --> Terminated90D: TriggerAutoTermination (SLA 90)
-    ExecutiveRejected --> [*]
-    Terminated90D --> [*]
-    ActivePermanent --> [*]
-```
-
-> ⚠️ **ข้อสังเกต transition:** `ForwardToExecutiveAsync` ในโค้ดยอมรับทั้ง `SubmittedBranch` และ `ReviewHeadOffice` เป็น input — ถ้าเป็น `SubmittedBranch` จะเรียก `AssignToHeadOfficeReview` ให้ก่อนแล้วค่อย forward ในคำสั่งเดียว จึงข้าม `ReviewHeadOffice` ได้ (ต้องยืนยันว่าตั้งใจ — OI-06)
-
----
-
-## 8. รายละเอียดกระบวนการรายขั้น
-
-### 8.1 Intake (Unit 3) — `ApplicationIntakeService`
-
-- **สร้างฉบับร่าง** (`CreateDraftAsync`): สร้างเลขที่ใบสมัคร `APP-yyyyMMdd-NNNN`, ตรวจ Thai National ID (Modulo-11) ทั้งผู้สมัครและผู้ค้ำ, ตั้งเงื่อนไขเครดิต
-- **แนบเอกสาร** (`UploadAttachmentAsync`): ทำได้เฉพาะสถานะ `Draft`/`ReturnedForCorrection`; ตรวจ magic byte + hash + ขนาด ≤ 10 MB
-- **ส่งจากสาขา** (`SubmitByBranchAsync`): ตรวจเอกสารบังคับครบตามประเภท
-
-| ประเภท | เอกสารบังคับ (Mandatory) |
-|--------|--------------------------|
-| Individual | `ID_CARD`, `BOOK_BANK`, `BROKER_LICENSE` |
-| Corporate | `COMPANY_REGISTRATION`, `BOOK_BANK`, `SHAREHOLDER_LIST`, `DIRECTOR_ID_CARD` |
-
-```mermaid
-sequenceDiagram
-    participant B as สาขา
-    participant S as IntakeService
-    participant F as FileStorage
-    B->>S: CreateDraft (Profile/Guarantor/Collateral)
-    S->>S: ตรวจ National ID (Modulo 11) + credit terms
-    S-->>B: ApplicationNumber (APP-yyyyMMdd-NNNN)
-    B->>S: UploadAttachment
-    S->>F: ตรวจ magic byte + ขนาด ≤10MB + SHA256
-    F-->>S: storagePath + hash
-    B->>S: SubmitByBranch
-    S->>S: ตรวจเอกสารบังคับครบ (BR-DOC-01)
-    S-->>B: Status = SubmittedBranch
-```
-
-### 8.2 Compliance Screening (Unit 4) — `ComplianceScreeningService`
-
-การประเมินปัจจุบันเป็น **Deterministic Sandbox Heuristic** อิง prefix ของ National ID/Tax ID:
-
-| Prefix | AMLO | OIC | ผล |
-|--------|------|-----|-----|
-| `999...` | RejectedDesignated | Red | บล็อกส่งต่อ (critical) |
-| `888...` | FlaggedPep | Green | ต้อง Director Approval |
-| `777...` | Passed | Orange | ใบอนุญาตใกล้หมดอายุ / ต้อง Director Approval |
-| อื่น ๆ | Passed | Green | ผ่านปกติ |
-
-- `RequiresDirectorApproval = (AMLO = FlaggedPep) OR (OIC = Orange)` — ปัจจุบันใช้เพียงระบุใน flag/อีเมล ยังไม่มี state gating (OI-04)
-- `IsEligibleForApproval = (AMLO ≠ RejectedDesignated) AND (OIC ≠ Red)`
-
-### 8.3 Approval (Unit 4) — `ApprovalWorkflowService`
-
-- `ForwardToExecutiveAsync`: รัน compliance ถ้ายังไม่เคยคัดกรอง → ตรวจ eligibility → ส่งอีเมลถึงผู้บริหาร
-- `ProcessDecisionAsync`: อนุมัติ → `ReviewPremium` + อีเมลถึงสาขา; ปฏิเสธ → `ExecutiveRejected` + อีเมล
-- เป็น **single-level approval** — ไม่มีการตรวจเพดานวงเงิน (DOA) ต่อบทบาท (OI-03)
-
-### 8.4 Provisioning (Unit 5) — `CoreProvisioningService` + `DevesMasterApiClient`
-
-```mermaid
-sequenceDiagram
-    participant P as ฝ่ายสินเชื่อ
-    participant C as CoreProvisioningService
-    participant M as DevesMasterApiClient
-    participant Core as Core 4 ระบบ
-    P->>C: TriggerProvisioning (approvedLimit, commission%)
-    C->>C: ApproveCreditAndTriggerProvisioning → CoreAutoProvisioning
-    C->>M: GenerateCodes (sandbox)
-    M-->>C: AgentCode (AG/BR+ปี+seq), SourceCode, UnitExecutiveCode
-    loop AS400, APAR, SAP, PCSDIS
-        C->>Core: Sync (IdempotencyKey = App-System-PROV)
-        Core-->>C: Success (sandbox: mark Success ทันที)
-    end
-    C->>C: ActivateProvisionalSelling → ActiveTemporary + SLA 30/90
-    C-->>P: CoreProvisioningResult + ส่งอีเมล (non-blocking)
-```
-
-- **Idempotency:** ใช้ key `{ApplicationNumber}-{system}-PROV` ป้องกันสร้างซ้ำเมื่อ retry
-- Sandbox: ทุกระบบถูก mark `SyncStatus.Success` ทันที — enum `Failed`/`Retrying` ยังไม่ถูกใช้จริง (OI-02)
-- Agent Code: `AG{ปี}{seq}` (Individual) / `BR{ปี}{seq}` (Corporate) — seq derive จาก SHA256 ของ National ID (deterministic)
-
-### 8.5 SLA Monitoring (Unit 5) — `SlaMonitoringService` + Background Daemon
-
-- Daemon รันด้วย `PeriodicTimer` ทุก `SlaDaemonIntervalMinutes` (default 60 นาที), มี lock กัน overlap
-- **รอบ 30 วัน (สแกน `ActiveTemporary`):** ถ้า `now ≥ Sla30DayDeadline` และยังไม่ Archived → `TriggerAutoSuspension` → `Suspended30D`; ถ้าเหลือ 7/3/1 วัน → ส่งอีเมลแจ้งเตือน
-- **รอบ 90 วัน (สแกน `Suspended30D`):** ถ้า `now ≥ Sla90DayDeadline` และยังไม่ Archived → `TriggerAutoTermination` → `Terminated90D`
-- ใบสมัครที่ `PhysicalContractRecord.Status = Archived` จะถูกข้าม (ไม่ระงับ/ปิด)
-
-### 8.6 Legal Archive (Unit 5) — `HardCopyArchiveService`
-
-- `ArchivePhysicalContractAsync`: บังคับมี `ArchiveBoxNumber` (BR-ARCH-02) → `VerifyAndArchiveHardCopy` → `ActivePermanent`, ล้าง `SuspendedAt`/`SuspensionReason`, ส่งอีเมลยืนยัน
-- ยอมรับ input status ได้ทั้ง `ActiveTemporary` และ `Suspended30D` (คือปลดระงับได้ด้วย)
-
-### 8.7 Identity (Unit 2) — `IdentityService` + `JwtTokenService`
-
-- Login: ตรวจ user active, lockout, verify password hash; ผิด 5 ครั้ง → ล็อก 15 นาที
-- Access token อายุ 900 วินาที (15 นาที) + Refresh Token แบบ hash เก็บใน DB
-- Refresh Token **Rotation** + **Replay Detection**: ถ้าใช้ token ที่ถูก revoke แล้ว → เพิกถอนทุก session ของ user นั้น
-
----
-
-## 9. Data Model (ER Diagram)
-
-```mermaid
-erDiagram
-    AGENT_APPLICATION ||--|| AGENT_PROFILE : "มี"
-    AGENT_APPLICATION ||--o| GUARANTOR : "มีผู้ค้ำ (optional)"
-    AGENT_APPLICATION ||--o| COLLATERAL : "มีหลักประกัน (optional)"
-    AGENT_APPLICATION ||--|| COMPLIANCE_RECORD : "ผลคัดกรอง"
-    AGENT_APPLICATION ||--|| PHYSICAL_CONTRACT_RECORD : "สถานะสัญญาจริง"
-    AGENT_APPLICATION ||--o{ APPLICATION_ATTACHMENT : "เอกสารแนบ"
-    AGENT_APPLICATION ||--o{ REJECT_CHECKLIST_ITEM : "ข้อบกพร่อง"
-    AGENT_APPLICATION ||--o{ CORE_SYNC_TRANSACTION : "รายการ sync core"
-    USER ||--o{ USER_ROLE : "มีบทบาท"
-    ROLE ||--o{ USER_ROLE : ""
-    BRANCH ||--o{ USER : "สังกัด"
-    USER ||--o{ REFRESH_TOKEN : "session"
-
-    AGENT_APPLICATION {
-        guid Id PK
-        string ApplicationNumber "APP-yyyyMMdd-NNNN"
-        int Status "1..14"
-        int AgentType "Individual/Corporate"
-        string BranchCode
-        decimal RequestedCreditLimit "≥10000"
-        decimal ApprovedCreditLimit
-        int CreditTermMotorDays "15/30/31"
-        int CreditTermNonMotorDays "≤45"
-        string AgentCode
-        string SourceCode
-        datetime ProvisionalSellingActivatedAt
-        datetime Sla30DayDeadline
-        datetime Sla90DayDeadline
-        datetime SuspendedAt
-    }
-    AGENT_PROFILE {
-        guid Id PK
-        string NationalIdOrTaxId "Modulo-11"
-        string LicenseNumber
-        date LicenseExpiryDate
-        string Email
-        string BankAccountNumber
-    }
-    COMPLIANCE_RECORD {
-        int AmloStatus "Pending/Passed/FlaggedPep/RejectedDesignated"
-        int OicStatus "Pending/Green/Yellow/Orange/Red"
-        bool RequiresDirectorApproval "computed"
-    }
-    CORE_SYNC_TRANSACTION {
-        int TargetSystem "AS400/APAR/SAP/PCSDIS"
-        string IdempotencyKey
-        int Status "Pending/Success/Failed/Retrying"
-        int RetryCount
-    }
-    PHYSICAL_CONTRACT_RECORD {
-        int Status "PendingBranchDispatch..Archived"
-        string ArchiveBoxNumber
-        datetime ReceivedAtLegalAt
-    }
-    APPLICATION_ATTACHMENT {
-        string DocumentType
-        string FileHashSha256
-        long FileSizeBytes
-    }
-    REFRESH_TOKEN {
-        string TokenHash
-        datetime ExpiresAtUtc
-        bool IsRevoked
-    }
-```
-
----
-
-## 10. Business Rules Catalog (สำหรับทดสอบ)
-
-> HTTP status เป็น **ข้อเสนอแนะ** เนื่องจาก controller ยังไม่ถูกสร้าง (OI-01) — ทีม Test ใช้เป็น baseline
-
-### 10.1 Intake & Draft (BR-APP / BR-CREDIT)
-
-| รหัส | เงื่อนไข | ผลลัพธ์/ข้อความ | HTTP |
-|------|---------|-----------------|------|
-| BR-APP-01 | ApplicationNumber ว่าง | "Application number cannot be empty." | 400 |
-| BR-APP-02 | ส่งจากสาขาโดยไม่มี National ID/Tax ID | "Applicant National ID / Tax ID is required before submission." | 400 |
-| BR-APP-03 | Thai National ID ผู้สมัคร checksum ผิด | "Invalid Thai National ID checksum for applicant." | 400 |
-| BR-APP-04 | Thai National ID ผู้ค้ำ checksum ผิด | "Invalid Thai National ID checksum for guarantor." | 400 |
-| BR-APP-05 | ส่งซ้ำขณะยังมีข้อบกพร่องค้าง | "Cannot resubmit application: N deficiency items remain unresolved." | 409 |
-| BR-CREDIT-01 | วงเงินขอ < 10,000 / วงเงินอนุมัติ ≤ 0 | "Requested credit limit must be at least 10,000 THB." | 400 |
-| BR-CREDIT-02 | Motor ไม่ใช่ 15/30/31 หรือ Non-Motor > 45 | "Motor credit term must be strictly 15, 30, or 31 days." / "Non-Motor credit term must not exceed 45 days." | 400 |
-
-### 10.2 เอกสารแนบ (BR-DOC)
-
-| รหัส | เงื่อนไข | ผลลัพธ์/ข้อความ | HTTP |
-|------|---------|-----------------|------|
-| BR-DOC-01 | ส่งจากสาขาโดยเอกสารบังคับไม่ครบ | "Missing mandatory attachments for submission: {list}" | 422 |
-| BR-DOC-02 | ไฟล์ signature ไม่ตรงกับ contentType/extension | "Invalid file signature for content type '...'." | 400 |
-| BR-DOC-03 | ไฟล์เกิน 10 MB | "Uploaded file exceeds the maximum allowed size of ... (10 MB)." | 413 |
-| BR-DOC-04 | แนบ/ลบเอกสารในสถานะที่ไม่ใช่ Draft/ReturnedForCorrection | "Cannot attach documents to application in status '...'." | 409 |
-
-### 10.3 Compliance (BR-COMPLIANCE)
-
-| รหัส | เงื่อนไข | ผลลัพธ์/ข้อความ | HTTP |
-|------|---------|-----------------|------|
-| BR-COMPLIANCE-01 | AMLO = RejectedDesignated ขณะส่งต่อผู้บริหาร | บล็อก "Cannot forward ... AMLO designated sanction match." | 409 |
-| BR-COMPLIANCE-02 | OIC = Red ขณะส่งต่อผู้บริหาร | บล็อก "Cannot forward ... OIC Blacklist RED rating." | 409 |
-| BR-COMPLIANCE-03 | AMLO = FlaggedPep หรือ OIC = Orange | ตั้ง `RequiresDirectorApproval = true` (ยังไม่ gating) | - |
-
-### 10.4 Approval / Provisioning / Archive
-
-| รหัส | เงื่อนไข | ผลลัพธ์/ข้อความ | HTTP |
-|------|---------|-----------------|------|
-| BR-APR-01 | ProcessDecision ในสถานะ ≠ PendingExecutiveApproval | "Cannot process approval decision ... Expected 'PendingExecutiveApproval'." | 409 |
-| BR-CORE-01 | Activate โดยไม่มี AgentCode/SourceCode | "AgentCode and SourceCode must be generated before activating..." | 409 |
-| BR-STATE-01 | เรียก transition จากสถานะไม่ถูกต้อง | `InvalidStateTransitionException` | 409 |
-| BR-ARCH-02 | Archive โดยไม่ระบุ Archive Box Number | "Archive Box Number is mandatory for legal physical document archiving." | 400 |
-
-### 10.5 SLA (BR-SLA)
-
-| รหัส | เงื่อนไข | ผลลัพธ์ |
-|------|---------|---------|
-| BR-SLA-01 | ActiveTemporary + now ≥ Sla30DayDeadline + ยังไม่ Archived | Auto → Suspended30D + อีเมล |
-| BR-SLA-02 | Suspended30D + now ≥ Sla90DayDeadline + ยังไม่ Archived | Auto → Terminated90D + อีเมล |
-| BR-SLA-03 | เหลือ 7/3/1 วันก่อน SLA 30 | ส่งอีเมลแจ้งเตือนล่วงหน้า |
-| BR-SLA-04 | PhysicalContract = Archived | ข้ามการระงับ/ปิดรหัส |
-
-### 10.6 Identity (BR-AUTH)
-
-| รหัส | เงื่อนไข | ผลลัพธ์/ข้อความ | HTTP |
-|------|---------|-----------------|------|
-| BR-AUTH-01 | ไม่พบ user / password ผิด | "Invalid username or password." | 401 |
-| BR-AUTH-02 | user inactive | "Account is disabled..." | 403 |
-| BR-AUTH-03 | ผิด ≥ 5 ครั้ง | ล็อก 15 นาที "Account locked for 15 minutes..." | 423/401 |
-| BR-AUTH-04 | ใช้ refresh token ที่ถูก revoke (replay) | เพิกถอนทุก session "Security violation detected..." | 401 |
-| BR-AUTH-05 | refresh token หมดอายุ | "Refresh token has expired. Please login again." | 401 |
-
----
-
-## 11. Validation Rules
-
-| Validation ID | Condition | Error Message | Severity |
-|---------------|-----------|---------------|----------|
-| VAL-01 | National ID ไม่ครบ 13 หลัก / checksum ผิด | Invalid Thai National ID checksum | Error |
-| VAL-02 | RequestedCreditLimit < 10,000 | ต้องไม่ต่ำกว่า 10,000 บาท | Error |
-| VAL-03 | CreditTermMotorDays ∉ {15,30,31} | ต้องเป็น 15/30/31 วันเท่านั้น | Error |
-| VAL-04 | CreditTermNonMotorDays ≤ 0 หรือ > 45 | ต้องไม่เกิน 45 วัน | Error |
-| VAL-05 | เอกสารบังคับไม่ครบ | ระบุรายการเอกสารที่ขาด | Error |
-| VAL-06 | ไฟล์ไม่ผ่าน magic-byte (PDF/JPEG/PNG) | ประเภทไฟล์ไม่ถูกต้อง | Error |
-| VAL-07 | ไฟล์ > 10 MB | เกินขนาดสูงสุด | Error |
-| VAL-08 | Archive Box Number ว่าง | ต้องระบุเลขกล่องจัดเก็บ | Error |
-| VAL-09 | DecisionNotes/Reject Checklist ว่างเมื่อส่งกลับ/ปฏิเสธ | *(แนะนำเพิ่ม — โค้ดยังไม่บังคับ)* | Warning |
-
----
-
-## 12. Non-Functional Requirements
+ระบบบริหารจัดการตัวแทนและนายหน้า (Agent & Broker Management System) พัฒนาขึ้นเพื่อยกระดับกระบวนการรับสมัครและแต่งตั้งตัวแทนประกันวินาศภัยของบริษัท เทเวศประกันภัย จำกัด (มหาชน) ให้เป็น **กระบวนการดิจิทัลอัตโนมัติแบบครบวงจร (Digital Touchless Workflow)** ทดแทนกระบวนการเดิมที่ต้องใช้เอกสารกระดาษ (`F-CM-035` และ `F-CM-018`) และการส่งไปรษณีย์ ซึ่งเดิมใช้เวลาอนุมัติเฉลี่ย 15–30 วัน ให้ลดลงเหลือ **ภายใน 1 วันทำการ**
 
 ```mermaid
 mindmap
-  root((NFR))
-    Security
-      JWT access 15 นาที + Refresh Rotation
-      Replay Detection เพิกถอนทุก session
-      Account Lockout ผิด 5 ครั้ง/15 นาที
-      Password Hash Service
-      AES-256-GCM Data Protection
-      KeyVault Provider
-      Magic-byte file validation + SHA256
-      Branch Data Scope (Backend enforced)
-    Availability
-      SLA Daemon PeriodicTimer + overlap lock
-      EF Core EnableRetryOnFailure (5 ครั้ง/30s)
-      Email non-blocking + in-memory fallback
-    Performance
-      Provisioning ขนานหลายระบบ
-      File stream 81920-byte buffer + incremental hash
-    Auditability
-      Domain Events ทุกการเปลี่ยนสถานะ
-      AuditSaveChangesInterceptor
-      Structured logging (AUTH_*, SLA_*)
-    Maintainability
-      Clean Architecture 3 ชั้น
-      Interface-based DI ต่อ service
-      Sandbox simulator toggle (UseSandboxSimulators)
+  root((ระบบบริหารตัวแทน<br/>Deves MAB))
+    1. ลดเวลาเริ่มงานขาย
+      ยื่นขอทางดิจิทัล 100%
+      อนุมัติปุ๊บ เปิดรหัสขายชั่วคราวทันที
+      Active Temporary ภายใน 1 วัน
+    2. คัดกรองความเสี่ยง
+      ตรวจ ปปง. Sanctions/PEP
+      ตรวจ คปภ. Blacklist/License
+      แจ้งเตือนความเสี่ยง Real-time
+    3. เปิดรหัสระบบหลัก Auto 100%
+      ส่งข้อมูลเข้า Deves Master API
+      Sync อัตโนมัติ AS400, APAR, SAP, PCSDIS
+      IT ไม่ต้องคีย์ข้อมูลซ้ำ (Zero Re-keying)
+    4. กำกับสัญญาด้วย SLA 30/90 วัน
+      ติดตามสัญญาตัวจริง 30 วัน
+      Daemon ระงับสิทธิ์อัตโนมัติ D30
+      เพิกถอนรหัสถาวร D90
+    5. จัดเก็บสัญญาและ Audit
+      ลงทะเบียนกล่องสำนักนิติกรรม
+      เปิดสิทธิ์ขายถาวร Active Permanent
+      Audit Log ตาม ISO 27001
 ```
 
-| NFR ID | Requirement | Description |
-|--------|-------------|-------------|
-| NFR-SEC-01 | Authentication | JWT access token 15 นาที + refresh token rotation |
-| NFR-SEC-02 | Replay Protection | ตรวจจับ token ที่ถูก revoke แล้วเพิกถอนทุก session |
-| NFR-SEC-03 | Account Lockout | ล็อก 15 นาที หลังผิด 5 ครั้ง |
-| NFR-SEC-04 | Data Protection | AES-256-GCM + KeyVault Provider |
-| NFR-SEC-05 | File Integrity | magic-byte signature + SHA-256 + จำกัด 10 MB |
-| NFR-SEC-06 | Access Control | Branch Data Scope กรองที่ Backend |
-| NFR-AVL-01 | Resilience | EF Core retry-on-failure (5 ครั้ง, delay 30 วิ) |
-| NFR-AVL-02 | Background Job | SLA Daemon ทุก 60 นาที (config), กัน overlap |
-| NFR-PERF-01 | Provisioning | สร้างรหัสหลายระบบในรอบเดียว + idempotent |
-| NFR-AUD-01 | Audit Trail | Domain Events + Interceptor บันทึกทุกการเปลี่ยนสถานะ |
-| NFR-MNT-01 | Config Toggle | สลับ sandbox/production ผ่าน settings |
+| # | วัตถุประสงค์เชิงธุรกิจ | ประโยชน์ที่ได้รับเชิงระบบ (System Benefits) |
+|---|---|---|
+| **1** | **ลดระยะเวลาเริ่มงานขาย (Time-to-Market)** | ตัวแทนสามารถเริ่มส่งงานขายได้ทันทีหลังฝ่ายบริหารเบี้ยอนุมัติ โดยระบบจะเปิดสถานะ **เปิดขายชั่วคราว (Active Temporary)** อัตโนมัติในวันเดียวกัน |
+| **2** | **ป้องกันความเสี่ยงด้านกฎหมายและ Compliance** | บังคับตรวจคัดกรองรายชื่อ ปปง. (AMLO) และตรวจสอบใบอนุญาต/บัญชีดำ คปภ. (OIC) ก่อนเสนอผู้บริหารพิจารณา |
+| **3** | **เชื่อมโยงระบบหลักอัตโนมัติ 100% (Zero IT Re-keying)** | หน้าจอรับสมัครบังคับกรอกข้อมูลครบถ้วน 100% ตามมาตรฐาน Deves Mastermanagement เพื่อให้ระบบยิง API สร้าง Agent/Source Code และเชื่อมต่อ AS400, APAR, SAP, PCSDIS โดยที่ IT ไม่ต้องคีย์มือ |
+| **4** | **รักษาวินัยการจัดส่งสัญญาฉบับจริง (30/90-Day SLA Enforcement)** | มีระบบจับเวลาอัตโนมัติ หากไม่จัดส่งสัญญาฉบับจริงภายใน 30 วัน ระบบจะสั่งระงับการขาย (Suspended) ทันที และหากเกิน 90 วันจะสั่งเพิกถอนถาวร (Terminated) |
+| **5** | **จัดเก็บสัญญาเข้าคลังเอกสารอย่างถูกต้อง** | สำนักนิติกรรมตรวจรับสัญญาฉบับจริง ลงทะเบียนหมายเลขกล่องจัดเก็บ และปลดล็อกเป็น **เปิดขายถาวร (Active Permanent)** |
+| **6** | **ตรวจสอบย้อนกลับได้ทุกขั้นตอน (Full Auditability)** | บันทึกประวัติการกระทำ (Audit Trail) พร้อมลายเซ็นดิจิทัลและการเข้ารหัสข้อมูลส่วนบุคคล (PDPA Compliant) |
 
 ---
 
-## 13. PDPA Consideration
+## 2. ตารางถอดรหัสคำศัพท์และตัวย่อภาษาไทย
 
-| ข้อมูลส่วนบุคคล (PII) | Entity / หน้าจอที่เกี่ยวข้อง | วัตถุประสงค์การใช้ |
-|------------------------|------------------------------|---------------------|
-| ชื่อ-นามสกุล (TH), ที่อยู่, เบอร์โทร, อีเมล | `AgentProfile` / หน้า Intake, Review | ระบุตัวตนตัวแทน + ติดต่อ |
-| เลขบัตรประชาชน / เลขผู้เสียภาษี | `AgentProfile.NationalIdOrTaxId` / Intake, Compliance | คัดกรอง AMLO/OIC + สร้างรหัส |
-| เลขบัญชีธนาคาร | `AgentProfile.Bank*` / Intake | จ่ายค่าคอมมิชชัน |
-| ข้อมูลผู้ค้ำประกัน (ชื่อ, เลขบัตร, เงินเดือน, นายจ้าง) | `Guarantor` / Intake | ประเมินหลักประกัน |
-| หลักประกัน (เลขเอกสาร, มูลค่า) | `Collateral` / Intake | ประเมินความเสี่ยงเครดิต |
-| เอกสารแนบ (สำเนาบัตร, book bank, ใบอนุญาต) | `ApplicationAttachment` / Intake | หลักฐานประกอบ |
+เพื่อให้ทุกฝ่ายในองค์กรเข้าใจตรงกัน ขจัดความสับสนจากคำศัพท์เทคนิคและตัวย่อภาษาอังกฤษ:
 
-**ข้อควรระวัง:**
-- เลขบัตรประชาชน + เลขบัญชี เป็นข้อมูลอ่อนไหว → ควร **Data Masking** เมื่อแสดงผล และเข้ารหัส at-rest (มี `Aes256GcmDataProtectionProvider` แต่ต้องยืนยันว่าใช้กับ field เหล่านี้ — OI-07)
-- เอกสารแนบเก็บบนดิสก์ (`LocalDiskFileStorageService`) — production ควรย้ายไป object storage ที่เข้ารหัส + ควบคุมสิทธิ์เข้าถึง
-- อีเมลแจ้งเตือนมีชื่อ-รหัสตัวแทน → จำกัดผู้รับ และหลีกเลี่ยงใส่ PII อ่อนไหวใน body
-- โครงการที่มี PII ต้องผ่านความเห็นชอบคณะทำงาน DPO ก่อน go-live
-
----
-
-## 14. Risk Management Plan
-
-| No. | Risk Description | Impact | Mitigation |
-|-----|------------------|--------|------------|
-| R-01 | API Controllers ยังไม่ถูกสร้าง — ระบบพึ่ง frontend mock | High | สร้าง controllers ตาม API contract ใน `apiClient.ts` ก่อน integration test |
-| R-02 | Integration AMLO/OIC/Core/Deves Master เป็น simulator | High | ทำ integration adapter จริง + test harness แยกก่อน go-live |
-| R-03 | Sandbox mark ทุก core system Success — ไม่มี failure/retry จริง | High | implement error handling ให้ใช้ `SyncStatus.Failed/Retrying` + retry policy |
-| R-04 | Director Approval (PEP/Orange) ไม่มี state gating | Medium | เพิ่มสถานะ/เส้นทางอนุมัติกรรมการก่อนเปิดใช้จริง |
-| R-05 | SLA คิดเป็นวันปฏิทิน (UTC) ไม่ใช่วันทำการ + timezone | Medium | ยืนยันนิยาม 30/90 วัน (calendar/business day) + timezone ไทย |
-| R-06 | เอกสารแนบเก็บบน local disk | Medium | ย้ายไป encrypted object storage + access control |
-| R-07 | Frontend auth เป็น preset personas (localStorage) | High | เชื่อม JWT จริง + route guard ก่อน production |
-| R-08 | สถานะ orphan (ReviewLegalOriginal, ComplianceRejected) ไม่มี transition | Low | ลบออกหรือ implement เส้นทางให้ครบ |
-| R-09 | ไม่มีการตรวจเพดานวงเงินอนุมัติ (DOA) ต่อบทบาท | Medium | ยืนยันว่าต้องมี DOA หรือไม่ แล้วเพิ่ม validation |
+| ตัวย่อ / ศัพท์เทคนิค | คำภาษาไทยมาตรฐาน (เข้าใจง่าย) | คำอธิบายและบริบทการใช้งานในระบบ |
+|---|---|---|
+| **AMLO** | **สำนักงาน ปปง.** (ป้องกันและปราบปรามการฟอกเงิน) | การตรวจคัดกรองรายชื่อบุคคลที่ถูกกำหนด (Sanctions List) และบุคคลที่มีสถานภาพทางการเมือง (PEP) ก่อนเปิดรหัสตัวแทน |
+| **OIC** | **สำนักงาน คปภ.** (กำกับและส่งเสริมการประกอบธุรกิจประกันภัย) | การตรวจสอบความถูกต้องของใบอนุญาตตัวแทน/นายหน้า และตรวจสอบประวัติการถูกเพิกถอนใบอนุญาต (Blacklist) |
+| **PEP** | **บุคคลที่มีสถานภาพทางการเมือง** (Politically Exposed Persons) | บุคคลผู้ดำรงตำแหน่งทางการเมืองหรือครอบครัว หากตรวจพบระบบจะส่งให้ผู้บริหารระดับสูง (MD) พิจารณาอนุมัติเป็นกรณีพิเศษ |
+| **SLA** | **กำหนดเวลาดำเนินการ** (ระยะเวลาผ่อนผัน 30 วัน) | ระยะเวลากำหนดส่งสัญญาฉบับจริง (F-CM-018) เข้าคลังเอกสารภายใน 30 วัน หากเกินระบบจะระงับการขายอัตโนมัติ |
+| **Branch BU** | **ฝ่ายธุรกิจสาขา** (สาขาผู้ยื่นคำขอ) | เจ้าหน้าที่สาขาที่ทำหน้าที่กรอกใบสมัคร (F-CM-035), อัปโหลดเอกสารประกอบ และจัดส่งสัญญาฉบับจริง |
+| **HO BU** | **ฝ่ายธุรกิจสำนักงานใหญ่ (สนญ.)** | เจ้าหน้าที่สำนักงานใหญ่ที่ตรวจรับเอกสาร, ตรวจสอบรายชื่อ ปปง./คปภ. และส่งต่อผู้บริหาร |
+| **Premium Dept** | **ฝ่ายบริหารจัดการเบี้ยประกันภัย** | ฝ่ายที่ตรวจสอบวงเงินสินเชื่อ, ตรวจสอบหลักทรัพย์ค้ำประกัน, และส่งคำสั่งเปิดรหัสเข้าระบบหลัก |
+| **Legal Dept** | **สำนักนิติกรรม (ฝ่ายกฎหมาย)** | ฝ่ายที่ตรวจสอบความสมบูรณ์ทางนิติกรรม, ตรวจรับสัญญาฉบับจริง (F-CM-018), ลงทะเบียนกล่องจัดเก็บ และปลดล็อกเปิดขายถาวร |
+| **Approver MD** | **กรรมการผู้จัดการ / ผู้มีอำนาจลงนาม** | ผู้บริหารระดับสูงที่ลงนามพิจารณาอนุมัติคำขอเปิดตัวแทนผ่านระบบอิเล็กทรอนิกส์ |
+| **Core Provisioning** | **การเปิดรหัสเข้าระบบหลักอัตโนมัติ 100%** | การสร้างรหัสตัวแทน (Agent Code) และรหัสช่องทาง (Source Code) ในระบบ Deves Master และเชื่อมต่อไปยัง AS400, APAR, SAP, PCSDIS แบบ Zero-Touch |
+| **Active Temporary** | **เปิดขายชั่วคราว (รอสัญญา 30 วัน)** | สถานะที่ตัวแทนได้รับรหัสและสามารถเริ่มส่งงานขายได้ทันที โดยอยู่ระหว่างรอจัดส่งเอกสารสัญญาตัวจริงภายใน 30 วัน |
+| **Active Permanent** | **เปิดขายถาวร (สัญญาครบถ้วน)** | สถานะที่ฝ่ายกฎหมายได้รับและจัดเก็บเอกสารสัญญาฉบับจริงลงกล่องเรียบร้อยแล้ว สิ้นสุดการนับเวลาผ่อนผัน |
+| **Suspended (30D)** | **ระงับการขายชั่วคราว (เกินกำหนด 30 วัน)** | สถานะที่ระบบ Daemon ระงับสิทธิ์การส่งงานขายในระบบหลักอัตโนมัติ เนื่องจากไม่ส่งสัญญาฉบับจริงภายใน 30 วัน |
+| **Terminated (90D)** | **เพิกถอนรหัสถาวร (เกินกำหนด 90 วัน)** | สถานะที่ระบบเพิกถอนรหัสตัวแทนอย่างถาวร หลังถูกระงับสิทธิ์เกิน 90 วัน |
+| **AS400 / Core** | **ระบบงานหลักประกันภัย (Core Insurance)** | ระบบหลักที่ใช้ออกกรมธรรม์และบันทึกสิทธิ์การขายของตัวแทน |
+| **APAR / SAP** | **ระบบบัญชีลูกหนี้-เจ้าหนี้ และการเงิน** | ระบบบันทึกบัญชีเจ้าหนี้ตัวแทนเพื่อการจ่ายเงินผลประโยชน์และค่าคอมมิชชั่น |
+| **PCS / PCSDIS** | **ระบบโครงสร้างค่าคอมมิชชั่น** | ระบบจัดการโครงสร้างอัตราผลประโยชน์และค่าตอบแทนตัวแทน |
 
 ---
 
-## 15. Open Issues / ประเด็นที่ต้องยืนยัน
-
-| No. | ประเด็น | ผู้เกี่ยวข้อง |
-|-----|---------|--------------|
-| OI-01 | API Controllers ยังไม่มี — ต้องยืนยัน API contract จริง (path/verb/status) ให้ตรงกับ `apiClient.ts` | Dev Lead, BA |
-| OI-02 | Provisioning core 4 ระบบ mark Success ทันที — จริงต้องมี failure/retry/compensation หรือไม่ | Dev Lead, Core System Owner |
-| OI-03 | มี DOA/เพดานวงเงินอนุมัติต่อบทบาทหรือไม่ (ปัจจุบัน single-level ไม่ตรวจวงเงิน) | Business Owner |
-| OI-04 | เส้นทาง Director Approval กรณี PEP/OIC Orange ต้องเป็นสถานะแยก + ผู้อนุมัติเฉพาะหรือไม่ | Compliance, BA |
-| OI-05 | Mapping role frontend (`branch_officer`) ↔ backend (`ROLE_BRANCH_BU`) และแหล่ง user (AD/LDAP?) | IT Admin, Dev Lead |
-| OI-06 | สถานะ `ReviewLegalOriginal`/`ComplianceRejected` ไม่มี transition; และ Forward ที่ข้าม ReviewHeadOffice — ตั้งใจหรือไม่ | BA, Dev Lead |
-| OI-07 | เข้ารหัส at-rest ใช้กับ field PII ใดบ้าง (เลขบัตร/บัญชี) และ Data Masking ที่ UI | DPO, Security |
-| OI-08 | นิยาม SLA 30/90 วัน: calendar day หรือ business day + timezone (UTC vs +07) + จุดเริ่มนับ | Business Owner |
-| OI-09 | field Mandatory จริงของ Profile/Guarantor/Collateral (โค้ดบังคับเฉพาะ National ID + เอกสาร) | BA, Business Owner |
-| OI-10 | รูปแบบวันที่ที่แสดงผล (พ.ศ./ค.ศ.) — อีเมลใช้ `dd/MM/yyyy` (ค.ศ.) | BA |
-| OI-11 | รหัสโครงการจริง (P2026-XXX) และเวอร์ชัน SRS อ้างอิง | PM |
-
----
-
-## 16. แนวทางการทดสอบ (Test Strategy & Scenarios)
-
-### 16.1 Traceability: BR → พื้นที่ทดสอบ
+## 3. ขอบเขตงาน
 
 ```mermaid
 flowchart LR
-    BR001[BR-001/002/003 Intake] --> T1[TC Intake + Document + Resubmit]
-    BR004[BR-004 Compliance] --> T2[TC AMLO/OIC prefix heuristic]
-    BR005[BR-005 Approval] --> T3[TC Forward/Approve/Reject]
-    BR006[BR-006/007 Provisioning] --> T4[TC Codes + 4-system Idempotency]
-    BR008[BR-008/009 SLA] --> T5[TC SLA 30/90 + warning]
-    BR010[BR-010 Archive] --> T6[TC Archive → Permanent]
-    BR012[BR-012 Identity] --> T7[TC Login/Lockout/Refresh Rotation]
+    subgraph IN["✅ ขอบเขตในระบบ (In Scope)"]
+        direction TB
+        I1["1. บันทึกคำขอ & ตรวจสอบข้อมูลครบถ้วน 100% (Intake)"]
+        I2["2. ตรวจสอบรายชื่อต้องห้าม ปปง. (AMLO) & คปภ. (OIC)"]
+        I3["3. อนุมัติคำขอทางอิเล็กทรอนิกส์ (Executive Approval)"]
+        I4["4. เปิดรหัสผ่าน Deves Master & Sync 4 ระบบหลัก Auto 100%"]
+        I5["5. ติดตามกำหนดส่งสัญญา 30 วัน & Daemon ระงับสิทธิ์อัตโนมัติ"]
+        I6["6. ตรวจรับสัญญาฉบับจริง & ลงทะเบียนกล่อง (สำนักนิติกรรม)"]
+        I7["7. แดชบอร์ดติดตามสถานะ & Audit Trail ตามมาตรฐาน ISO 27001"]
+    end
+    
+    subgraph OUT["❌ นอกขอบเขต (Out of Scope)"]
+        direction TB
+        O1["การพิมพ์กรมธรรม์ประกันภัยจริง (ทำในระบบ AS400)"]
+        O2["การคำนวณภาษีหัก ณ ที่จ่ายปลายปี (ทำในระบบ SAP/APAR)"]
+        O3["การสอบใบอนุญาตตัวแทนใหม่ (ดำเนินการผ่านสมาคม/คปภ.)"]
+        O4["การรับชำระเงินค่างวดเบี้ยประกันจากลูกค้า (ทำผ่าน Gateway ธนาคาร)"]
+    end
 ```
 
-### 16.2 Test Scenarios
+---
 
-**A. Happy Path (End-to-End)**
-1. Login (branch) → Create Draft (Individual) → แนบ ID_CARD/BOOK_BANK/BROKER_LICENSE → Submit → HO Review → Compliance (prefix ปกติ = Green/Passed) → Forward → MD Approve → Premium Trigger Provisioning → ActiveTemporary → Legal Archive → ActivePermanent
+## 4. ข้อกำหนดทางธุรกิจ
 
-**B. Intake Negative / Boundary**
-2. National ID checksum ผิด → BR-APP-03
-3. ส่งโดยเอกสารไม่ครบ → BR-DOC-01 (Individual/Corporate ต่างกัน)
-4. แนบไฟล์ contentType ไม่ตรง signature → BR-DOC-02; ไฟล์ > 10 MB → BR-DOC-03
-5. Credit term Motor = 20 → BR-CREDIT-02; วงเงิน 5,000 → BR-CREDIT-01
-6. Resubmit ขณะยังมี checklist ค้าง → BR-APP-05
-
-**C. Compliance**
-7. National ID prefix `999` → AMLO Designated + OIC Red → Forward ถูกบล็อก (BR-COMPLIANCE-01/02)
-8. prefix `888` → PEP; prefix `777` → OIC Orange → `RequiresDirectorApproval = true`
-
-**D. Approval**
-9. ProcessDecision ขณะสถานะไม่ใช่ PendingExecutiveApproval → BR-APR-01
-10. อนุมัติ → ReviewPremium + ตรวจอีเมล; ปฏิเสธ → ExecutiveRejected
-
-**E. Provisioning & Idempotency**
-11. Trigger provisioning → ตรวจ AgentCode (`AG{ปี}{seq}`), 4 sync transactions, SLA 30/90 ถูกตั้ง
-12. Trigger ซ้ำด้วย idempotency key เดิม → ไม่สร้าง transaction ซ้ำ
-13. Activate โดยไม่มี code → BR-CORE-01
-
-**F. SLA Daemon**
-14. ActiveTemporary + เลย 30 วัน → Suspended30D + อีเมล (BR-SLA-01)
-15. Suspended30D + เลย 90 วัน → Terminated90D (BR-SLA-02)
-16. เหลือ 7/3/1 วัน → อีเมลแจ้งเตือน (BR-SLA-03)
-17. Archived แล้ว → Daemon ข้าม (BR-SLA-04)
-
-**G. Archive**
-18. Archive ไม่ระบุ Box Number → BR-ARCH-02
-19. Archive จาก Suspended30D → ปลดระงับ → ActivePermanent
-
-**H. Identity / Security**
-20. ผิดรหัส 5 ครั้ง → lockout 15 นาที (BR-AUTH-03)
-21. ใช้ refresh token ที่ถูก revoke → เพิกถอนทุก session (BR-AUTH-04)
-22. Branch Data Scope: branch_officer เห็นเฉพาะสาขาตน; global roles เห็นทั้งหมด
+| รหัสข้อกำหนด | รายละเอียดข้อกำหนดทางธุรกิจ (Business Requirement) | หมวดงาน | ความสำคัญ |
+|---|---|---|---|
+| **BR-INT-001** | บันทึกข้อมูลใบสมัครตัวแทนบุคคลธรรมดาและนิติบุคคล พร้อมตรวจสอบเลข 13 หลัก และข้อมูลติดต่อ | Intake Form | High |
+| **BR-INT-002** | บันทึกข้อมูลผู้ค้ำประกัน สลิปเงินเดือน และหลักทรัพย์ค้ำประกัน (โฉนด, หนังสือค้ำประกันธนาคาร, เงินสด) | Guarantor | High |
+| **BR-INT-003** | อัปโหลดเอกสารแนบพร้อมการตรวจสอบความแท้จริงของไฟล์ด้วย Magic Bytes ป้องกันไฟล์ปลอมแปลง | File Security | High |
+| **BR-SCR-001** | ตรวจสอบรายชื่อผู้ถูกกำหนดตามกฎหมาย ปปง. (Sanctions / Designated List) แบบอัตโนมัติ | Compliance | Critical |
+| **BR-SCR-002** | ตรวจสอบสถานะใบอนุญาตและประวัติการถูกเพิกถอนใบอนุญาตจากสำนักงาน คปภ. | Compliance | Critical |
+| **BR-SCR-003** | กรณีพบเป็นบุคคล PEP หรือขอวงเงินเกิน 200,000 บาท ต้องบังคับส่งให้อนุมัติ 2 ลำดับชั้น (Dual Approval) | Governance | High |
+| **BR-APP-001** | ฝ่ายบริหารจัดการเบี้ยอนุมัติคำขอ วงเงินสินเชื่อ และเทอมการชำระเบี้ย (Motor 30 วัน, Non-Motor 45 วัน) | Approval | High |
+| **BR-PRV-001** | เปิดรหัสตัวแทนและเชื่อมโยงระบบหลักอัตโนมัติ 100% (Deves Master, AS400, APAR, SAP, PCSDIS) | Integration | Critical |
+| **BR-SLA-001** | นับถอยหลังระยะเวลาผ่อนผันส่งสัญญาฉบับจริง 30 วัน (SLA Countdown) แสดงแถบสีเตือนสถานะ | SLA Engine | High |
+| **BR-SLA-002** | มีระบบ Daemon ตรวจสอบทุกเที่ยงคืน หากเกิน 30 วัน สั่งระงับการขายอัตโนมัติ และหากเกิน 90 วัน สั่งเพิกถอนถาวร | Automation | High |
+| **BR-ARC-001** | สำนักนิติกรรมตรวจรับสัญญาฉบับจริง บันทึกหมายเลขกล่องจัดเก็บ และปลดล็อกเปิดสิทธิ์ขายถาวร | Legal Vault | High |
+| **BR-AUD-001** | บันทึกประวัติการกระทำของผู้ใช้ทุกคน (Audit Trail) ตามมาตรฐาน ISO 27001 ห้ามลบหรือแก้ไขย้อนหลัง | Auditability | Critical |
 
 ---
 
-## 17. Appendix
+## 5. บทบาทผู้ใช้และสิทธิ์การใช้งาน
 
-### 17.1 Enum Reference
-
-| Enum | ค่า |
-|------|-----|
-| `AgentType` | Individual(1), Corporate(2) |
-| `CollateralType` | CashDeposit(1), BankGuarantee(2), LandTitleDeed(3), GuarantorOnly(4) |
-| `AmloStatus` | Pending(0), Passed(1), FlaggedPep(2), RejectedDesignated(3) |
-| `OicStatus` | Pending(0), Green(1), Yellow(2), Orange(3), Red(4) |
-| `TargetSystem` | AS400(1), APAR(2), SAP(3), PCSDIS(4) |
-| `SyncStatus` | Pending(1), Success(2), Failed(3), Retrying(4) |
-| `PhysicalContractStatus` | PendingBranchDispatch(1), InTransit(2), ReceivedLegal(3), DefectNotified(4), Archived(5) |
-
-### 17.2 API Contract (คาดหวังจาก `apiClient.ts` — สำหรับสร้าง Controllers)
-
-| Method | Path | หน้าที่ |
-|--------|------|---------|
-| GET | `/api/applications` | รายการใบสมัคร (ตาม role/branch) |
-| GET | `/api/applications/{id}` | รายละเอียดใบสมัคร |
-| POST | `/api/applications/draft` | บันทึกฉบับร่าง |
-| POST | `/api/applications/{id}/submit` | ส่งจากสาขา |
-| POST | `/api/compliance/screen/{id}` | คัดกรอง Compliance |
-| POST | `/api/approval/{id}/forward` | ส่งต่อผู้บริหาร |
-| POST | `/api/approval/{id}/decision` | อนุมัติ/ปฏิเสธ |
-| POST | `/api/provisioning/{id}/trigger` | trigger provisioning |
-| POST | `/api/archive/{id}` | จัดเก็บสัญญาตัวจริง |
-| GET | `/api/sla/metrics` | dashboard SLA |
-
-### 17.3 Configuration Defaults
-
-| Setting | Default | ที่มา |
-|---------|---------|-------|
-| `UseSandboxSimulators` | `true` | `ProvisioningSettings` |
-| `SlaDaemonIntervalMinutes` | `60` | `ProvisioningSettings` |
-| `EmailSettings.UseInMemoryFallback` | `true` | `EmailSettings` |
-| Access token lifetime | 900 วินาที | `IdentityService` |
-| Account lockout | 5 ครั้ง / 15 นาที | `User` entity |
-| Max file size | 10 MB | `LocalDiskFileStorageService` |
-| SLA deadlines | today+30 / today+90 (UTC) | `AgentApplication.ActivateProvisionalSelling` |
+| บทบาทผู้ใช้งาน | ขอบเขตข้อมูล (Data Scope) | สิทธิ์การทำงานในระบบ |
+|---|---|---|
+| **1. เจ้าหน้าที่ฝ่ายธุรกิจสาขา (Branch Officer)** | เฉพาะสาขาตนเอง | กรอกใบสมัคร, แก้ไขแบบร่าง, อัปโหลดเอกสารแนบ, ติดตามสถานะ SLA และจัดส่งสัญญาตัวจริง |
+| **2. เจ้าหน้าที่ตรวจรับ สนญ. (HO Reviewer)** | ทั่วทั้งองค์กร | ตรวจสอบความครบถ้วนของเอกสาร, สั่งตรวจคัดกรอง ปปง./คปภ., ส่งกลับแก้ไข หรือส่งต่อผู้บริหาร |
+| **3. ผู้บริหารระดับสูง / MD (Executive Approver)** | ทั่วทั้งองค์กร | พิจารณาลงนามอนุมัติคำขอเปิดตัวแทน, พิจารณาเคสพิเศษ (PEP / วงเงินเกินกำหนด) |
+| **4. ฝ่ายบริหารจัดการเบี้ย (Premium Reviewer)** | ทั่วทั้งองค์กร | อนุมัติวงเงินสินเชื่อ/เทอมชำระเบี้ย, สั่งเปิดรหัสเข้าระบบหลักอัตโนมัติ และติดตามผลการเชื่อมต่อ |
+| **5. ฝ่ายกฎหมาย / สำนักนิติกรรม (Legal Auditor)** | ทั่วทั้งองค์กร | ตรวจรับสัญญาฉบับจริง, ตรวจสอบความถูกต้องทางนิติกรรม, ลงทะเบียนกล่องจัดเก็บ และปลดล็อกเปิดขายถาวร |
+| **6. ผู้ดูแลระบบไอที (System Administrator)** | ทั่วทั้งองค์กร | จัดการผู้ใช้/สิทธิ์, สั่ง Retry การเชื่อมต่อระบบหลัก, ตรวจสอบ System Health และ Audit Log |
 
 ---
 
-> **สรุป:** ระบบนี้คือ workflow onboarding ตัวแทน/นายหน้าแบบ state-machine ที่หัวใจอยู่ที่ (1) การเปิดสิทธิ์ขายชั่วคราวอัตโนมัติหลังอนุมัติวงเงิน, (2) Provisioning หลายระบบ Core แบบ idempotent, และ (3) การบังคับส่งเอกสารตัวจริงด้วย SLA Daemon 30/90 วัน จุดที่ควรทดสอบเข้มที่สุดคือ **state transition guards, compliance gating, idempotency ของ provisioning และ SLA auto-suspend/terminate** ขณะเดียวกันมี **gap สำคัญ** ที่ต้องปิดก่อน go-live ได้แก่ REST Controllers จริง, integration ระบบภายนอกจริง, real auth และ Director Approval path (ดู Open Issues + Risk Plan)
+## 6. Use Case ภาพรวมและสถาปัตยกรรมระบบ
+
+```mermaid
+flowchart TD
+    subgraph UI["🖥️ Frontend Application (Next.js & Responsive Dashboard)"]
+        P1["ฝ่ายธุรกิจสาขา"] --> F1["ยื่นคำขอรับสมัคร (Intake Wizard)"]
+        P2["ฝ่ายธุรกิจ สนญ."] --> F2["ตรวจรับเอกสาร & คัดกรอง ปปง./คปภ."]
+        P3["ฝ่ายบริหารเบี้ย / MD"] --> F3["พิจารณาอนุมัติคำขอ (DOA Workflow)"]
+        P4["ฝ่ายกฎหมาย / นิติกรรม"] --> F4["ตรวจรับสัญญาจริง & ลงทะเบียนกล่อง"]
+    end
+
+    subgraph CORE["⚙️ Automated Core Provisioning Engine"]
+        F3 -->|อนุมัติคำขอ| API1["Deves Mastermanagement API"]
+        API1 -->|สร้างรหัสตัวแทน| SYNC["Automated Multi-System Sync"]
+        SYNC --> DB1[("AS400 Underwriting")]
+        SYNC --> DB2[("APAR Sub-Ledger")]
+        SYNC --> DB3[("SAP Financials")]
+        SYNC --> DB4[("PCSDIS Commission")]
+    end
+
+    subgraph SLA["⏰ SLA & Governance Daemon Engine"]
+        API1 -->|เริ่มนับผ่อนผัน 30 วัน| TIMER["30/90-Day SLA Daemon"]
+        TIMER -->|เกิน 30 วัน| SUSP["ระงับการขายอัตโนมัติ (Suspended)"]
+        TIMER -->|เกิน 90 วัน| TERM["เพิกถอนรหัสถาวร (Terminated)"]
+        F4 -->|ลงทะเบียนกล่องสำเร็จ| PERM["เปิดขายถาวร (Active Permanent)"]
+    end
+```
+
+---
+
+## 7. กระบวนการทำงานหลักพร้อมภาพประกอบระบบจริง
+
+### 7.1 การเข้าสู่ระบบและการสลับบทบาทผู้ใช้งาน
+
+ระบบรองรับการยืนยันตัวตนและการจำลองสิทธิ์ (Persona-based Testing & Production RBAC) ช่วยให้ผู้ใช้งานสามารถทดสอบและปฏิบัติงานตามบทบาทหน้าที่ของตนได้อย่างถูกต้อง
+
+![หน้าจอเข้าสู่ระบบและเลือกบทบาท Persona](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/01_login_personas.png)
+
+#### ตัวอย่างการทำงานจริง (Working Example):
+- ผู้ใช้เข้าสู่ระบบที่ `/login` จะพบบทบาทที่กำหนดไว้ในองค์กร ได้แก่ ฝ่ายธุรกิจสาขา, ฝ่ายธุรกิจสำนักงานใหญ่ (สนญ.), ฝ่ายบริหารจัดการเบี้ย, ฝ่ายกฎหมาย/สำนักนิติกรรม, กรรมการผู้จัดการ (MD) และผู้ดูแลระบบไอที
+- เมื่อเลือกบทบาท เช่น **ฝ่ายธุรกิจสาขา (คุณนารี สาขากรุงเทพฯ)** ระบบจะโหลดสิทธิ์การทำงาน ขอบเขตสาขา และนำเข้าสู่แดชบอร์ดหลักทันที
+
+---
+
+### 7.2 ภาพรวมแดชบอร์ดและการบริหารคิวงาน
+
+หน้าจอแดชบอร์ดรวมศูนย์แสดงสถิติตัวชี้วัดสำคัญ คิวงานที่ต้องดำเนินการ และรายการใบสมัครล่าสุดพร้อมป้ายกำกับสถานะที่เข้าใจง่าย
+
+![ภาพรวม Dashboard สำหรับเจ้าหน้าที่ฝ่ายธุรกิจสาขา](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/02_dashboard_branch_view.png)
+
+#### ตัวอย่างการทำงานจริง (Working Example):
+- แดชบอร์ดสรุปยอดใบสมัครทั้งหมด (เช่น 8 รายการ), รายการที่อยู่ระหว่างรอ สนญ. ตรวจรับ, รายการที่ได้รับอนุมัติเปิดขายชั่วคราว และรายการที่จัดเก็บสัญญาถาวรแล้ว
+- แสดงแถบเวลานับถอยหลัง SLA สำหรับเคสเปิดขายชั่วคราว เช่น **เหลือเวลาอีก 24 วัน** ช่วยให้เจ้าหน้าที่สาขาสามารถติดตามสัญญาตัวจริงได้อย่างทันท่วงที
+
+---
+
+### 7.3 ระบบบันทึกใบสมัครดิจิทัล (Intake Wizard 4 ขั้นตอน)
+
+กระบวนการบันทึกข้อมูลใบสมัครตามแบบฟอร์ม `F-CM-035` ถูกออกแบบเป็น Wizard 4 ขั้นตอนที่บังคับความครบถ้วนของข้อมูล 100% เพื่อรองรับการเปิดรหัสระบบหลักแบบอัตโนมัติ
+
+#### ขั้นตอนที่ 1: บันทึกข้อมูลประวัติและตรวจสอบเลขประจำตัว (Applicant Profile)
+![ขั้นตอนที่ 1: บันทึกประวัติและข้อมูลตัวแทน](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/03_wizard_step1_applicant_profile.png)
+
+- **ตัวอย่างข้อมูล:** นายเอกชัย สมบูรณ์ทรัพย์ เลขประจำตัวประชาชน `1100400892348`
+- **การตรวจสอบ:** ระบบตรวจสอบสูตร Modulo 11 Checksum ทันที หากกรอกถูกต้องจะแสดงเครื่องหมายถูกสีเขียว *"ตรวจสอบหลัก Modulo 11 ถูกต้อง"* พร้อมบันทึกบัญชีธนาคารสำหรับรับผลประโยชน์
+
+#### ขั้นตอนที่ 2: วงเงินสินเชื่อ ผู้ค้ำประกัน และหลักทรัพย์ค้ำประกัน (Guarantor & Collateral)
+![ขั้นตอนที่ 2: กำหนดวงเงินสินเชื่อ ผู้ค้ำประกันและหลักทรัพย์ค้ำประกัน](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/04_wizard_step2_guarantor_collateral.png)
+
+- **ตัวอย่างข้อมูล:** วงเงินสินเชื่อที่ขอ `200,000 บาท`, เทอมชำระเบี้ย Motor 30 วัน / Non-Motor 45 วัน
+- **หลักประกัน:** บันทึกผู้ค้ำประกัน (นางสาววิภาดา สมบูรณ์ทรัพย์ เลขบัตร `3100600123891`, รายได้ 65,000 บาท/เดือน) และหนังสือค้ำประกันธนาคาร (Bank Guarantee เลขที่ `BG-KBANK-2026-9941`)
+
+#### ขั้นตอนที่ 3: อัปโหลดเอกสารหลักฐานพร้อมการตรวจรับรอง Magic Bytes (Document Upload)
+![ขั้นตอนที่ 3: อัปโหลดเอกสารหลักฐานพร้อมการตรวจรับรอง Magic Bytes Header](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/05_wizard_step3_document_upload.png)
+
+- **การรักษาความปลอดภัย:** ตรวจสอบโครงสร้างไบนารีระดับ Magic Bytes (`25 50 44 46` สำหรับ PDF) ป้องกันการเปลี่ยนนามสกุลไฟล์เพื่อหลอกระบบ
+- **เอกสารบังคับ:** สำเนาบัตรประชาชน, สำเนาสมุดบัญชีเงินฝากธนาคาร, สำเนาใบอนุญาตตัวแทน และหนังสือค้ำประกัน
+
+#### ขั้นตอนที่ 4: ตรวจสอบสรุปข้อมูลและคำยินยอม PDPA (Review & Submit)
+![ขั้นตอนที่ 4: ตรวจสอบสรุปข้อมูลใบสมัคร สิทธิประโยชน์ และคำยินยอม PDPA](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/06_wizard_step4_review_submit.png)
+
+- แสดงภาพรวมข้อมูลทั้งหมด ตารางผลประโยชน์ และกล่องยินยอม PDPA
+- เมื่อกดยืนยัน ระบบจะแสดงการแจ้งเตือนสำเร็จและส่งต่อใบสมัครเข้าคิวตรวจรับ สนญ. ทันที:
+
+![การแจ้งเตือนเมื่อยื่นใบสมัครสำเร็จ](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/07_submit_success_toast.png)
+
+---
+
+### 7.4 การตรวจรับเอกสารและคัดกรองรายชื่อ ปปง./คปภ.
+
+ฝ่ายธุรกิจสำนักงานใหญ่ (สนญ.) ทำหน้าที่ตรวจสอบความถูกต้องครบถ้วนของเอกสาร และสั่งตรวจคัดกรองความเสี่ยงด้านกฎหมาย
+
+![รายการคิวงานตรวจสอบของฝ่ายธุรกิจสำนักงานใหญ่](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/08_ho_review_queue.png)
+
+#### รายละเอียดหน้าต่างตรวจรับและคัดกรอง (Verification Modal):
+- เจ้าหน้าที่ สนญ. กดปุ่ม **"ตรวจรับ & คัดกรอง"** เพื่อเปิดแฟ้มประวัติผู้สมัครฉบับเต็ม
+- ระบบเชื่อมต่อ API ตรวจสอบรายชื่อ ปปง. (Sanctions / PEP) และ คปภ. (Blacklist / License Validity)
+- หากผลการตรวจผ่านเกณฑ์ (Clear) เจ้าหน้าที่จะกด **"ส่งต่อฝ่ายบริหารเบี้ยพิจารณา"**
+
+---
+
+### 7.5 การพิจารณาอนุมัติตามอำนาจดำเนินการ (DOA Executive Approval)
+
+ระบบแบ่งแยกสายการอนุมัติตามระดับความเสี่ยงและวงเงินสินเชื่อ (DOA Matrix):
+
+#### 1. ฝ่ายบริหารจัดการเบี้ยประกันภัย (Premium Dept Approval):
+สำหรับเคสปกติที่ผลตรวจ ปปง./คปภ. ผ่าน และวงเงินค้ำประกันไม่เกิน 200,000 บาท ฝ่ายบริหารเบี้ยสามารถลงนามอนุมัติและสั่งเปิดรหัสขายชั่วคราวได้ทันที
+
+![รายการพิจารณาอนุมัติของฝ่ายบริหารจัดการเบี้ยประกันภัย](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/10_approval_premium_queue.png)
+
+#### 2. กรรมการผู้จัดการ / ผู้บริหารระดับสูง (MD Dual-Approval):
+สำหรับเคสที่มีความเสี่ยงสูง เช่น ตรวจพบเป็นบุคคล PEP หรือวงเงินสินเชื่อเกิน 200,000 บาท ระบบจะส่งเข้าคิว Dual-Approval ให้กรรมการผู้จัดการลงนามอนุมัติเป็นกรณีพิเศษ
+
+![รายการพิจารณาอนุมัติของผู้มีอำนาจลงนาม](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/11_approval_md_doa_queue.png)
+
+---
+
+### 7.6 การเปิดรหัสเข้าระบบหลักอัตโนมัติ 100% (Core System Auto-Provisioning)
+
+เมื่อคำขอได้รับการอนุมัติ ระบบจะสั่งการสร้างรหัสตัวแทน (Agent Code) และรหัสช่องทาง (Source Code) ในระบบ Deves Master และยิงข้อมูลเชื่อมต่อไปยัง 4 ระบบหลักแบบขนานอัตโนมัติ โดยที่ฝ่ายไอทีไม่ต้องคีย์ข้อมูลซ้ำแม้แต่ฟิลด์เดียว
+
+![ระบบเปิดรหัส Deves Master และเชื่อมต่อระบบหลักอัตโนมัติ 100%](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/12_core_provisioning_monitor.png)
+
+#### สถานะการเชื่อมต่อ 4 ระบบหลัก:
+1. **AS400 Core Underwriting:** เปิดสิทธิ์การบันทึกงานขายและออกกรมธรรม์
+2. **APAR Sub-Ledger:** สร้างผังบัญชีเจ้าหนี้ตัวแทนเพื่อรอรับยอดเบี้ย
+3. **SAP Financials:** บันทึกข้อมูลคู่ค้าและศูนย์ต้นทุน (Cost Center)
+4. **PCSDIS Commission:** ผูกโครงสร้างอัตราค่าตอบแทนและสายงานบริหาร (Unit Executive)
+
+---
+
+### 7.7 การติดตามระยะเวลากำหนดส่งสัญญาฉบับจริง (SLA 30/90-Day Enforcement)
+
+เพื่อรักษาวินัยการจัดส่งสัญญาฉบับจริง (`F-CM-018`) ระบบมีแดชบอร์ดติดตามเวลาผ่อนผัน 30 วัน พร้อมระบบ Daemon ทำงานอัตโนมัติทุกเที่ยงคืน
+
+![แดชบอร์ดติดตามระยะเวลากำหนดส่งสัญญาฉบับจริง](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/13_sla_monitoring_dashboard.png)
+
+#### กฎเกณฑ์การบังคับใช้ SLA:
+- **วันที่ 1–23:** สถานะสีเขียว (ปกติ) แสดงจำนวนวันคงเหลือ
+- **วันที่ 24–30:** สถานะสีส้ม (เตือนใกล้ครบกำหนด < 7 วัน) ส่งอีเมลแจ้งเตือนสาขาและผู้บริหาร
+- **วันที่ 31 (เกิน 30 วัน):** Daemon สั่งเปลี่ยนสถานะเป็น **ระงับการขาย (Suspended30D)** อัตโนมัติ ปิดสิทธิ์การออกกรมธรรม์ใน AS400 ชั่วคราว
+- **วันที่ 91 (เกิน 90 วัน):** Daemon สั่งเปลี่ยนสถานะเป็น **เพิกถอนรหัสถาวร (Terminated90D)** ปิดรหัสตัวแทนอย่างถาวร
+
+---
+
+### 7.8 การตรวจรับสัญญาฉบับจริงและการจัดเก็บเข้าคลังเอกสาร (Legal Vault Archiving)
+
+เมื่อสำนักนิติกรรม (ฝ่ายกฎหมาย) ได้รับชุดสัญญาฉบับจริงพร้อมลายเซ็นสดและเอกสารค้ำประกันตัวจริง จะทำการตรวจรับและบันทึกหมายเลขกล่องจัดเก็บ
+
+![คิวงานตรวจรับสัญญาฉบับจริงของฝ่ายกฎหมาย](file:///e:/DVS/Project/AgentBroker_Management/docs/screenshots/14_legal_archive_queue.png)
+
+#### ขั้นตอนการลงทะเบียนกล่อง:
+1. เจ้าหน้าที่นิติกรรมกดปุ่ม **"ลงทะเบียนจัดเก็บกล่อง"**
+2. บันทึกหมายเลขกล่องจัดเก็บเอกสาร เช่น `BOX-2026-HQ-089` พร้อมบันทึกผลการตรวจรับ
+3. ระบบปลดล็อกสถานะตัวแทนเป็น **เปิดขายถาวร (Active Permanent)** สิ้นสุดการนับถอยหลัง SLA อย่างสมบูรณ์
+
+---
+
+## 8. แผนผังสถานะเอกสาร
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft: สาขากรอกใบสมัคร (F-CM-035)
+    Draft --> Submitted: กดยื่นใบสมัครครบ 100%
+    
+    Submitted --> PendingHeadOfficeReview: ส่งเข้าคิว สนญ.
+    PendingHeadOfficeReview --> DeficiencyPendingBranch: เอกสารไม่ครบ ส่งกลับสาขา
+    DeficiencyPendingBranch --> Submitted: สาขาแก้ไขและส่งใหม่
+    
+    PendingHeadOfficeReview --> ReviewPremium: สนญ. ตรวจรับ & คัดกรอง ปปง./คปภ. ผ่าน
+    PendingHeadOfficeReview --> PendingExecutiveApproval: กรณีพบ PEP หรือวงเงิน > 200,000
+    
+    PendingExecutiveApproval --> ReviewPremium: MD ลงนามอนุมัติ (DOA)
+    PendingExecutiveApproval --> ExecutiveRejected: MD ไม่อนุมัติ (ยกเลิก)
+    
+    ReviewPremium --> CoreAutoProvisioning: ฝ่ายบริหารเบี้ยอนุมัติวงเงิน
+    CoreAutoProvisioning --> ActiveTemporary: Sync Deves Master, AS400, APAR, SAP, PCSDIS สำเร็จ (เริ่มนับ SLA 30 วัน)
+    
+    ActiveTemporary --> Suspended30D: สัญญาตัวจริงไม่ถึง สนญ. ภายใน 30 วัน
+    Suspended30D --> Terminated90D: ไม่ส่งสัญญาเกิน 90 วัน (เพิกถอนถาวร)
+    
+    ActiveTemporary --> ActivePermanent: สนญ. ตรวจรับสัญญาตัวจริง & ลงทะเบียนกล่อง
+    Suspended30D --> ActivePermanent: สนญ. ตรวจรับสัญญาตัวจริง & ปลดล็อก
+    
+    ActivePermanent --> [*]
+    ExecutiveRejected --> [*]
+    Terminated90D --> [*]
+```
+
+---
+
+## 9. กฎเกณฑ์ทางธุรกิจสำหรับการทดสอบ
+
+| รหัสกฎ | เงื่อนไขการตรวจสอบ | ผลลัพธ์เชิงระบบ / ข้อความแจ้งเตือน | HTTP Status |
+|---|---|---|---|
+| **BRC-VAL-001** | เลขประจำตัวประชาชน 13 หลักไม่ตรงสูตร Modulo 11 | ไม่อนุญาตให้กดถัดไป แสดงข้อความ *"เลขประจำตัวประชาชนไม่ถูกต้องตามสูตรคำนวณ"* | 400 Bad Request |
+| **BRC-VAL-002** | ขนาดไฟล์แนบเกิน 10MB | ปฏิเสธการอัปโหลด แสดงข้อความ *"ขนาดไฟล์เกินขีดจำกัด 10MB"* | 413 Payload Too Large |
+| **BRC-VAL-003** | ไบนารี Header ไฟล์ไม่ตรงนามสกุล (Spoofing) | ปฏิเสธการอัปโหลด แสดงข้อความ *"รูปแบบไฟล์ไม่ถูกต้องตาม Header ลายเซ็นดิจิทัล"* | 422 Unprocessable Entity |
+| **BRC-SCR-001** | ตรวจพบรายชื่อใน Sanctions List ปปง. (DesignatedSanction) | ล็อกระบบห้ามส่งต่อ แสดงสถานะ *"พบรายชื่อผู้ถูกกำหนด ปปง. (ห้ามดำเนินการ)"* | 403 Forbidden |
+| **BRC-SCR-002** | ตรวจพบสถานะ PEP (PepOrange) หรือขอวงเงิน > 200,000 บาท | ส่งเข้าคิว Dual-Approval บังคับกรรมการผู้จัดการ (MD) ลงนามอนุมัติ | 200 OK (Route MD) |
+| **BRC-PRV-001** | เชื่อมต่อ AS400 หรือ SAP ล้มเหลว | บันทึกสถานะ Partial Success / Failed และเปิดปุ่มให้ไอทีกด Retry ได้ | 502 Bad Gateway |
+| **BRC-SLA-001** | สัญญาตัวจริงยังไม่จัดเก็บเมื่อครบ 30 วัน (นับจากวันเปิดขายชั่วคราว) | Daemon เปลี่ยนสถานะเป็น `Suspended30D` และระงับสิทธิ์ใน AS400 ทันที | 200 OK (Daemon) |
+| **BRC-SLA-002** | ถูกระงับสิทธิ์ครบ 90 วันและยังไม่ส่งสัญญาตัวจริง | Daemon เปลี่ยนสถานะเป็น `Terminated90D` เพิกถอนรหัสถาวร | 200 OK (Daemon) |
+| **BRC-ARC-001** | สำนักนิติกรรมบันทึกหมายเลขกล่องจัดเก็บสำเร็จ | เปลี่ยนสถานะเป็น `ActivePermanent` ปลดล็อกสิทธิ์ขายถาวร | 200 OK |
+
+---
+
+## 10. กฎการตรวจสอบความถูกต้องของข้อมูล
+
+| Validation ID | ฟิลด์ข้อมูล | เงื่อนไขการตรวจสอบ | ข้อความแจ้งเตือนความผิดพลาด | ระดับความรุนแรง |
+|---|---|---|---|---|
+| **VR-001** | `nationalIdOrTaxId` | 13 หลักตัวเลข และ Checksum Modulo 11 ถูกต้อง | เลขประจำตัวประชาชน 13 หลักไม่ถูกต้อง | Error (Blocking) |
+| **VR-002** | `firstNameTh`, `lastNameTh` | ตัวอักษรภาษาไทย ความยาว 2–100 ตัวอักษร | กรุณาระบุชื่อและนามสกุลภาษาไทยให้ถูกต้อง | Error (Blocking) |
+| **VR-003** | `phoneNumber` | หมายเลขโทรศัพท์ 9–10 หลัก ขึ้นต้นด้วย 0 | กรุณาระบุเบอร์โทรศัพท์ติดต่อให้ถูกต้อง | Error (Blocking) |
+| **VR-004** | `bankAccountNumber` | ตัวเลข 10–12 หลักตามมาตรฐานธนาคารที่เลือก | กรุณาระบุเลขที่บัญชีธนาคารให้ถูกต้อง | Error (Blocking) |
+| **VR-005** | `requestedCreditLimit` | ตัวเลขมากกว่า 0 บาท | กรุณาระบุวงเงินสินเชื่อที่ต้องการขอ | Error (Blocking) |
+| **VR-006** | `attachments` | ต้องมีสำเนาบัตรประชาชน และสำเนาสมุดบัญชี | กรุณาแนบเอกสารสำเนาบัตรและสมุดบัญชีให้ครบถ้วน | Error (Blocking) |
+| **VR-007** | `archiveBoxNumber` | รูปแบบ `BOX-YYYY-BR-XXX` ความยาว 10–30 ตัวอักษร | กรุณาระบุหมายเลขกล่องจัดเก็บเอกสารให้ถูกต้อง | Error (Blocking) |
+
+---
+
+## 11. แบบจำลองข้อมูล
+
+```mermaid
+erDiagram
+    AGENT_APPLICATION ||--o{ ATTACHMENT : contains
+    AGENT_APPLICATION ||--o| GUARANTOR : has
+    AGENT_APPLICATION ||--o| COLLATERAL : secures
+    AGENT_APPLICATION ||--o| COMPLIANCE_RECORD : screens
+    AGENT_APPLICATION ||--o{ PROVISIONING_LOG : tracks
+    AGENT_APPLICATION ||--o| PHYSICAL_CONTRACT_ARCHIVE : stores
+    AGENT_APPLICATION ||--o{ AUDIT_TRAIL : audits
+
+    AGENT_APPLICATION {
+        string id PK
+        string applicationNumber UK
+        string agentType "Individual | Corporate"
+        string branchCode
+        string branchName
+        string status "Draft | Submitted | ActiveTemporary | ActivePermanent | Suspended30D"
+        decimal requestedCreditLimit
+        decimal approvedCreditLimit
+        int paymentTermMotorDays
+        int paymentTermNonMotorDays
+        string agentCode UK "AG-YYYY-XXXX"
+        string sourceCode UK "SRC-XXXX-XXXX"
+        datetime createdAt
+        datetime approvedAt
+        datetime sla30DayDeadline
+    }
+
+    GUARANTOR {
+        string id PK
+        string applicationId FK
+        string fullNameTh
+        string nationalId
+        string relationship
+        string employerName
+        decimal monthlySalary
+        string contactPhone
+    }
+
+    COLLATERAL {
+        string id PK
+        string applicationId FK
+        string type "LandTitleDeed | BankGuarantee | CashDeposit"
+        decimal appraisedValue
+        string documentRefNumber
+    }
+
+    COMPLIANCE_RECORD {
+        string id PK
+        string applicationId FK
+        string amloStatus "Clear | PepOrange | DesignatedSanction"
+        string oicBlacklistStatus "Clear | Found"
+        boolean requiresDirectorApproval
+        datetime screenedAt
+        string screenedBy
+    }
+
+    PHYSICAL_CONTRACT_ARCHIVE {
+        string id PK
+        string applicationId FK
+        string archiveBoxNumber UK
+        string legalAuditorNotes
+        datetime receivedAtLegalAt
+        string registeredBy
+    }
+```
+
+---
+
+## 12. ข้อกำหนดด้านคุณภาพระบบ
+
+| NFR ID | หมวดหมู่ | ข้อกำหนดเชิงคุณภาพ (Non-Functional Requirement) | เกณฑ์การวัดผล |
+|---|---|---|---|
+| **NFR-SEC-001** | **Security** | ตรวจสอบ Header ลายเซ็นดิจิทัลของไฟล์ (Magic Bytes) ทุกไฟล์ก่อนอนุญาตให้เข้าสู่ระบบ | 100% Anti-Spoofing |
+| **NFR-SEC-002** | **Security** | เข้ารหัสข้อมูลที่จัดเก็บ (Data at Rest) ด้วย AES-256 และเข้ารหัสขณะส่งผ่านเครือข่าย (Data in Transit) ด้วย TLS 1.3 | Zero Plaintext PII |
+| **NFR-PER-001** | **Performance** | เวลาในการตอบสนองของหน้าจอ (UI Page Load & Search) ต้องไม่เกิน 1.5 วินาที | P95 < 1.5s |
+| **NFR-PER-002** | **Performance** | การประมวลผล Provisioning เชื่อมโยง 4 ระบบหลักต้องเสร็จสิ้นภายใน 5 วินาที | Timeout 5s with Async Retry |
+| **NFR-AVL-001** | **Availability** | ระบบมีความพร้อมใช้งาน (System Uptime) ไม่น้อยกว่า 99.9% ในช่วงเวลาทำการ | MTBF > 720 hrs |
+| **NFR-AUD-001** | **Auditability** | บันทึกประวัติการทำรายการทุกขั้นตอน (Audit Trail) พร้อม Timestamp และ IP Address ตามมาตรฐาน ISO 27001 | Immutable Log Retention 10 Yrs |
+
+---
+
+## 13. การคุ้มครองข้อมูลส่วนบุคคล
+
+เพื่อให้สอดคล้องกับพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA):
+
+1. **การปกปิดข้อมูลส่วนบุคคลบนหน้าจอ (PII Masking):**
+   - เลขประจำตัวประชาชน 13 หลัก แสดงผลในรูปแบบ `1-1004-XXXXX-XX-8` โดยมีปุ่มรูปดวงตาให้ผู้มีสิทธิ์กดดูฉบับเต็มได้
+   - เลขที่บัญชีธนาคาร แสดงผลในรูปแบบ `XXX-X-XX3472`
+2. **การขอความยินยอม (Consent Management):**
+   - บังคับเลือกเครื่องหมายยินยอมเปิดเผยข้อมูลเพื่อการตรวจสอบประวัติอาชญากรรมและคัดกรอง ปปง./คปภ. ในขั้นตอนที่ 4 ของการสมัคร
+3. **การจำกัดสิทธิ์การเข้าถึง (Need-to-Know Basis):**
+   - เจ้าหน้าที่สาขาจะมองเห็นเฉพาะข้อมูลผู้สมัครในสาขาของตนเองเท่านั้น
+
+---
+
+## 14. แผนการบริหารความเสี่ยง
+
+| ลำดับ | ความเสี่ยงที่อาจเกิดขึ้น | ผลกระทบ | มาตรการป้องกันและแก้ไข (Mitigation Strategy) |
+|---|---|---|---|
+| **1** | ระบบหลัก (AS400/SAP) ขัดข้องขณะ Provisioning | ตัวแทนไม่ได้รับรหัสทันที | มีระบบ In-Memory Outbox Queue และปุ่ม Retry ให้ไอทีกดส่งข้อมูลซ้ำได้โดยไม่ต้องคีย์ใหม่ |
+| **2** | สาขาไม่จัดส่งสัญญาฉบับจริงภายใน 30 วัน | ความเสี่ยงด้านนิติกรรมสัญญา | ระบบมี SLA Countdown แจ้งเตือนล่วงหน้า 7 วัน และมี Daemon ระงับสิทธิ์การขายอัตโนมัติเมื่อครบ 30 วัน |
+| **3** | มีการปลอมแปลงนามสกุลไฟล์เอกสารแนบ | ความเสี่ยงด้านมัลแวร์และความถูกต้องของเอกสาร | ตรวจสอบโครงสร้างไฟล์ด้วย Magic Byte Header Binary Validator ก่อนบันทึกเข้าเซิร์ฟเวอร์ |
+| **4** | ผู้สมัครเป็นบุคคลที่มีความเสี่ยงทางการเมือง (PEP) | ความเสี่ยงด้าน Compliance ปปง. | บังคับส่งเคสเข้าคิว Dual-Approval ให้กรรมการผู้จัดการ (MD) พิจารณาอนุมัติเป็นกรณีพิเศษ |
+
+---
+
+## 15. ประเด็นข้อยุติและการดำเนินงาน
+
+| ลำดับ | ประเด็นการวิเคราะห์ | ข้อตกลงร่วมกัน (Baseline Agreement) | ผู้เกี่ยวข้อง |
+|---|---|---|---|
+| **1** | การนับระยะเวลา SLA 30 วัน | เริ่มนับตั้งแต่วันที่ฝ่ายบริหารเบี้ยอนุมัติและเปิดสถานะ `ActiveTemporary` โดยนับรวมวันหยุดราชการ | ฝ่ายธุรกิจ, ฝ่ายบริหารเบี้ย, สำนักนิติกรรม |
+| **2** | การระงับสิทธิ์และการปลดล็อก | ระบบ Daemon สั่งระงับสิทธิ์อัตโนมัติเมื่อครบ 30 วัน และเมื่อสำนักนิติกรรมตรวจรับสัญญาตัวจริง ระบบจะปลดล็อกเป็นเปิดขายถาวรทันที | ฝ่ายกฎหมาย, ฝ่ายไอที |
+| **3** | วงเงินค้ำประกันและการอนุมัติ | วงเงินปกติ ≤ 200,000 บาท ฝ่ายบริหารเบี้ยอนุมัติได้ หากเกิน 200,000 บาท ต้องเสนอ MD ลงนาม | ฝ่ายบริหารเบี้ย, กรรมการผู้จัดการ |
+
+---
+
+## 16. แนวทางการทดสอบระบบ
+
+### 16.1 ตารางความเชื่อมโยงข้อกำหนดกับการทดสอบ (Traceability Matrix)
+
+| Test Area | BR Reference | ครอบคลุมการทดสอบ | ประเภทการทดสอบ |
+|---|---|---|---|
+| **TC-INT-001** | BR-INT-001, VR-001 | การกรอกใบสมัครบุคคลธรรมดา, Modulo 11 Checksum และบันทึกแบบร่าง | Happy Path & Boundary |
+| **TC-INT-002** | BR-INT-003, VR-003 | การอัปโหลดไฟล์ PDF/JPEG และการปฏิเสธไฟล์ Spoofing Magic Bytes | Security & Negative |
+| **TC-SCR-001** | BR-SCR-001, BR-SCR-002 | การสั่งคัดกรองรายชื่อ ปปง. Sanctions และ คปภ. Blacklist | Compliance & Functional |
+| **TC-APP-001** | BR-APP-001, BR-SCR-003 | การอนุมัติเคสปกติโดยฝ่ายบริหารเบี้ย และเคส PEP Dual-Approval โดย MD | Workflow & DOA Matrix |
+| **TC-PRV-001** | BR-PRV-001 | การเปิดรหัส Deves Master และเชื่อมต่อ AS400, APAR, SAP, PCSDIS อัตโนมัติ | Integration & Retry |
+| **TC-SLA-001** | BR-SLA-001, BR-SLA-002 | การนับถอยหลัง 30 วัน และ Daemon ระงับสิทธิ์อัตโนมัติเมื่อเกิน 30 วัน | Automation & Edge Case |
+| **TC-ARC-001** | BR-ARC-001 | การลงทะเบียนหมายเลขกล่องจัดเก็บเอกสารและเปลี่ยนสถานะเป็นเปิดขายถาวร | Happy Path & Complete Lifecycle |
+
+---
+
+## 17. ภาคผนวก
+
+### 17.1 รายการ API Endpoints หลักของระบบ
+
+| Method | Endpoint | คำอธิบาย | ผู้เรียกใช้งาน |
+|---|---|---|---|
+| `GET` | `/api/applications` | ดึงรายการใบสมัครตามสิทธิ์และขอบเขตสาขา | ทุกบทบาท |
+| `GET` | `/api/applications/{id}` | ดึงข้อมูลรายละเอียดใบสมัครฉบับเต็ม | ทุกบทบาท |
+| `POST` | `/api/applications/draft` | บันทึกแบบร่างใบสมัคร | สาขา |
+| `POST` | `/api/applications/{id}/submit` | ยื่นใบสมัครเข้าสู่กระบวนการตรวจรับ | สาขา |
+| `POST` | `/api/compliance/screen/{id}` | สั่งประมวลผลตรวจคัดกรอง ปปง./คปภ. | สนญ. |
+| `POST` | `/api/approval/{id}/forward` | ส่งต่อใบสมัครเข้าคิวผู้บริหาร | สนญ. |
+| `POST` | `/api/approval/{id}/approve` | อนุมัติคำขอเปิดตัวแทนและวงเงิน | ฝ่ายบริหารเบี้ย / MD |
+| `POST` | `/api/provisioning/{id}/retry` | สั่งเปิดรหัสระบบหลักซ้ำกรณีขัดข้อง | ไอที |
+| `POST` | `/api/archive/{id}` | ตรวจรับสัญญาฉบับจริงและลงทะเบียนกล่อง | สำนักนิติกรรม |
+| `GET` | `/api/sla/metrics` | ดึงข้อมูลสถิติ SLA สำหรับแดชบอร์ด | ทุกบทบาท |
+| `POST` | `/api/daemon/simulate` | จำลองการทำงานของ SLA Daemon Engine | ไอที / ทดสอบระบบ |
+
+---
+*เอกสารนี้จัดทำขึ้นและควบคุมภายใต้มาตรฐานการพัฒนาระบบเทคโนโลยีสารสนเทศ บริษัท เทเวศประกันภัย จำกัด (มหาชน)*

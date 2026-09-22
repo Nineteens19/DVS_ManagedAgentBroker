@@ -55,6 +55,31 @@ Scenario: Reject disallowed file extensions or oversized files
 
 ---
 
+### Story US-1.3: Mandatory Schema Validation for Automated Deves Mastermanagement Intake
+- **As a**: Branch Business Development Officer (`ROLE_BRANCH_BU`)
+- **I want to**: be guided by real-time frontend and backend validation enforcing 100% schema completeness required by Deves Mastermanagement
+- **So that**: the application payload is zero-defect and can be provisioned into Deves Master automatically without human IT intervention.
+- **Primary Persona**: Somsak (Branch BU)
+- **Traceability**: `FR-1.5` | `SECURITY-05` (Input Validation & Invariant Checking)
+
+#### Acceptance Criteria (Gherkin BDD):
+```gherkin
+Scenario: Complete intake submission passes schema validation
+  Given Somsak has filled in all mandatory fields: Thai/EN names, Modulo-11 validated Citizen ID, complete address with postal code, bank account for payout, valid OIC license and expiry, branch/handler code, credit limit, guarantor income, and collateral evaluation
+  When he clicks "Submit Application to Head Office"
+  Then the system validates 100% schema compliance against Deves Master specifications
+  And transitions status to "SUBMITTED_BRANCH"
+  And displays confirmation that the application is forwarded to Head Office.
+
+Scenario: Incomplete intake submission is blocked with specific field errors
+  Given an application missing bank account details or with an invalid Citizen ID checksum
+  When Somsak attempts to submit
+  Then the system blocks the submission
+  And highlights the exact missing fields with error "Deves Master required field is missing or invalid".
+```
+
+---
+
 ## Epic 2: Compliance Screening & Risk Verification (AMLO / OIC)
 
 ### Story US-2.1: Automated AMLO (ปปง.) Screening
@@ -161,36 +186,56 @@ Scenario: Executive rejects application in EAS
 
 ---
 
-## Epic 4: 100% Automated Core System Provisioning & Provisional Selling (เปิดขายชั่วคราว)
+## Epic 4: 100% Automated Deves Mastermanagement Provisioning & Core Integration
 
-### Story US-4.1: 100% Automated Multi-System Core Provisioning (Zero Manual IT Intervention)
+### Story US-4.1: 100% Automated Deves Mastermanagement Provisioning (Zero Manual IT Intervention)
 - **As a**: Premium Management Officer (`ROLE_PREMIUM_DEPT`)
-- **I want to**: approve credit terms and trigger fully automated background provisioning across AS400, APAR, SAP, and PCSDIS
-- **So that**: the agent is provisioned and granted provisional selling rights immediately without waiting for manual IT data entry, fulfilling ISO27001 segregation of duties.
+- **I want to**: approve credit terms and trigger fully automated background provisioning into Deves Mastermanagement and downstream core systems
+- **So that**: Agent and Source codes are generated and granted provisional selling rights immediately without requiring IT staff to manually key in data.
 - **Primary Persona**: Kittipong (Premium Dept)
 - **Traceability**: `FR-3.2`, `FR-4.1`, `FR-4.2`, `FR-4.3` | `NFR-RES-03` (Idempotent Execution)
 
 #### Acceptance Criteria (Gherkin BDD):
 ```gherkin
-Scenario: Automated provisioning grants provisional selling rights (เปิดขายชั่วคราว)
-  Given application "APP-001" has received executive approval via EAS and credit approval from Premium Dept
+Scenario: Automated provisioning into Deves Master grants provisional selling rights (เปิดขายชั่วคราว)
+  Given application "APP-001" has received executive approval via EAS/Portal and credit approval from Premium Dept
   When Kittipong confirms the credit line and approves onboarding
-  Then the system automatically executes background provisioning flows:
+  Then the system automatically constructs the 100% complete intake payload
+  And executes the automated provisioning call to Deves Mastermanagement
+  And receives generated Agent Code "AG-90812", Source Code "SRC-101", and Unit Executive "UE-01"
+  And automatically cascades sync to downstream systems:
     | Target System | Automated Action Executed |
-    | AS400 Core   | Creates Agent/Source record and sets status to Active Temporary |
+    | AS400 Core   | Sets Agent/Source active for policy issuance and selling |
     | APAR         | Maps Vendor/Payable account |
     | SAP          | Provisions Business Partner financial entity |
-    | PCSDIS       | Configures Node, sets Unit Executive (UE), and maps Commission Schedule |
-  And assigns Agent Code "AG-90812" and Source Code "SRC-101"
+    | PCSDIS       | Configures Node and maps Commission Schedule |
   And transitions application status to "ACTIVE_TEMPORARY" (Provisional Selling Active)
-  And starts the 30-Day SLA timer for physical contract delivery
+  And starts the 30-Day SLA timer on Calendar Days for physical contract delivery
   And sends real-time notifications to Somsak (Branch) and the agent that selling rights are active.
 
-Scenario: Resilient automated retry upon core system transient error
-  Given the SAP interface returns a transient timeout (503) during provisioning
+Scenario: Resilient automated retry upon Deves Master or core system transient error
+  Given the Deves Master or downstream interface returns a transient timeout (503) during provisioning
   When the automated flow executes
-  Then the system records the partial success state, enqueues an idempotent retry with exponential backoff
-  And alerts IT Admin Voravit in the Health Dashboard without requiring manual data entry.
+  Then the system records the pending/partial state and enqueues an idempotent retry with exponential backoff
+  And alerts IT Admin Voravit in the Health & Exception Dashboard without requiring manual data entry.
+```
+
+---
+
+### Story US-4.2: IT Admin Exception & Health Dashboard
+- **As an**: IT Administrator (`ROLE_IT_ADMIN`)
+- **I want to**: monitor the health of automated provisioning pipelines, view sync logs, and trigger retries on external system timeouts
+- **So that**: I can ensure high system reliability and zero dropped provisioning requests without performing manual data entry in production.
+- **Primary Persona**: Voravit (System Admin / Auditor)
+- **Traceability**: `FR-4.3` | `NFR-RES-04` (Health Checks & Structured Logging)
+
+#### Acceptance Criteria (Gherkin BDD):
+```gherkin
+Scenario: IT Admin views automated sync health and triggers retry
+  Given an external downstream system was temporarily unreachable
+  When Voravit accesses the IT Exception Dashboard
+  Then he sees the failed provisioning transaction with detailed error code and timestamp
+  And can click "Retry Provisioning Sync" to re-dispatch the payload idempotently.
 ```
 
 ---
@@ -234,16 +279,23 @@ Scenario: Legal issues a Defect Notice starting the 30-Day SLA correction timer
 Scenario: Automatic Policy Submission Suspension upon 30-Day SLA breach (ระงับการส่งงาน Auto)
   Given agent "AG-90812" has reached Day 31 of the SLA timer without verified original contract completion
   When the automated daily SLA Compliance Daemon runs at midnight
-  Then the system automatically executes API commands to AS400 and PCSDIS to set agent status to "SUSPENDED_TEMPORARY"
+  Then the system executes API commands to Deves Master and AS400 to set agent status to "SUSPENDED_TEMPORARY"
+  And cascades suspension to ALL Source codes linked under agent "AG-90812"
   And immediately blocks all new policy issuance and submission permissions in the core systems
   And flags the application status as "SUSPENDED_30D" (ระงับการส่งงาน Auto)
   And broadcasts high-priority alerts to Branch BU (Somsak) and Premium Dept (Kittipong) for debt containment.
 
+Scenario: Source-Specific Suspension on branch condition failure
+  Given agent "AG-90812" has source "SRC-101" (Chiang Mai) and source "SRC-102" (Phuket)
+  When source "SRC-102" encounters a localized defect or compliance lock
+  Then the system locks only source "SRC-102"
+  And allows agent "AG-90812" and source "SRC-101" to continue operating normally.
+
 Scenario: Automatic Permanent Termination upon 90-Day SLA expiration (ปิดรหัสถาวร Auto)
   Given agent "AG-90812" remains suspended and reaches Day 91 without contract resolution
   When the automated SLA Compliance Daemon runs
-  Then the system automatically revokes all credentials and sets status to "TERMINATED_PERMANENT" across AS400, SAP, and PCSDIS
-  And permanently closes the Agent/Source code.
+  Then the system automatically revokes all credentials and sets status to "TERMINATED_PERMANENT" across Deves Master, AS400, SAP, and PCSDIS
+  And permanently closes the Agent/Source codes.
 ```
 
 ---

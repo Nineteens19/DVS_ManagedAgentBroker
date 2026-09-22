@@ -9,7 +9,7 @@
   1. Agent Intake & Document Digitization (Form F-CM-035 & F-CM-018)
   2. Automated AMLO (ปปง.) & OIC (คปภ.) Compliance Screening
   3. Multi-Department Review & EAS Electronic Signature Integration
-  4. 100% Automated Multi-System Core Provisioning (AS400, APAR, SAP, PCSDIS UE/Commissions)
+  4. 100% Automated Deves Mastermanagement Provisioning & Core Integration (Deves Master, AS400, APAR, SAP, PCSDIS UE/Commissions)
   5. SLA Physical Contract Lifecycle & Automated Policy Submission Suspension (Auto-Suspend Daemon)
   6. Real-Time Operational Dashboards & Monthly Credit Committee Reporting
 

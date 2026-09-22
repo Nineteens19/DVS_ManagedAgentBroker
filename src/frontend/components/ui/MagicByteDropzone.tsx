@@ -144,13 +144,13 @@ export const MagicByteDropzone: React.FC<MagicByteDropzoneProps> = ({
               <span className="font-semibold text-primary">คลิกเพื่อเลือกไฟล์</span> หรือลากไฟล์มาวางที่นี่
             </div>
             <p className="text-[11px] text-gray-400">
-              รองรับ PDF, JPG, PNG (ตรวจสอบ Magic Byte ป้องกันปลอมนามสกุลไฟล์ สูงสุด 10MB)
+              รองรับ PDF, JPG, PNG (ตรวจสอบความถูกต้องของไฟล์ ขนาดไม่เกิน 10MB)
             </p>
           </div>
 
           {isValidating && (
             <p className="text-xs text-primary mt-2 animate-pulse font-medium">
-              กำลังตรวจสอบลายเซ็นไบนารี Magic Byte...
+              กำลังตรวจสอบความถูกต้องของไฟล์เอกสาร...
             </p>
           )}
 

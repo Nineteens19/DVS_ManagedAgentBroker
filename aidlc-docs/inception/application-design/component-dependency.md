@@ -33,10 +33,11 @@ flowchart TD
     subgraph INFRA["Infrastructure Layer"]
         EFData["EF Core 8 / MS SQL Server 2022"]
         BgWorker["Background SLA Daemon Worker"]
-        ExtClients["External API Connectors (AS400/SAP/APAR/PCSDIS/AMLO/OIC/EAS)"]
+        ExtClients["External API Connectors (Deves Master/AS400/SAP/APAR/PCSDIS/AMLO/OIC/EAS)"]
     end
     
     subgraph EXT_SYSTEMS["External Enterprise Ecosystem"]
+        DevesMaster["Deves Mastermanagement Core"]
         AS400["AS400 Core System"]
         SAP["SAP Financials"]
         APAR["APAR Ledger System"]
@@ -54,6 +55,7 @@ flowchart TD
     BgWorker --> AppServices
     EFData --> DomainCore
     
+    ExtClients -->|REST / HTTPS| DevesMaster
     ExtClients -->|REST / HTTPS| AS400
     ExtClients -->|REST / HTTPS| SAP
     ExtClients -->|REST / HTTPS| APAR

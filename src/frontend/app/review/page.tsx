@@ -48,6 +48,19 @@ export default function ReviewPage() {
     enabled: Boolean(selectedAppId),
   });
 
+  const formatAmloStatus = (status?: string) => {
+    if (!status || status === 'Clear') return 'ผ่าน (ไม่พบรายชื่อผู้ถูกกำหนดในระบบ ปปง.)';
+    if (status === 'PepOrange') return 'พบสถานะผู้มีสถานภาพทางการเมือง (PEP - ต้องเสนอผู้บริหาร)';
+    if (status === 'DesignatedSanction') return 'พบรายชื่อผู้ถูกกำหนด / มาตรการคว่ำบาตร (ห้ามดำเนินการ)';
+    return status;
+  };
+
+  const formatOicStatus = (status?: string) => {
+    if (!status || status === 'Clear') return 'ผ่าน (ใบอนุญาตถูกต้อง ไม่พบประวัติเพิกถอน)';
+    if (status === 'Found') return 'พบประวัติในบัญชีดำ / ถูกเพิกถอนใบอนุญาต (คปภ.)';
+    return status;
+  };
+
   const screenMutation = useMutation({
     mutationFn: (id: string) => apiClient.runComplianceScreen(id),
     onSuccess: (updated) => {
@@ -55,8 +68,8 @@ export default function ReviewPage() {
       queryClient.invalidateQueries({ queryKey: ['applicationDetail', selectedAppId] });
       showToast({
         type: 'success',
-        title: 'ตรวจสอบ Sanctions สำเร็จ',
-        message: `ผลการตรวจสอบ AMLO: ${updated.complianceRecord?.amloStatus || 'Clear'}, OIC: ${updated.complianceRecord?.oicBlacklistStatus || 'Clear'}`,
+        title: 'ตรวจสอบรายชื่อต้องห้าม (ปปง./คปภ.) สำเร็จ',
+        message: `ผลการตรวจสอบ ปปง.: ${formatAmloStatus(updated.complianceRecord?.amloStatus)}, คปภ.: ${formatOicStatus(updated.complianceRecord?.oicBlacklistStatus)}`,
       });
     },
   });
@@ -69,7 +82,7 @@ export default function ReviewPage() {
       showToast({
         type: 'success',
         title: 'ส่งต่อผู้บริหารเรียบร้อย',
-        message: 'ใบสมัครถูกส่งเข้าคิวพิจารณาอนุมัติของผู้บริหาร (Pending MD Approval) พร้อมส่ง Notification ทางอีเมล',
+        message: 'ใบสมัครถูกส่งเข้าคิวพิจารณาอนุมัติของผู้บริหารเรียบร้อยแล้ว พร้อมส่งการแจ้งเตือนทางอีเมล',
       });
     },
   });
@@ -140,10 +153,10 @@ export default function ReviewPage() {
           </div>
           <div>
             <h2 className="text-base font-bold text-[#212529]">
-              สำนักงานใหญ่: ตรวจรับเอกสาร & คัดกรอง Sanctions (AMLO / OIC)
+              สำนักงานใหญ่: ตรวจรับเอกสาร & ตรวจสอบรายชื่อ ปปง. / คปภ.
             </h2>
             <p className="text-xs text-[#6C757D] mt-0.5">
-              ตรวจสอบความครบถ้วนของเอกสาร คัดกรองรายชื่อผู้ถูกกำหนด และส่งต่อผู้บริหารพิจารณาอนุมัติ
+              ตรวจสอบความครบถ้วนของเอกสาร ตรวจสอบรายชื่อผู้ถูกกำหนด และส่งต่อผู้บริหารพิจารณาอนุมัติ
             </p>
           </div>
         </div>
@@ -197,7 +210,7 @@ export default function ReviewPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 text-primary font-bold text-xs">
                   <ShieldCheck className="w-4 h-4" />
-                  <span>ผลการตรวจสอบ Sanctions AMLO & คปภ. (OIC Blacklist)</span>
+                  <span>ผลการตรวจสอบรายชื่อ ปปง. (ป้องกันการฟอกเงิน) & คปภ.</span>
                 </div>
                 <button
                   type="button"
@@ -205,34 +218,34 @@ export default function ReviewPage() {
                   disabled={screenMutation.isPending}
                   className="px-3 py-1 text-xs font-semibold text-white bg-primary hover:bg-primary-light rounded-lg shadow-sm disabled:opacity-50"
                 >
-                  {screenMutation.isPending ? 'กำลังประมวลผล...' : 'รัน AMLO Screening'}
+                  {screenMutation.isPending ? 'กำลังประมวลผล...' : 'ตรวจสอบรายชื่อ ปปง./คปภ.'}
                 </button>
               </div>
 
               {selectedApp.complianceRecord ? (
                 <div className="p-3 rounded-lg bg-white border border-gray-200 space-y-2 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">AMLO Sanctions List:</span>
+                    <span className="text-gray-600">รายชื่อผู้ถูกกำหนด ปปง.:</span>
                     <span className="font-bold text-green-700 flex items-center">
                       <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
-                      {selectedApp.complianceRecord.amloStatus}
+                      {formatAmloStatus(selectedApp.complianceRecord.amloStatus)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">OIC Blacklist:</span>
-                    <span className="text-green-700 font-semibold">{selectedApp.complianceRecord.oicBlacklistStatus}</span>
+                    <span className="text-gray-600">ประวัติเพิกถอนใบอนุญาต คปภ.:</span>
+                    <span className="text-green-700 font-semibold">{formatOicStatus(selectedApp.complianceRecord.oicBlacklistStatus)}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">ผู้มีสถานะทางการเมือง (PEP):</span>
+                    <span className="text-gray-600">ผู้มีสถานภาพทางการเมือง (PEP):</span>
                     <span className="text-gray-800 font-medium">
-                      {selectedApp.complianceRecord.requiresDirectorApproval ? 'ตรวจพบ (ต้องการ MD อนุมัติ)' : 'ไม่พบสถานะ PEP (ปกติ)'}
+                      {selectedApp.complianceRecord.requiresDirectorApproval ? 'ตรวจพบสถานะ (ต้องเสนอผู้บริหารพิจารณา)' : 'ไม่พบสถานะ (ปกติ)'}
                     </span>
                   </div>
                 </div>
               ) : (
                 <p className="text-xs text-amber-700 flex items-center">
                   <AlertTriangle className="w-3.5 h-3.5 mr-1 text-amber-600" />
-                  ยังไม่ได้รันการตรวจสอบคัดกรอง Sanctions สำหรับใบสมัครนี้
+                  ยังไม่ได้ตรวจสอบรายชื่อต้องห้าม (ปปง./คปภ.) สำหรับใบสมัครนี้
                 </p>
               )}
             </div>
@@ -241,7 +254,7 @@ export default function ReviewPage() {
             <div className="space-y-2">
               <h4 className="text-xs font-bold text-gray-800 flex items-center space-x-1.5">
                 <FileText className="w-4 h-4 text-primary" />
-                <span>รายการเอกสารแนบที่ผ่านการตรวจสอบ Magic Byte ({selectedApp.attachments.length} ฉบับ)</span>
+                <span>รายการเอกสารแนบประกอบการพิจารณา ({selectedApp.attachments.length} ฉบับ)</span>
               </h4>
               <div className="space-y-1.5">
                 {selectedApp.attachments.map((doc) => (
@@ -255,7 +268,7 @@ export default function ReviewPage() {
                       <span className="text-[10px] text-gray-500 font-mono">({doc.contentType || doc.documentType})</span>
                     </div>
                     <span className="text-[10px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-200">
-                      Magic Byte Valid
+                      เอกสารผ่านการตรวจสอบ
                     </span>
                   </div>
                 ))}
@@ -270,7 +283,7 @@ export default function ReviewPage() {
                 className="flex items-center space-x-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-red-700 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 transition-all"
               >
                 <FileX2 className="w-4 h-4" />
-                <span>ส่งกลับสาขาแก้ไข (Deficiency)</span>
+                <span>ส่งกลับให้สาขาแก้ไข</span>
               </button>
 
               <button
@@ -280,7 +293,7 @@ export default function ReviewPage() {
                 className="btn-primary text-xs !h-9 inline-flex items-center space-x-2 shadow-md disabled:opacity-40"
               >
                 <Send className="w-4 h-4" />
-                <span>{forwardMutation.isPending ? 'กำลังส่งต่อ...' : 'ส่งต่อผู้บริหารอนุมัติ (Forward to MD)'}</span>
+                <span>{forwardMutation.isPending ? 'กำลังส่งต่อ...' : 'ส่งต่อผู้บริหารพิจารณาอนุมัติ'}</span>
               </button>
             </div>
           </div>

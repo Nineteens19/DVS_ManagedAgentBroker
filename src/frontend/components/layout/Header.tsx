@@ -15,19 +15,19 @@ export const Header: React.FC = () => {
   const getPageTitle = (path: string) => {
     switch (path) {
       case '/':
-        return 'ภาพรวมระบบ (Overview Dashboard)';
+        return 'ภาพรวมระบบ (แดชบอร์ดสรุปงาน)';
       case '/intake/new':
-        return 'ยื่นใบสมัครใหม่ (Application Intake)';
+        return 'ยื่นใบสมัครตัวแทน/นายหน้าใหม่';
       case '/review':
-        return 'สนญ. ตรวจรับเอกสาร & AMLO (Review)';
+        return 'สนญ. ตรวจรับเอกสาร & ตรวจสอบรายชื่อ ปปง./คปภ.';
       case '/approval':
-        return 'ผู้บริหารพิจารณาอนุมัติ (Executive Approval)';
+        return 'ผู้บริหารพิจารณาอนุมัติคำขอ';
       case '/provisioning':
-        return 'ฝ่ายสินเชื่อ & 100% Core Provisioning';
+        return 'ฝ่ายบริหารจัดการเบี้ย & เปิดรหัสระบบหลักอัตโนมัติ 100%';
       case '/archive':
-        return 'ฝ่ายกฎหมายจัดเก็บสัญญาตัวจริง (Legal Archive)';
+        return 'ฝ่ายกฎหมาย จัดเก็บสัญญาฉบับจริง';
       case '/sla-dashboard':
-        return 'SLA Dashboard & Monitoring';
+        return 'ติดตามระยะเวลากำหนดส่งสัญญา (ผ่อนผัน 30 วัน)';
       default:
         return 'ระบบบริหารจัดการตัวแทนและนายหน้า';
     }

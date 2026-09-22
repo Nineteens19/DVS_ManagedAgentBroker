@@ -9,17 +9,17 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
     username: 'branch.bangkok',
     fullName: 'นารี สาขากรุงเทพฯ',
     role: 'branch_officer',
-    roleDisplayName: 'เจ้าหน้าที่สาขา (Branch Officer)',
+    roleDisplayName: 'เจ้าหน้าที่ฝ่ายธุรกิจสาขา',
     branchCode: '001',
-    branchName: 'สำนักงานใหญ่ (Headquarters)',
+    branchName: 'สำนักงานใหญ่ (สาขาธุรกิจกรุงเทพฯ)',
     email: 'naree.bkk@deves.co.th',
   },
   ho_reviewer: {
     userId: 'usr-ho-01',
     username: 'ho.reviewer',
-    fullName: 'ปิยะชาติ ตรวจสอบสนญ.',
+    fullName: 'ปิยะชาติ ฝ่ายธุรกิจ สนญ.',
     role: 'ho_reviewer',
-    roleDisplayName: 'เจ้าหน้าที่ตรวจรับ สนญ. (HO Reviewer)',
+    roleDisplayName: 'ฝ่ายธุรกิจสำนักงานใหญ่ (ตรวจรับเอกสาร & คัดกรอง ปปง./คปภ.)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
     email: 'piyachat.ho@deves.co.th',
@@ -29,7 +29,7 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
     username: 'md.executive',
     fullName: 'ดร. กิตติภพ กรรมการผู้จัดการ',
     role: 'approver_md',
-    roleDisplayName: 'กรรมการผู้จัดการ (Managing Director)',
+    roleDisplayName: 'กรรมการผู้จัดการ (ผู้มีอำนาจลงนามอนุมัติ)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
     email: 'kittipob.md@deves.co.th',
@@ -37,9 +37,9 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
   premium_reviewer: {
     userId: 'usr-prem-01',
     username: 'premium.officer',
-    fullName: 'มนตรี ฝ่ายสินเชื่อและตั้งรหัส',
+    fullName: 'มนตรี ฝ่ายบริหารจัดการเบี้ย',
     role: 'premium_reviewer',
-    roleDisplayName: 'ฝ่ายสินเชื่อ & รหัสตัวแทน (Premium Reviewer)',
+    roleDisplayName: 'ฝ่ายบริหารจัดการเบี้ยประกันภัย (อนุมัติวงเงิน & เปิดรหัสระบบหลัก)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
     email: 'montri.prem@deves.co.th',
@@ -47,9 +47,9 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
   auditor_legal: {
     userId: 'usr-legal-01',
     username: 'legal.auditor',
-    fullName: 'ทรรศนีย์ ฝ่ายกฎหมาย & สัญญา',
+    fullName: 'ทรรศนีย์ สำนักนิติกรรม',
     role: 'auditor_legal',
-    roleDisplayName: 'ฝ่ายกฎหมายจัดเก็บเอกสาร (Legal Auditor)',
+    roleDisplayName: 'ฝ่ายกฎหมาย / สำนักนิติกรรม (จัดเก็บสัญญาฉบับจริง)',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
     email: 'tatsanee.legal@deves.co.th',
@@ -57,14 +57,15 @@ export const PRESET_PERSONAS: Record<UserRole, UserProfile> = {
   admin: {
     userId: 'usr-admin-01',
     username: 'sysadmin',
-    fullName: 'ผู้ดูแลระบบสูงสุด (System Admin)',
+    fullName: 'ผู้ดูแลระบบ (IT Administrator)',
     role: 'admin',
-    roleDisplayName: 'ผู้ดูแลระบบ (Administrator)',
+    roleDisplayName: 'ฝ่ายพัฒนาระบบ / ผู้ดูแลระบบไอที',
     branchCode: '001',
     branchName: 'สำนักงานใหญ่ (Headquarters)',
     email: 'admin@deves.co.th',
   },
 };
+
 
 interface AuthContextType {
   currentUser: UserProfile;

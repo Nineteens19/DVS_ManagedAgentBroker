@@ -33,6 +33,7 @@ namespace ManagedAgentBroker.Domain.Enums
 
     public enum TargetSystem
     {
+        DevesMaster = 0,
         AS400 = 1,
         APAR = 2,
         SAP = 3,

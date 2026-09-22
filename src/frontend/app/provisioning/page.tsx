@@ -69,6 +69,7 @@ export default function ProvisioningPage() {
         agentCode: result.agentCode || 'AG202600015',
         sourceCode: result.sourceCode || 'SRC-001',
         syncResults: [
+          { system: 'Deves Master', status: 'Success', systemRecordId: 'DM-2026-00812' },
           { system: 'AS400', status: 'Success', systemRecordId: 'AS4-99812' },
           { system: 'APAR', status: 'Success', systemRecordId: 'APR-77123' },
           { system: 'SAP', status: 'Success', systemRecordId: 'SAP-100234' },
@@ -78,8 +79,8 @@ export default function ProvisioningPage() {
       queryClient.invalidateQueries({ queryKey: ['applications'] });
       showToast({
         type: 'success',
-        title: 'Core Auto-Provisioning สำเร็จ 100%',
-        message: `สร้างรหัสตัวแทน ${result.agentCode} และ Sync ไปยัง AS400, APAR, SAP, PCSDIS สำเร็จแล้ว`,
+        title: 'เปิดรหัสตัวแทนเข้าระบบหลักสำเร็จ 100%',
+        message: `สร้างรหัสตัวแทน ${result.agentCode} ผ่านระบบ Deves Master และเชื่อมต่อไปยัง AS400, APAR, SAP, PCSDIS สำเร็จแล้ว`,
       });
     },
   });
@@ -133,7 +134,7 @@ export default function ProvisioningPage() {
       ),
     },
     {
-      header: 'รหัส Agent / Source',
+      header: 'รหัสตัวแทน / รหัสช่องทาง (Agent / Source)',
       cell: (row) =>
         row.agentCode ? (
           <div>
@@ -183,10 +184,10 @@ export default function ProvisioningPage() {
               {row.status === 'ActiveTemporary' ? (
                 <>
                   <Check className="w-3 h-3 mr-0.5 inline" />
-                  <span>Provisioned</span>
+                  <span>เปิดรหัสเรียบร้อย</span>
                 </>
               ) : (
-                <span>ตั้งวงเงิน & ยิง Core</span>
+                <span>อนุมัติวงเงิน & เปิดรหัสระบบ</span>
               )}
             </span>
           </button>
@@ -205,10 +206,10 @@ export default function ProvisioningPage() {
           </div>
           <div>
             <h2 className="text-base font-bold text-[#212529]">
-              ฝ่ายสินเชื่อ: กำหนดวงเงิน & 100% Core Auto-Provisioning
+              ฝ่ายบริหารจัดการเบี้ย: อนุมัติวงเงิน & ส่งเปิดรหัสระบบหลักอัตโนมัติ 100%
             </h2>
             <p className="text-xs text-[#6C757D] mt-0.5">
-              คลิกแถวเพื่อดูเอกสาร หรือตั้งค่าวงเงินและ Sync ข้อมูลไปยัง AS400, APAR, SAP, PCSDIS อัตโนมัติ
+              ตรวจสอบวงเงินสินเชื่อ และยืนยันส่งข้อมูลเปิดรหัสผ่าน Deves Mastermanagement เพื่อเชื่อมต่อไปยัง AS400, APAR, SAP, PCSDIS อัตโนมัติ
             </p>
           </div>
         </div>

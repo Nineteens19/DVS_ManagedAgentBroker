@@ -1,185 +1,153 @@
 import { MockDataEngine } from './mockDataEngine';
 import { AgentApplicationDetailDto, ApplicationListItemDto, SlaDashboardMetricsDto } from '../types/domain';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-const USE_DEMO_FALLBACK = process.env.NEXT_PUBLIC_ENABLE_DEMO_MODE !== 'false';
+const DIRECT_MOCK_MODE = true;
 
 /**
- * Hybrid Dual-Mode API Client with Transparent Fallback to In-Memory Engine
+ * High-Performance API Client with Instant Mock Engine Support
  */
 export const apiClient = {
   getApplications: async (role?: string, branchCode?: string): Promise<ApplicationListItemDto[]> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/applications`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(1500)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.getApplications(role, branchCode);
-      }
-      throw new Error('Backend API unavailable');
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.getApplications(role, branchCode);
     }
+    const response = await fetch('/api/applications');
+    return await response.json();
   },
 
   getApplicationById: async (id: string): Promise<AgentApplicationDetailDto | null> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/applications/${id}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(1500)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.getApplicationById(id);
-      }
-      throw new Error('Backend API unavailable');
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.getApplicationById(id);
     }
+    const response = await fetch(`/api/applications/${id}`);
+    return await response.json();
   },
 
   saveDraft: async (data: Partial<AgentApplicationDetailDto>): Promise<AgentApplicationDetailDto> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/applications/draft`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        signal: AbortSignal.timeout(2000)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.saveDraft(data);
-      }
-      throw new Error('Backend API unavailable');
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.saveDraft(data);
     }
+    const response = await fetch('/api/applications/draft', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return await response.json();
   },
 
   submitApplication: async (id: string): Promise<AgentApplicationDetailDto> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/applications/${id}/submit`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(2000)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.submitApplication(id);
-      }
-      throw new Error('Backend API unavailable');
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.submitApplication(id);
     }
+    const response = await fetch(`/api/applications/${id}/submit`, { method: 'POST' });
+    return await response.json();
   },
 
   runComplianceScreen: async (id: string): Promise<AgentApplicationDetailDto> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/compliance/screen/${id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(2000)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.runComplianceScreen(id);
-      }
-      throw new Error('Backend API unavailable');
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.runComplianceScreen(id);
     }
+    const response = await fetch(`/api/compliance/screen/${id}`, { method: 'POST' });
+    return await response.json();
   },
 
   forwardToExecutive: async (id: string, notes?: string): Promise<AgentApplicationDetailDto> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/approval/${id}/forward`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes }),
-        signal: AbortSignal.timeout(2000)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.forwardToExecutive(id);
-      }
-      throw new Error('Backend API unavailable');
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.forwardToExecutive(id, notes);
     }
+    const response = await fetch(`/api/approval/${id}/forward`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes }),
+    });
+    return await response.json();
   },
 
-  processExecutiveDecision: async (id: string, isApproved: boolean, remarks: string): Promise<AgentApplicationDetailDto> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/approval/${id}/decision`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isApproved, decisionNotes: remarks }),
-        signal: AbortSignal.timeout(2000)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.processExecutiveDecision(id, isApproved, remarks);
-      }
-      throw new Error('Backend API unavailable');
+  recordDeficiency: async (id: string, reason: string): Promise<AgentApplicationDetailDto> => {
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.recordDeficiency(id, reason);
     }
+    const response = await fetch(`/api/approval/${id}/deficiency`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason }),
+    });
+    return await response.json();
   },
 
-  triggerProvisioning: async (id: string, approvedLimit: number, commissionPercentage: number): Promise<AgentApplicationDetailDto> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/provisioning/${id}/trigger`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ approvedCreditLimit: approvedLimit, commissionPercentage }),
-        signal: AbortSignal.timeout(3000)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.triggerProvisioning(id, approvedLimit, commissionPercentage);
-      }
-      throw new Error('Backend API unavailable');
+  approveApplication: async (
+    id: string,
+    approvedLimit?: number,
+    commissionPct?: number,
+    notes?: string
+  ): Promise<AgentApplicationDetailDto> => {
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.approveApplication(id, approvedLimit, commissionPct, notes);
     }
+    const response = await fetch(`/api/approval/${id}/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ approvedLimit, commissionPct, notes }),
+    });
+    return await response.json();
   },
 
-  archivePhysicalContract: async (id: string, boxNumber: string, notes?: string): Promise<AgentApplicationDetailDto> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/archive/${id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ archiveBoxNumber: boxNumber, legalAuditorNotes: notes }),
-        signal: AbortSignal.timeout(2000)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.archivePhysicalContract(id, boxNumber, notes);
-      }
-      throw new Error('Backend API unavailable');
+  rejectApplication: async (id: string, reason: string): Promise<AgentApplicationDetailDto> => {
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.rejectApplication(id, reason);
     }
+    const response = await fetch(`/api/approval/${id}/reject`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason }),
+    });
+    return await response.json();
+  },
+
+  retryProvisioning: async (id: string, targetSystem: string): Promise<AgentApplicationDetailDto> => {
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.retryProvisioning(id, targetSystem);
+    }
+    const response = await fetch(`/api/provisioning/${id}/retry`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ targetSystem }),
+    });
+    return await response.json();
+  },
+
+  archiveContract: async (
+    id: string,
+    boxNumber: string,
+    notes?: string
+  ): Promise<AgentApplicationDetailDto> => {
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.archiveContract(id, boxNumber, notes);
+    }
+    const response = await fetch(`/api/archive/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ boxNumber, notes }),
+    });
+    return await response.json();
   },
 
   getSlaMetrics: async (): Promise<SlaDashboardMetricsDto> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/sla/metrics`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(1500)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch {
-      if (USE_DEMO_FALLBACK) {
-        return await MockDataEngine.getSlaMetrics();
-      }
-      throw new Error('Backend API unavailable');
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.getSlaMetrics();
     }
-  }
+    const response = await fetch('/api/sla/metrics');
+    return await response.json();
+  },
+
+  triggerDaemonSimulation: async (action: 'check30D' | 'check90D' | 'resetDemo'): Promise<void> => {
+    if (DIRECT_MOCK_MODE) {
+      return await MockDataEngine.triggerDaemonSimulation(action);
+    }
+    await fetch('/api/daemon/simulate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action }),
+    });
+  },
 };

@@ -1,34 +1,20 @@
-# Requirements Verification Questions
+# ข้อซักถามเพื่อยืนยันข้อกำหนดทางธุรกิจ (Requirement Verification Questions)
+## ระบบบริหารจัดการตัวแทน/นายหน้า (Agent & Broker Management System — F-BP-009)
 
-Please answer the following questions to help clarify the requirements for the **Agent & Broker Management System (ระบบบริหารจัดการตัวแทนนายหน้า)**. Fill in the letter choice after each `[Answer]:` tag.
+เอกสารฉบับนี้จัดทำขึ้นจากการวิเคราะห์ข้อมูลเชิงลึกในโฟลเดอร์ `detail/` (ประกอบด้วยบันทึกการประชุมฝ่ายนิติกรรมและฝ่ายเบี้ย, ผังงาน AS-IS/TO-BE, รายงานและกรณีทดสอบจริง) เพื่อขอความชัดเจนในจุดเชื่อมต่อระหว่าง **หลายส่วนงาน (Branch, BU สนญ., เบี้ย, นิติ, IT, ผู้บริหาร)** และ **หลายระบบงาน (AS400, APAR, SAP, PCSDIS, AMLO, OIC, EAS)** 
 
----
-
-## Question 1: Technology Stack & Development Approach
-เอกสารระบุทั้งแนวคิด Microsoft Power Apps/Automate และเว็บแอปพลิเคชันระบบสารสนเทศ คุณต้องการให้พัฒนาระบบในรูปแบบใด?
-
-A) Modern Full-Stack Web Application (Frontend: React/Vite/TypeScript + Backend: Node.js/Express หรือ Python FastAPI พร้อม REST API และ PostgreSQL)
-
-B) Python-based Full-Stack Web Application (Frontend: React/HTML5 + Backend: Python FastAPI/Flask)
-
-C) Microsoft Power Apps & Power Automate low-code architecture
-
-D) Microservices Architecture (Containerized Services + API Gateway)
-
-X) Other (please describe after [Answer]: tag below)
-
-[Answer]: dotnetcore and nextjs ms sql server 
+โปรดตอบคำถามโดยระบุตัวอักษรตัวเลือก (A, B, C, ...) หลังแท็ก `[Answer]:` ในแต่ละข้อ หากต้องการระบุรายละเอียดเพิ่มเติมสามารถเลือกตัวเลือกสุดท้ายและพิมพ์ข้อความต่อท้ายได้ หรือสามารถ **เว้นว่าง** ในข้อที่ยังไม่ต้องการตัดสินใจได้ทันทีครับ
 
 ---
 
-## Question 2: Database & Document Storage
-ระบบมีการจัดเก็บข้อมูลตัวแทน, สถานะการอนุมัติ, แบบฟอร์ม F-CM-035, F-CM-018 และไฟล์สแกนเอกสารแนบ ต้องการใช้ระบบฐานข้อมูลและที่เก็บไฟล์แบบใด?
+## Question 1: ลำดับขั้นตอนการเปิดรหัสขาย กับ การตรวจรับเอกสารฉบับจริง (Provisional Selling vs Sequential Flow)
+จากข้อมูลในบันทึกการประชุม (MOM นิติกรรม) มีการเสนอให้เปลี่ยนจากการทำแบบคู่ขนาน (Parallel) มาเป็น "ต้องผ่านการ Approve จากนิติกรรมก่อน จึงค่อยส่งต่อให้ IT สร้างรหัส" เพื่อป้องกันความเสี่ยงการทุจริต ในขณะที่แนวคิดในระบบเดิมอนุญาตให้ "เปิดสิทธิ์ขายชั่วคราว (ActiveTemporary)" หลังฝ่ายเบี้ยอนุมัติ เพื่อความรวดเร็วทางธุรกิจ แล้วจึงตามเอกสารตัวจริงภายใน 30/90 วัน ท่านต้องการให้ Flow การทำงานจริงเป็นรูปแบบใด?
 
-A) Relational Database (PostgreSQL / MySQL) + Object Storage (S3 / GCS / Local File Storage) สำหรับไฟล์แนบ
+A) เปิดขายชั่วคราวทันที (Provisional Selling): เมื่อ MD และฝ่ายเบี้ยอนุมัติวงเงินแล้ว ระบบสร้างรหัสและเปิดขายชั่วคราวให้ทันที จากนั้นจับเวลา SLA 30/90 วัน รอนิติกรรมตรวจรับเอกสารฉบับจริงเพื่อเปิดขายถาวร (ให้ความสำคัญกับความรวดเร็วในการเริ่มขายของตัวแทน)
 
-B) Microsoft SQL Server / Azure SQL + Blob Storage
+B) ตรวจรับเอกสารฉบับจริงให้เสร็จสิ้นก่อน 100% (Strict Sequential): ฝ่ายธุรกิจส่งเอกสารตัวจริงให้นิติกรรมตรวจรับและอนุมัติให้สมบูรณ์ก่อนเท่านั้น ระบบจึงจะทำการสร้างรหัสและเปิดสิทธิ์ขาย (เน้นความปลอดภัยทางกฎหมายและป้องกันการทุจริต 100% ตามข้อเสนอของ MOM)
 
-C) Enterprise Database (Oracle / DB2) + Enterprise ECM
+C) แบบผสม (Hybrid / Tiered Risk): หากมีหลักทรัพย์ค้ำประกันเป็นเงินสดเต็มจำนวน (Cash Deposit) ให้เปิดขายชั่วคราวได้ทันที แต่หากเป็นบุคคลค้ำประกันหรือโฉนดที่ดิน ต้องรอนิติกรรมตรวจรับเอกสารตัวจริงให้ผ่านก่อนจึงจะเปิดรหัส
 
 X) Other (please describe after [Answer]: tag below)
 
@@ -36,14 +22,14 @@ X) Other (please describe after [Answer]: tag below)
 
 ---
 
-## Question 3: Core External System Integrations
-ระบบ To-Be มีการสร้าง Agent/Source อัตโนมัติใน AS400, APAR, SAP, PCS/PCSDIS และตรวจสอบ ปปง./คปภ. สำหรับระยะพัฒนานี้ ต้องการให้จัดการการเชื่อมต่อภายนอกอย่างไร?
+## Question 2: จุดเริ่มต้นนับเวลาและเกณฑ์ SLA 30 วัน และ 90 วัน (SLA Calculation Rule)
+จากเอกสาร `Question นิติ.xlsx` และข้อสรุปฝ่ายนิติ ระบุว่า "30 วัน และ 90 วัน เริ่มนับพร้อมกัน นับยาวๆ เลย ไม่รีวันนับ", "30 วันเริ่มนับตอน BU ได้รับเอกสาร" และฝ่ายเบี้ยมี "เลทเวลาให้อีก 14-15 วัน" ท่านต้องการให้นาฬิกาจับเวลา SLA ของระบบเริ่มนับจากจุดใดและคำนวณอย่างไร?
 
-A) สร้าง Modular Service Layer พร้อม Mock & Simulation APIs สำหรับระบบภายนอกทั้งหมด (AS400, APAR, SAP, PCS, AMLO, OIC) พร้อมโครงสร้างที่สลับเป็น Real Endpoints ได้ทันที
+A) เริ่มนับทันทีตั้งแต่วันที่ระบบเปิดสิทธิ์ขายชั่วคราว (Day 0 = วันที่เกิดสถานะ ActiveTemporary / ส่งมอบรหัสขาย) โดยนับเป็นวันปฏิทินต่อเนื่อง (Calendar Days): เมื่อครบ 30 วันระงับสิทธิ์ชั่วคราว และเมื่อครบ 90 วันปิดรหัสถาวร
 
-B) กำหนด Interface/Connector สำหรับเชื่อมต่อกับระบบจริง (ต้องระบุ API specification เพิ่มเติม)
+B) เริ่มนับเฉพาะเมื่อฝ่ายนิติกรรมสั่งแก้ไขเอกสาร (Day 0 = วันที่นิติกรรมกด Reject/ขอแก้ไข หรือวันที่ BU ได้รับเอกสารกลับไปแก้ไข): หากส่งเอกสารตัวจริงถูกต้องตั้งแต่แรกจะไม่มีการจับเวลาระงับ
 
-C) พัฒนาเฉพาะระบบบริหารจัดการภายในและ Workflow Dashboard โดยบันทึก Transaction รอนำส่งข้อมูล
+C) ใช้วันทำการ (Business Days) ไม่รวมวันหยุดนักขัตฤกษ์และวันเสาร์-อาทิตย์ พร้อมทั้งบวกระยะเวลาผ่อนผัน (Grace Period) 14 วันของฝ่ายเบี้ยก่อนการตัดสิทธิ์อัตโนมัติ
 
 X) Other (please describe after [Answer]: tag below)
 
@@ -51,14 +37,55 @@ X) Other (please describe after [Answer]: tag below)
 
 ---
 
-## Question 4: User Authentication & Authorization (RBAC)
-ระบบมีหลายบทบาท เช่น สาขา (BU สาขา), สนญ. (BU สนญ.), ฝ่ายเบี้ยฯ, สำนักนิติกรรม, และผู้บริหารลงนาม (MD / ผู้อำนวยการฝ่าย) ต้องการให้จัดการระบบยืนยันตัวตนอย่างไร?
+## Question 3: กระบวนการส่งกลับแก้ไขเอกสาร (Reject / Correction Lifecycle)
+จากไฟล์ `Question นิติ.xlsx` และ `Present.xlsx` มีคำถามเรื่อง "ถ้าสาขาถูก Reject กลับมา ควรแก้เอกสารภายในรหัสเอกสารเดิม หรือเปิดใหม่" และ "เอกสารมีปัญหาส่งให้ทาง BU โดยตรงทั้งชุด" ท่านต้องการให้วงจรชีวิตของการแก้ไขเป็นอย่างไร?
 
-A) JWT-based Authentication พร้อม Role-Based Access Control (RBAC) และ Role Permission Matrix ภายในระบบ
+A) แก้ไขภายใต้เลขที่สัญญา/คำขอเดิม (In-Place Amendment): สาขาสามารถแก้ไขข้อมูลและอัปโหลดไฟล์ชุดเอกสารใหม่เข้ามาทับหรือเพิ่มเป็น Transaction ย่อยภายใต้เลขคำขอเดิม เพื่อให้ประวัติการติดตาม (Audit Trail) เชื่อมโยงกันต่อเนื่อง
 
-B) Active Directory / LDAP / Single Sign-On (SSO) Integration (OAuth2 / OIDC)
+B) ยกเลิกคำขอเดิมและเปิดใหม่ (Cancel & Re-submit): คำขอเดิมจะถูกปิดเป็น Rejected ถาวร และสาขาต้องสร้างคำขอใหม่พร้อมเลขที่เอกสารใหม่ทั้งหมด โดยระบบอำนวยความสะดวกด้วยการ Clone ข้อมูลเดิมมาให้แก้ไข
 
-C) Simple Session-based Authentication พร้อม Role Management
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]: x ต้องการให้ทำได้ทั้ง 2 แบบ แต่การ Re-open กลับมาควรเป็นใคร , หรือต้องการเปิดใหม่ก็ได้เช่นกันแต่มันมีเลขเอกสารบ่างส่วนที่ต้องใช้เลขเดิม
+
+---
+
+## Question 4: ความแตกต่างของผลกระทบเมื่อถูกระงับสิทธิ์ ระหว่าง "ตัวแทน" กับ "นายหน้า" (Agent vs Broker Suspension Scope)
+ในไฟล์สรุปการประชุมฝ่ายเบี้ย (`สรุปประชุมฝ่ายเบี้ย.xlsx`) ระบุชัดเจนว่า: "ตัวแทน Lock แค่ Agent", "นายหน้า Lock ได้ทั้ง Agent/Source" และใน `Present.xlsx` ระบุว่า "ถ้าระงับชั่วคราวสามารถปลดกลับมาใช้รหัสเดิมได้ แต่ถ้าปิดถาวรต้องสมัครใหม่หมด" ท่านต้องการให้คำสั่งอัตโนมัติของระบบ (Daemon) ส่งผลต่อระบบ Core อย่างไร?
+
+A) แยกเงื่อนไขตามประเภทอย่างเคร่งครัด: กรณีบุคคลธรรมดา (ตัวแทน) สั่ง Lock เฉพาะรหัส Agent ใน AS400 / กรณีบริษัทนายหน้า (Broker) สั่ง Lock ทั้งรหัส Agent และ Source Code ใน AS400 และ PCS
+
+B) สั่งระงับทั้งรหัส Agent และ Source Code พร้อมกันทั้งหมดเสมอในทุกระบบ (AS400, PCS, Core) ไม่ว่าจะเป็นตัวแทนหรือนายหน้า เพื่อความปลอดภัยสูงสุด
+
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]: x ต้องอธิบายให้เข้าใจว่าความสัมพันธ์ของ Agent จะใหญ่กว่า Source โดย 1 Agent มีมากกว่า 1 Source ได้การะงับทั้ง Agent หมายถึงทุก Source ภายใต้จะโดนไปด้วย แต่หากเจาะจงระบบ Agent/Source คู่กันก็จะเป็นแต่ละรายไป
+
+---
+
+## Question 5: สถาปัตยกรรมการเชื่อมต่อระบบลงนาม EAS (Electronic Approval System)
+จากข้อมูลพบว่าฝ่ายบริหาร (MD) และฝ่ายเบี้ยมีการลงนามผ่านระบบ EAS ภายในขององค์กร ในขณะที่ฝ่ายนิติกรรมระบุว่า "ฝ่ายนิติไม่มีการลงนามผ่าน EAS แล้ว (เซ็นเอกสารฉบับจริง)" สำหรับระบบใหม่นี้ต้องการให้เชื่อมต่อกับ EAS ในลักษณะใด?
+
+A) API & Webhook Integration อัตโนมัติ: ระบบ Agent & Broker สร้างเรื่องส่งข้อมูลและไฟล์ PDF ผ่าน API ไปยัง EAS โดยตรง เมื่อผู้บริหารหรือฝ่ายเบี้ยเซ็นใน EAS สำเร็จ ระบบ EAS จะส่ง Webhook/Callback กลับมาแจ้งระบบเพื่อเดินสถานะอัตโนมัติ
+
+B) Direct E-Signature บน Web Portal นี้: พัฒนาฟังก์ชันลงนามและตรวจรับเอกสารอิเล็กทรอนิกส์ไว้บน Portal นี้โดยตรง โดยผู้บริหารและฝ่ายเบี้ยเข้ามากดอนุมัติ/ลงนามบนหน้านี้ได้ทันทีโดยไม่ต้องกระโดดไปเข้าระบบ EAS ภายนอก
+
+C) Manual Reference Tracking: ให้ผู้ใช้งานส่งเรื่องเข้า EAS ตามขั้นตอนเดิมของบริษัท จากนั้นเจ้าหน้าที่นำ "เลขที่อ้างอิงเอกสาร EAS (EAS Ref No.)" หรือเอกสารที่เซ็นเสร็จแล้วมากรอก/แนบกลับเข้ามาเพื่อยืนยันในระบบ
+
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]: x  EAS เป็นเพียงหน้าระบบ power app ที่พัฒนาขึ้นไม่สามารถ Provide data ออกมาได้มองเป็น 2 รูปแบบคือเรียกใช้ Approval ของ microsoft หรือ จะพัฒนาการนำส่งขอลงนามเองในระบบตัวเอง ปัจจุบัน user คุ้นชิน Approval ของ microsoft
+
+---
+
+## Question 6: รูปแบบการออกเลขที่สัญญา (Contract Numbering Format)
+ในเอกสารตัวอย่างและ Test Case ปรากฏรูปแบบเลขที่สัญญาหลากหลาย เช่น `BSO-2-0009-7`, `BU-16102025-0001`, หรือ `AG2026-00001` ท่านต้องการให้กำหนดรูปแบบเลขที่สัญญา (Contract Number) ของระบบอย่างไร?
+
+A) รูปแบบตามฝ่ายนิติกรรมกำหนดเดิม (เช่น `BSO-{ประเภท}-{ลำดับ}-{สาขา}` หรือโครงสร้างตามหมวดหมู่สัญญาประกันภัย)
+
+B) รูปแบบมาตรฐานตามระบบดิจิทัล (เช่น `{คำนำหน้าสาขา}-{ปี ค.ศ. หรือ พ.ศ.}-{Running 5 หลัก}` เช่น `BU-2026-00001`)
+
+C) ใช้เลขที่รหัส Agent Code ที่ได้จาก Core AS400 โดยตรงมาเป็นเลขอ้างอิงสัญญา
 
 X) Other (please describe after [Answer]: tag below)
 
@@ -66,62 +93,13 @@ X) Other (please describe after [Answer]: tag below)
 
 ---
 
-## Question 5: Document Signature & Approval Workflow
-ขั้นตอนการอนุมัติสัญญาและแบบฟอร์มขอเปิดรหัส (F-CM-035, F-CM-018) ต้องการให้รองรับกระบวนการลงนามแบบใด?
+## Question 7: การจัดเก็บและการส่งคืนเอกสารฉบับจริง (Physical Contract Archive & Return)
+ในเอกสารของฝ่ายนิติกรรมระบุว่า: "เมื่อลงนามเรียบร้อย ส่งคืน BU แค่ หนังสือมอบอำนาจช่วง เพื่อให้ BU ส่งคืนตัวแทน เอกสารที่เหลือเก็บไว้ที่นิติกรรมฯ (ลงกล่อง กล่องละ 60 ชุด เพื่อการตรวจนับ Auditor ประจำปี)" ท่านต้องการให้ระบบรองรับการติดตามเรื่องนี้อย่างไร?
 
-A) Digital/Electronic Signature Workflow ภายในระบบ (ลงนามอิเล็กทรอนิกส์ + แนบ e-Signature + Audit Timestamp) ควบคู่กับการติดตามการรับ-ส่งเอกสารฉบับจริง (Hard Copy Tracking)
+A) มีโมดูลระบุเลขที่กล่องจัดเก็บ (Archive Box No.) และบันทึกสถานะการส่งคืนหนังสือมอบอำนาจช่วงกลับไปยังสาขา พร้อมพิมพ์ใบปะหน้ากล่องและใบนำส่งเอกสาร
 
-B) Electronic Approval Workflow (คลิกปุ่มอนุมัติ/ตีกลับตามลำดับขั้นพร้อมบันทึกประวัติ) และส่งเอกสารจริงเพื่อลงนามภายนอก
-
-C) บูรณาการร่วมกับระบบ E-Signature ภายนอก (เช่น DocuSign, Adobe Sign)
+B) บันทึกเพียงสถานะว่า "จัดเก็บเอกสารฉบับจริงเรียบร้อย (Archived)" โดยไม่ต้องบันทึกเลขกล่องหรือติดตามการส่งคืนหนังสือมอบอำนาจช่วง
 
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: A แต่เรามีระบบบขออนุมัติลงนามเอกสารภายในอยู่แล้วชื่อ EAS 
-
----
-
-## Question 6: Security Extensions
-Should security extension rules be enforced for this project?
-
-A) Yes — enforce all SECURITY rules as blocking constraints (recommended for production-grade applications)
-
-B) No — skip all SECURITY rules (suitable for PoCs, prototypes, and experimental projects)
-
-X) Other (please describe after [Answer]: tag below)
-
-[Answer]: A
-
----
-
-## Question 7: Resiliency Extensions
-Should the resiliency baseline be applied to this project?
-
-**What this extension is:** Enabling it applies a set of **directional, design-time best practices** for building resilient systems, derived from the **AWS Well-Architected Framework (Reliability Pillar)** and resilience-review guidance. It steers requirements, design, and code toward fault tolerance, high availability, observability, and recoverability.
-
-**What this extension is NOT:** Enabling it does **not** make your workload production-ready, nor does it certify or guarantee any availability, RTO, or RPO target.
-
-A) Yes — apply the resiliency baseline as directional best practices and design-time guidance (recommended for business-critical workloads, as an informed starting point that you can validate and harden before go-live)
-
-B) No — skip the resiliency baseline (suitable for PoCs, prototypes, and experimental projects where rapid iteration matters more than reliability)
-
-X) Other (please describe after [Answer]: tag below)
-
-[Answer]: A
-
----
-
-## Question 8: Property-Based Testing Extension
-Should property-based testing (PBT) rules be enforced for this project?
-
-A) Yes — enforce all PBT rules as blocking constraints (recommended for projects with business logic, data transformations, serialization, or stateful components)
-
-B) Partial — enforce PBT rules only for pure functions and serialization round-trips (suitable for projects with limited algorithmic complexity)
-
-C) No — skip all PBT rules (suitable for simple CRUD applications, UI-only projects, or thin integration layers with no significant business logic)
-
-X) Other (please describe after [Answer]: tag below)
-
-[Answer]: A
-
----
+[Answer]: B แต่การได้รับผู้กดรับจะโดนบันทึก log ชัดเจน 
